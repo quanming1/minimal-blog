@@ -3,6 +3,26 @@
 > 版本变更记录。**约定：`src/content/posts/` 下的文章增删改（写作）不进入本文件**——那是内容维护，不是项目版本变更。
 > 仅记录工程层面（代码/结构/功能/构建/测试/部署）的变化。
 
+## [1.8.0] - 2026-08-13
+
+### 审计与清理（v1.0.0-v1.7.0 八版迭代代码审计，零行为变更）
+
+### 清理
+- **删死代码**（grep 实证零引用）：utils.ts 删 `LANGS` / `PostMeta`（v1.0.0 遗留数据结构）、callout.ts 删 `CalloutType` 导出、search.ts 删 `SearchSource` 导出（参数改 inline 类型）
+- **删未使用 import**：SearchDialog.astro 的 `I18nKey` / `SearchEntry`（lint hint 实锤，v1.3.0 遗留）——lint 3 hints → 1（仅保留 execCommand fallback 功能代码）
+- **CSS 冗余**：@media print 段 `.callout-warning/caution/important::before` 三条颜色规则冗余（`.callout::before` 已匹配全部 callout 类型，callout-* 同时含 callout 类）→ 合并为一条
+
+### 重构
+- **抽公共模块 `src/markdown/remark/html.ts`**：`escapeHtml`（highlight.ts / supsub.ts 双份重复 → 单份，& < > " 顺序不变）
+- **抽公共模块 `src/lib/html.ts`**：`serializeJsonForHtml`（search.ts `serializeIndexForHtml` 与 seo.ts `serializeJsonLd` 重复的 `<`→`\u003c` 转义 → 单份委托；公开函数名保留，调用方零改动）
+- **i18n 测试全量化**：i18n.ts 导出 `I18N_KEYS` 常量；i18n.test.ts 键检查从抽样 13 键改为全量遍历 19 键（防新增键漏测）
+
+### 不变（刻意保留）
+- `execCommand('copy')`：clipboard API 的旧浏览器 fallback（功能代码，非死代码）
+- `SITE_URL` / `inLanguageOf`：seo.ts 内部依赖 / 测试引用
+- highlight/supsub 各自 processChildren：抽象收益 < 复杂度，插件模式保持直白（docs/markdown-extensions.md §5 模板基于此）
+- 测试 121 全绿（行为零变更，无新增/删除用例）
+
 ## [1.7.0] - 2026-08-13
 
 ### 新增

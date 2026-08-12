@@ -6,6 +6,7 @@
  *  - JSON-LD 由 Base.astro 用 is:inline set:html 注入（Astro 对非 JS script 透传不求值）
  */
 import type { Lang } from './utils'
+import { serializeJsonForHtml } from './html'
 
 /** 站点原始地址（不含 base）。GitHub Pages 域名，与 astro.config.mjs site 一致 */
 export const SITE_URL = 'https://quanming1.github.io'
@@ -66,13 +67,11 @@ export function webSiteJsonLd(name: string, url: string, lang: Lang): Record<str
 }
 
 /**
- * JSON-LD 序列化（注入 HTML 前调用）：
- * 全量 replace(/</g,'\u003c') 防 `</script>` 与 `<!--` 逃逸（与 search.ts serializeIndexForHtml 同款）。
- * 由 Base.astro 以 `is:inline set:html` 注入（Astro 对非 JS script 透传不求值）。
+ * JSON-LD 序列化（注入 HTML 前调用）：委托 src/lib/html.ts serializeJsonForHtml（全量转义 `<` 防
+ * `</script>` 与 `<!--` 逃逸）。由 Base.astro 以 `is:inline set:html` 注入（Astro 对非 JS script 透传不求值）。
  */
 export function serializeJsonLd(obj: Record<string, unknown>): string {
-  // '\\u003c'：字符串字面量为 \u003c（6 字符），JSON 合法转义，JSON.parse 可还原
-  return JSON.stringify(obj).replace(/</g, '\\u003c')
+  return serializeJsonForHtml(obj)
 }
 
 /** hreflang 替代链接（<link rel="alternate" hreflang="...">） */

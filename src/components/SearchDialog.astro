@@ -7,8 +7,8 @@
  * 见 docs/ui-analysis.md §11.3
  */
 import { getCollection } from 'astro:content'
-import { buildSearchIndex, serializeIndexForHtml, type SearchEntry } from '../lib/search'
-import { t, type I18nKey } from '../lib/i18n'
+import { buildSearchIndex, serializeIndexForHtml } from '../lib/search'
+import { t } from '../lib/i18n'
 import { postHref, type Lang } from '../lib/utils'
 
 interface Props {

@@ -1094,10 +1094,8 @@ html {
     border-left-color: #000 !important;
   }
 
-  .post-body .callout::before,
-  .post-body .callout-warning::before,
-  .post-body .callout-caution::before,
-  .post-body .callout-important::before {
+  /* .callout::before 已匹配全部 callout 类型（callout-* 同时含 callout 类），无需逐类型重复 */
+  .post-body .callout::before {
     color: #000 !important;
   }
 

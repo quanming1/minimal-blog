@@ -1,6 +1,7 @@
 /** 站内搜索：索引构建（SSG 构建期）与前端过滤（纯函数，单测友好）
  * 见 docs/ui-analysis.md §11.3
  */
+import { serializeJsonForHtml } from './html'
 
 export interface SearchEntry {
   /** 文章 id（含语言前缀，如 zh/hello-mingzhi） */
@@ -16,17 +17,15 @@ export interface SearchEntry {
   date: string
 }
 
-export interface SearchSource {
+/** 构建期生成索引（Astro frontmatter 中调用 getCollection 后传入） */
+export function buildSearchIndex(posts: {
   id: string
   title: string
   description?: string
   tags: string[]
   href: string
   date: string
-}
-
-/** 构建期生成索引（Astro frontmatter 中调用 getCollection 后传入） */
-export function buildSearchIndex(posts: SearchSource[]): SearchEntry[] {
+}[]): SearchEntry[] {
   return posts.map((p) => ({
     id: p.id,
     title: p.title,
@@ -51,8 +50,8 @@ export function filterPosts(index: SearchEntry[], query: string, limit = 8): Sea
   return results.slice(0, limit)
 }
 
-/** 索引序列化为 HTML 内联 JSON（安全）：全量转义 `<`（覆盖 `</script>` 与 `<!--` 两种 script 注入向量），
- * `\u003c` 是 JSON 合法转义，JSON.parse 可还原。见 docs/security.md §2 */
+/** 索引序列化为 HTML 内联 JSON（安全）：委托 src/lib/html.ts serializeJsonForHtml（全量转义 `<`，
+ * `\u003c` 是 JSON 合法转义，JSON.parse 可还原）。见 docs/security.md §2 */
 export function serializeIndexForHtml(index: SearchEntry[]): string {
-  return JSON.stringify(index).replace(/</g, '\\u003c')
+  return serializeJsonForHtml(index)
 }

@@ -2,17 +2,6 @@
 
 export type Lang = 'zh' | 'en'
 
-export const LANGS: Lang[] = ['zh', 'en']
-
-export interface PostMeta {
-  /** 集合 id，形如 'zh/hello-mingzhi' */
-  id: string
-  title: string
-  date: Date
-  description?: string
-  tags: string[]
-}
-
 const EN_MONTHS = [
   'January', 'February', 'March', 'April', 'May', 'June',
   'July', 'August', 'September', 'October', 'November', 'December',

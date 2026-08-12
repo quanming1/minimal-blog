@@ -93,7 +93,7 @@ minimal-blog/
 │   ├── components/         # PostList（年份分组列表）、SearchDialog（站内搜索）、wc/（mb-* 组件库）
 │   ├── markdown/           # Markdown 语法拓展（index.ts 注册表 + remark/ 插件，见 docs/markdown-extensions.md）
 │   ├── pages/              # 首页/关于/文章详情（zh 无前缀，en 前缀）
-│   ├── lib/                # 纯函数：i18n 字典 / 日期/分组/slug / search（搜索索引与过滤）/ seo（URL/JSON-LD/hreflang）
+│   ├── lib/                # 纯函数：i18n 字典 / 日期/分组/slug / search（搜索索引与过滤）/ seo（URL/JSON-LD/hreflang）/ html（内联 JSON 序列化）
 │   ├── test/setup-dom.ts   # jsdom 测试基座（组件测试 preload）
 │   └── styles/global.css   # 全局样式（olivierlacan 风格，亮暗双主题）
 ├── docs/ui-analysis.md     # olivierlacan.com UI/UX 设计分析文档（设计规范来源）

@@ -14,12 +14,9 @@
  */
 import type { Plugin } from 'unified'
 import type { Root, RootContent } from 'mdast'
+import { escapeHtml } from './html'
 
 const SUBSUP_RE = /(_\{[^{}]+\}|\^\{[^{}]+\})/g
-
-function escapeHtml(s: string): string {
-  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
-}
 
 export const remarkSupSub: Plugin<[], Root> = () => (tree) => {
   tree.children = processChildren(tree.children)

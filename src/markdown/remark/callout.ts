@@ -16,8 +16,6 @@ import type { Root } from 'mdast'
 
 const CALLOUT_RE = /^\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\]\s*(?:\n|$)/i
 
-export type CalloutType = 'note' | 'tip' | 'important' | 'warning' | 'caution'
-
 export const remarkCallout: Plugin<[], Root> = () => (tree) => {
   walk(tree, null, -1)
 }

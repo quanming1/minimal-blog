@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'bun:test'
-import { t } from './i18n'
+import { I18N_KEYS, t } from './i18n'
 
 describe('i18n 字典', () => {
   it('zh 默认文案', () => {
@@ -21,13 +21,11 @@ describe('i18n 字典', () => {
     expect(t('en', 'authorMeta', { author: 'Quanming Jiang', date: 'August 12, 2026' })).toBe('Quanming Jiang · First written on August 12, 2026')
   })
 
-  it('所有 key 双语言均有值', () => {
-    const keys = ['siteName', 'tagline', 'navPosts', 'navAbout', 'switchLang',
-      'postsTitle', 'aboutTitle', 'authorName', 'authorMeta', 'minRead', 'backHome',
-      'footerNote', 'navAria'] as const
-    for (const k of keys) {
-      expect(t('zh', k).length).toBeGreaterThan(0)
-      expect(t('en', k).length).toBeGreaterThan(0)
+  it('所有 key 双语言均有值（全量遍历，非抽样）', () => {
+    expect(I18N_KEYS.length).toBeGreaterThan(0)
+    for (const k of I18N_KEYS) {
+      expect(t('zh', k).length, `zh.${k}`).toBeGreaterThan(0)
+      expect(t('en', k).length, `en.${k}`).toBeGreaterThan(0)
     }
   })
 })

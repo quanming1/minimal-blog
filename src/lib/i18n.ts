@@ -26,6 +26,9 @@ const dictDef = {
 
 export type I18nKey = keyof typeof dictDef
 
+/** 全部文案键（供测试全量遍历与外部动态取键） */
+export const I18N_KEYS = Object.keys(dictDef) as I18nKey[]
+
 /** 显式宽类型：值允许替换占位符后返回任意 string */
 const dict: Record<I18nKey, Record<Lang, string>> = dictDef
 

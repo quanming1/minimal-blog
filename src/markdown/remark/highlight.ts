@@ -9,12 +9,9 @@
  */
 import type { Plugin } from 'unified'
 import type { Root, RootContent } from 'mdast'
+import { escapeHtml } from './html'
 
 const HIGHLIGHT_RE = /==([^=]+)==/g
-
-function escapeHtml(s: string): string {
-  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
-}
 
 export const remarkHighlight: Plugin<[], Root> = () => (tree) => {
   tree.children = processChildren(tree.children)
