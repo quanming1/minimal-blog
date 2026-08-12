@@ -7,7 +7,7 @@
  * 见 docs/ui-analysis.md §11.3
  */
 import { getCollection } from 'astro:content'
-import { buildSearchIndex, type SearchEntry } from '../lib/search'
+import { buildSearchIndex, serializeIndexForHtml, type SearchEntry } from '../lib/search'
 import { t, type I18nKey } from '../lib/i18n'
 import { postHref, type Lang } from '../lib/utils'
 
@@ -29,8 +29,8 @@ const index = buildSearchIndex(
     date: p.data.date,
   })),
 )
-// 全量转义 <（覆盖 </script> 与 <!-- 两种注入向量）
-const indexJson = JSON.stringify(index).replace(/</g, '\\u003c')
+// 全量转义 <（覆盖 </script> 与 <!-- 两种注入向量），serializeIndexForHtml 单测覆盖（search.test.ts）
+const indexJson = serializeIndexForHtml(index)
 ---
 
 <mb-dialog id="search-dialog" label={t(lang, 'searchTitle')}>
@@ -156,7 +156,12 @@ const indexJson = JSON.stringify(index).replace(/</g, '\\u003c')
     const indexScript = document.getElementById('search-index')
     if (!dialog || !input || !results || !empty || !indexScript) return
 
-    const index: SearchEntry[] = JSON.parse(indexScript.textContent ?? '[]')
+    let index: SearchEntry[]
+    try {
+      index = JSON.parse(indexScript.textContent ?? '[]')
+    } catch {
+      return // 索引损坏时安全退化：搜索不可用，不影响其余交互（主题/进度条等独立 listener）
+    }
     let activeIdx = -1
 
     /** 更新选中项：aria-selected + aria-activedescendant（焦点驻留 input，不移动） */

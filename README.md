@@ -62,6 +62,7 @@ tags: [标签1, 标签2]        # 可选
 - **View Transitions**：站内导航平滑过渡，无整页刷新
 - **微交互**：导航下划线滑入、列表行 hover、链接底色反馈（克制的印刷感动效）
 - 可访问性：`focus-visible` 焦点环、`prefers-reduced-motion` 全站降级
+- **安全**：meta CSP 纵深防御 + no-referrer 隐私头 + CI actions SHA pin + 依赖审计 0 漏洞（详见 [docs/security.md](./docs/security.md) 安全基线）
 - **响应式**（断点体系见 docs/ui-analysis.md §10）：≤900px 导航固定底部（olivierlacan 风格）；触屏设备（pointer: coarse）交互目标放大至 44px；≤480px 超小屏表格收缩；横屏矮屏导航紧凑；支持打印样式（黑白、无导航、代码不跨页）
 
 ## 开发
@@ -92,6 +93,7 @@ minimal-blog/
 │   ├── test/setup-dom.ts   # jsdom 测试基座（组件测试 preload）
 │   └── styles/global.css   # 全局样式（olivierlacan 风格，亮暗双主题）
 ├── docs/ui-analysis.md     # olivierlacan.com UI/UX 设计分析文档（设计规范来源）
+├── docs/security.md        # 安全基线（威胁模型/加固项/维护约定——改安全代码前先读）
 ├── .github/workflows/deploy.yml  # lint → test → build(smoke) → deploy
 ├── CHANGELOG.md
 └── AGENTS.md               # AI Agent 维护本仓库的指令

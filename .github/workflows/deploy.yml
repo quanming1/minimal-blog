@@ -4,7 +4,9 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+    branches: [main]
 
+# 最小权限：contents 只读（checkout）、pages 写（部署产物）、id-token（OIDC 部署）
 permissions:
   contents: read
   pages: write
@@ -17,10 +19,16 @@ concurrency:
 jobs:
   test:
     runs-on: ubuntu-latest
+    # test 仅需 checkout → contents: read 即可（不继承顶层 pages/id-token，缩小供应链投毒爆炸半径）
+    permissions:
+      contents: read
     steps:
-      - uses: actions/checkout@v4
+      # actions 全部 pin 到 commit SHA（供应链安全，防 tag 被移动后拉取被篡改代码）
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false # 不保留 token（本工作流无需 git 写凭据）
       # bun 版本自动读取 package.json 的 packageManager 字段
-      - uses: oven-sh/setup-bun@v2
+      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
       - run: bun install --frozen-lockfile
       - run: bun run lint
       - run: bun run test
@@ -28,9 +36,15 @@ jobs:
   build:
     needs: test
     runs-on: ubuntu-latest
+    # build 需要 pages: write（upload-pages-artifact 官方要求）；不需要 id-token
+    permissions:
+      contents: read
+      pages: write
     steps:
-      - uses: actions/checkout@v4
-      - uses: oven-sh/setup-bun@v2
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
+      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
       - run: bun install --frozen-lockfile
       - run: bun run build
       # 构建冒烟：页面数（当前 10）、关键目录、base 前缀（防内容丢失型静默故障）
@@ -41,16 +55,17 @@ jobs:
           test -d dist/posts
           test "$(find dist -name 'index.html' | wc -l)" -eq 10
           grep -q '/minimal-blog/' dist/index.html
-      - uses: actions/upload-pages-artifact@v3
+      - uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa # v3.0.1
         with:
           path: dist
 
   deploy:
     needs: build
     runs-on: ubuntu-latest
+    # deploy 继承顶层权限（contents: read + pages: write + id-token: write，OIDC 部署必需）
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4.0.5

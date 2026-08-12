@@ -50,3 +50,9 @@ export function filterPosts(index: SearchEntry[], query: string, limit = 8): Sea
   )
   return results.slice(0, limit)
 }
+
+/** 索引序列化为 HTML 内联 JSON（安全）：全量转义 `<`（覆盖 `</script>` 与 `<!--` 两种 script 注入向量），
+ * `\u003c` 是 JSON 合法转义，JSON.parse 可还原。见 docs/security.md §2 */
+export function serializeIndexForHtml(index: SearchEntry[]): string {
+  return JSON.stringify(index).replace(/</g, '\\u003c')
+}

@@ -3,6 +3,30 @@
 > 版本变更记录。**约定：`src/content/posts/` 下的文章增删改（写作）不进入本文件**——那是内容维护，不是项目版本变更。
 > 仅记录工程层面（代码/结构/功能/构建/测试/部署）的变化。
 
+## [1.4.0] - 2026-08-12
+
+### 新增
+- **安全审查与加固**（docs/security.md 安全基线）：威胁模型（静态站、内容可信）+ 攻击面审计 + 加固项 + 已知边界
+- **meta CSP 纵深防御**（Base.astro head，GitHub Pages 无法自定义 HTTP 头）：`default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; frame-src 'none'; object-src 'none'; worker-src 'none'; base-uri 'self'; form-action 'self'`——即使内容被注入脚本，无法加载外部脚本 / iframe/object/Worker 副载 / XHR 数据外传 / base 篡改 / 表单外提
+- **meta referrer `no-referrer`**：外链不泄露 Referer（隐私）
+- **CI/CD 供应链加固**（deploy.yml）：actions 全部 pin commit SHA（checkout v4.4.0 / setup-bun v2.2.0 / upload-pages-artifact v3.0.1 / deploy-pages v4.0.5）+ job 级最小权限（test 仅 contents:read；build 加 pages:write；deploy 继承 OIDC）+ checkout persist-credentials: false + workflow_dispatch 限 main 分支
+- **bunfig.toml**：显式声明 registry = npmmirror（lockfile tarball URL 来源，消除隐式供应链依赖）
+- **npm audit：0 vulnerabilities**（临时 lockfile 方式验证）
+
+### 变更
+- 移除 `<meta name="generator">`（防框架精确版本指纹泄露）
+- 搜索索引转义抽为 `serializeIndexForHtml`（src/lib/search.ts，可单测）+ JSON.parse try/catch 兜底（索引损坏时搜索安全退化，不影响其余交互）
+- 新增安全单测 5 个（转义无裸 `<` / JSON.parse 还原 / filterPosts 纯文本匹配 / **jsdom 端到端 script 注入上下文不可逃逸** / href 特殊字符）→ 共 61 个
+
+### 审计结论（docs/security.md §2）
+- frontmatter（title/description/tags）：Astro 模板表达式自动转义 ✅（实证）
+- 搜索索引：textContent 渲染 + 全量 `<` 转义 ✅
+- Markdown raw HTML（`<script>`/`img onerror`/`iframe`）：**原样透传 = Astro 设计特性**，威胁模型"内容可信"（文档化；引入不可信内容源必须加 sanitize）
+- Markdown `javascript:` 链接：内容可信范围（CSP 管不到事件属性/javascript: 执行，文档已明示边界）
+
+### 修复
+- 无代码级 Blocker/Major（三人安全审查结论）；修复 8 项 Minor：img-src 收紧（当前零外链图）、worker-src 'none' 补齐、JSON.parse 兜底、端到端注入测试、deploy.yml job 权限细化、SHA 注释精确版本、workflow_dispatch 分支限制、generator 指纹移除
+
 ## [1.3.0] - 2026-08-12
 
 ### 新增

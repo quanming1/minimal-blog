@@ -20,6 +20,8 @@
 | `src/pages/**` | 页面路由（zh 无前缀 / en 前缀） | 页面改动 |
 | `src/styles/global.css` | 全部样式（olivierlacan 风格 + 双主题 + 响应式断点体系 §10） | 样式改动 |
 | `docs/ui-analysis.md` | 设计规范来源（改样式前先读） | 设计决策 |
+| `docs/security.md` | 安全基线（威胁模型/加固项/维护约定——**改安全代码前先读**） | 安全改动 |
+| `bunfig.toml` | registry 显式声明（npmmirror，lockfile 来源） | 依赖配置 |
 | `.github/workflows/deploy.yml` | lint → test → build(smoke) → deploy | 部署改动 |
 
 ## 写作规范（日常任务）
@@ -45,6 +47,7 @@
 - 改响应式规则（断点/媒体查询/触屏目标）→ 先读 `docs/ui-analysis.md §10` 断点矩阵，改完在 375/768/1024/1280 至少四个视口验证无横向溢出；设计决策变更必须同步文档
 - 新增纯函数逻辑 → 放 `src/lib/` 并**必须配单测**（`src/lib/*.test.ts`，bun test）
 - 新增 mb-\* 组件 → 放 `src/components/wc/`，需 `customElements.get()` 守卫注册 + 组件测试（`src/components/wc/*.test.ts`，首行 `import '../../test/setup-dom'` 注入 jsdom；主题一律走 CSS 变量继承，不硬编码颜色）
+- 改安全相关代码（CSP/头/CI 权限/依赖/注入点）→ 先读 `docs/security.md`（威胁模型与维护约定），改完跑 `npm audit`（临时 lockfile 方式）并同步文档
 - 提交信息：写作 `post: 标题`；工程 `feat/fix/ci:` 前缀
 
 ## 构建与部署
