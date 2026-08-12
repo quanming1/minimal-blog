@@ -19,6 +19,8 @@ const posts = defineCollection({
     date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'date must be YYYY-MM-DD'),
     /** 摘要：列表页可展示，建议 1-2 句 */
     description: z.string().optional(),
+    /** 作者：缺省时按文章语言取 i18n authorName（zh 蒋全明 / en Quanming Jiang，hardcode 本人）；frontmatter 可写 author 覆盖 */
+    author: z.string().optional(),
     /** 标签（可选，详情页展示） */
     tags: z.array(z.string()).default([]),
   }),

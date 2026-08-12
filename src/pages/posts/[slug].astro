@@ -18,6 +18,7 @@ export async function getStaticPaths() {
 const { post, hasTranslation } = Astro.props
 const { Content, headings } = await render(post)
 const { title, description, tags } = post.data
+const author = post.data.author ?? t('zh', 'authorName')
 const date = parseDateString(post.data.date)
 const minutes = readingMinutes(post.body ?? '', 'zh')
 ---
@@ -28,6 +29,10 @@ const minutes = readingMinutes(post.body ?? '', 'zh')
   description={description ?? title}
   pageTitle={`${title} · ${t('zh', 'siteName')}`}
   hasTranslation={hasTranslation}
+  type="article"
+  title={title}
+  publishedTime={post.data.date}
+  author={author}
   reading
 >
   <div class="post-layout">
@@ -35,7 +40,7 @@ const minutes = readingMinutes(post.body ?? '', 'zh')
       <header class="post-header">
         <h2 class="post-title">{title}</h2>
         <p class="post-meta">
-          {t('zh', 'firstWritten')} {formatFullDate(date, 'zh')}
+          {t('zh', 'authorMeta', { author, date: formatFullDate(date, 'zh') })}
           <span class="min-read">{t('zh', 'minRead', { n: minutes })}</span>
         </p>
       </header>

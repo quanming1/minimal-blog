@@ -3,6 +3,23 @@
 > 版本变更记录。**约定：`src/content/posts/` 下的文章增删改（写作）不进入本文件**——那是内容维护，不是项目版本变更。
 > 仅记录工程层面（代码/结构/功能/构建/测试/部署）的变化。
 
+## [1.6.0] - 2026-08-13
+
+### 新增
+- **SEO 优化**（docs/seo.md 完整说明）：Base.astro head 统一输出 canonical / Open Graph（site_name/title/description/type/url/locale/locale:alternate/article:published_time）/ Twitter Card / theme-color（亮 #ffffff 暗 #0d1117）/ hreflang（中英互译 + x-default 指 zh 首页）
+- **JSON-LD 结构化数据**：文章页 `BlogPosting`（headline/datePublished/author Person/inLanguage/publisher/mainEntityOfPage）+ 首页/关于页 `WebSite`；`is:inline set:html` 注入（Astro 对非 JS script 透传不求值）+ `serializeJsonLd` 全量转义 `<` 防 `</script>` 逃逸（与 search.ts 同款，源码 `'\\u003c'` 双重转义）
+- **sitemap + robots**：`@astrojs/sitemap` 3.7.3 集成（构建期自动生成 sitemap-index.xml，URL 含 base）+ `public/robots.txt`（Allow all + Sitemap 指向）
+- **frontmatter 作者字段**：schema 加 `author: z.string().optional()`；缺省按文章语言取 i18n `authorName`（zh 蒋全明 / en Quanming Jiang，hardcode 本人），frontmatter 写 `author` 可覆盖；i18n 加 `authorMeta`（作者 · 初写于 日期）键，文章页 meta 行显示作者
+- **SEO 纯函数层**：src/lib/seo.ts（absoluteUrl / localeOf / inLanguageOf / blogPostingJsonLd / webSiteJsonLd / alternateUrls / serializeJsonLd），新增 18 个单测
+- 测试 79 → **97**；新增 devDependency：@astrojs/sitemap
+
+### 变更
+- 日期语义明确：frontmatter `date` 即**创建日期**（既有字段，JSON-LD datePublished 直接用原字符串避免本地时区 Date 偏移）
+- `firstWritten` i18n 键被 `authorMeta` 组合键替代（i18n.test.ts 键清单同步）
+
+### 修复
+- 单测捕获两处实现 bug：`alternateUrls` en 版首页缺尾部斜杠（`/en${path}` 直接拼接）、`serializeJsonLd` 单引号 `'\u003c'` 被解释为字面 `<` 导致转义失效（改 `'\\u003c'`）
+
 ## [1.5.0] - 2026-08-12
 
 ### 新增

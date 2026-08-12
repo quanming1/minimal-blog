@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://quanming1.github.io/minimal-blog/sitemap-index.xml

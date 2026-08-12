@@ -27,8 +27,9 @@ git add . && git commit -m "post: 文章标题" && git push
 ```markdown
 ---
 title: 文章标题
-date: '2026-08-12'        # ⚠️ 必须带引号（YAML 会把裸日期解析成对象导致构建失败）
+date: '2026-08-12'        # ⚠️ 创建日期，必须带引号（YAML 会把裸日期解析成对象导致构建失败）
 description: 一句话摘要（可选，用于页面 description）
+author: 蒋全明              # 可选，缺省默认「蒋全明」（中文页显示蒋全明 / 英文页 Quanming Jiang）
 tags: [标签1, 标签2]        # 可选
 ---
 
@@ -54,7 +55,7 @@ tags: [标签1, 标签2]        # 可选
 ## 页面与功能
 
 - 首页：按年份分组的极简表格文章列表（标题 + 月日 + ¶ 锚点）
-- 文章页：标题、初写日期、阅读时长、正文排版（代码高亮 + 语言标签 + 一键复制）、**右侧目录 TOC**（滚动高亮，小屏折叠）、**阅读进度条**、**回到顶部**
+- 文章页：标题、作者 · 初写日期、阅读时长、正文排版（代码高亮 + 语言标签 + 一键复制）、**右侧目录 TOC**（滚动高亮，小屏折叠）、**阅读进度条**、**回到顶部**
 - **Markdown 拓展语法**：Callout 提示框（`> [!TIP]`）、`==高亮==`、GFM 全量（表格/任务/删除线/自动链接/脚注）——语法清单与开发指南见 [docs/markdown-extensions.md](./docs/markdown-extensions.md)
 - 关于页
 - 语言切换（中/英）+ 亮暗主题（localStorage 记忆，默认亮色）
@@ -64,6 +65,7 @@ tags: [标签1, 标签2]        # 可选
 - **微交互**：导航下划线滑入、列表行 hover、链接底色反馈（克制的印刷感动效）
 - 可访问性：`focus-visible` 焦点环、`prefers-reduced-motion` 全站降级
 - **安全**：meta CSP 纵深防御 + no-referrer 隐私头 + CI actions SHA pin + 依赖审计 0 漏洞（详见 [docs/security.md](./docs/security.md) 安全基线）
+- **SEO**：canonical + Open Graph / Twitter Card / theme-color + JSON-LD 结构化数据（文章页 BlogPosting / 首页 WebSite）+ 中英 hreflang + sitemap.xml + robots.txt（详见 [docs/seo.md](./docs/seo.md)）
 - **响应式**（断点体系见 docs/ui-analysis.md §10）：≤900px 导航固定底部（olivierlacan 风格）；触屏设备（pointer: coarse）交互目标放大至 44px；≤480px 超小屏表格收缩；横屏矮屏导航紧凑；支持打印样式（黑白、无导航、代码不跨页）
 
 ## 开发
@@ -86,16 +88,17 @@ minimal-blog/
 │   │   └── posts/          # 文章（MD）
 │   │       ├── zh/         # 中文文章
 │   │       └── en/         # 英文文章
-│   ├── content.config.ts   # 文章集合 schema（title/date/description/tags）
-│   ├── layouts/Base.astro  # 全局布局：导航/语言切换/主题/页脚
+│   ├── content.config.ts   # 文章集合 schema（title/date/author/description/tags）
+│   ├── layouts/Base.astro  # 全局布局：导航/语言切换/主题/页脚 + SEO head（canonical/OG/JSON-LD/hreflang）
 │   ├── components/         # PostList（年份分组列表）、SearchDialog（站内搜索）、wc/（mb-* 组件库）
 │   ├── markdown/           # Markdown 语法拓展（index.ts 注册表 + remark/ 插件，见 docs/markdown-extensions.md）
 │   ├── pages/              # 首页/关于/文章详情（zh 无前缀，en 前缀）
-│   ├── lib/                # 纯函数：i18n 字典 / 日期/分组/slug / search（搜索索引与过滤）
+│   ├── lib/                # 纯函数：i18n 字典 / 日期/分组/slug / search（搜索索引与过滤）/ seo（URL/JSON-LD/hreflang）
 │   ├── test/setup-dom.ts   # jsdom 测试基座（组件测试 preload）
 │   └── styles/global.css   # 全局样式（olivierlacan 风格，亮暗双主题）
 ├── docs/ui-analysis.md     # olivierlacan.com UI/UX 设计分析文档（设计规范来源）
 ├── docs/security.md        # 安全基线（威胁模型/加固项/维护约定——改安全代码前先读）
+├── docs/seo.md             # SEO 架构（meta 清单/JSON-LD/hreflang/sitemap/frontmatter 元数据约定）
 ├── .github/workflows/deploy.yml  # lint → test → build(smoke) → deploy
 ├── CHANGELOG.md
 └── AGENTS.md               # AI Agent 维护本仓库的指令

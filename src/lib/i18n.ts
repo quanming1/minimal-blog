@@ -9,7 +9,10 @@ const dictDef = {
   switchLang: { zh: 'EN', en: '中文' },
   postsTitle: { zh: '文章', en: 'Posts' },
   aboutTitle: { zh: '关于', en: 'About' },
-  firstWritten: { zh: '初写于', en: 'First written on' },
+  /** 作者名（frontmatter author 缺省时的默认值，与 content.config.ts default 一致） */
+  authorName: { zh: '蒋全明', en: 'Quanming Jiang' },
+  /** 文章 meta 行：作者 · 初写于 日期 */
+  authorMeta: { zh: '{author} · 初写于 {date}', en: '{author} · First written on {date}' },
   minRead: { zh: '约 {n} 分钟', en: '{n} min. read' },
   backHome: { zh: '← 回首页', en: '← home' },
   footerNote: { zh: '写，是因为想明白了一些事，想把它留下来。', en: 'I write because I figured something out and want to keep it.' },

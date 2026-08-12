@@ -9,9 +9,9 @@
 |---|---|---|
 | `src/content/posts/zh/*.md` | 中文文章 | 日常写作 |
 | `src/content/posts/en/*.md` | 英文文章（同 slug = 翻译对） | 日常写作 |
-| `src/content.config.ts` | 文章集合 schema（title/date/description/tags） | 协议变更 |
-| `src/lib/*` | 纯函数（i18n 字典 / 日期/分组/slug/URL 构造） | 功能改动 |
-| `src/layouts/Base.astro` | 全局布局（导航/语言切换/主题/页脚） | 布局改动 |
+| `src/content.config.ts` | 文章集合 schema（title/date/author/description/tags；author 缺省按语言 hardcode：zh 蒋全明 / en Quanming Jiang） | 协议变更 |
+| `src/lib/*` | 纯函数（i18n 字典 / 日期/分组/slug/URL 构造 / seo：URL/JSON-LD/hreflang） | 功能改动 |
+| `src/layouts/Base.astro` | 全局布局（导航/语言切换/主题/页脚）+ SEO head（canonical/OG/JSON-LD/hreflang） | 布局改动 |
 | `src/components/PostList.astro` | 首页年份分组列表 | 列表改动 |
 | `src/components/SearchDialog.astro` | 站内搜索（Cmd+K，mb-dialog 容器 + 过滤 + 键盘导航） | 搜索改动 |
 | `src/components/wc/*.ts` | mb-\* 组件库（mb-dialog / mb-toast，零依赖 Web Components） | 组件库改动 |
@@ -23,6 +23,8 @@
 | `src/styles/global.css` | 全部样式（olivierlacan 风格 + 双主题 + 响应式断点体系 §10） | 样式改动 |
 | `docs/ui-analysis.md` | 设计规范来源（改样式前先读） | 设计决策 |
 | `docs/security.md` | 安全基线（威胁模型/加固项/维护约定——**改安全代码前先读**） | 安全改动 |
+| `docs/seo.md` | SEO 架构（meta 清单/JSON-LD/hreflang 规则/sitemap/frontmatter 元数据约定——**改 SEO 代码前先读**） | SEO 改动 |
+| `src/lib/seo.ts` | SEO 纯函数（absoluteUrl/JSON-LD/alternateUrls/serializeJsonLd） | SEO 改动 |
 | `bunfig.toml` | registry 显式声明（npmmirror，lockfile 来源） | 依赖配置 |
 | `.github/workflows/deploy.yml` | lint → test → build(smoke) → deploy | 部署改动 |
 
@@ -34,8 +36,9 @@
    ```markdown
    ---
    title: 标题
-   date: '2026-08-12'   # ⚠️ 必须带引号！YAML 会把裸日期解析成对象，导致构建失败
+   date: '2026-08-12'   # ⚠️ 必须带引号！YAML 会把裸日期解析成对象，导致构建失败；此为创建日期
    description: 一句话摘要（可选）
+   author: 蒋全明         # 可选，缺省默认「蒋全明」（见 docs/seo.md §4）
    tags: [标签]          # 可选
    ---
    ```
@@ -51,6 +54,7 @@
 - 新增 mb-\* 组件 → 放 `src/components/wc/`，需 `customElements.get()` 守卫注册 + 组件测试（`src/components/wc/*.test.ts`，首行 `import '../../test/setup-dom'` 注入 jsdom；主题一律走 CSS 变量继承，不硬编码颜色）
 - 改安全相关代码（CSP/头/CI 权限/依赖/注入点）→ 先读 `docs/security.md`（威胁模型与维护约定），改完跑 `npm audit`（临时 lockfile 方式）并同步文档
 - 新增 Markdown 语法拓展 → 先读 `docs/markdown-extensions.md`（6 步流程：插件放 `src/markdown/remark/` + index.ts 注册 + 单测 + CSS + 文档 + 验证）；遵守 XSS 约束（优先 data.hName，html 节点必须 escapeHtml）与插件顺序（结构级在前）
+- 改 SEO 相关代码（Base.astro head / src/lib/seo.ts / astro.config.mjs / robots.txt）→ 先读 `docs/seo.md`；JSON-LD 必须 `is:inline set:html` + `serializeJsonLd`（Astro 对非 JS script 透传不求值）；datePublished 用 frontmatter 原字符串不转 Date；hreflang 遵循 `alternateUrls` 规则（hasTranslation 才输出互译）
 - 提交信息：写作 `post: 标题`；工程 `feat/fix/ci:` 前缀
 
 ## 构建与部署

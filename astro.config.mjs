@@ -1,5 +1,6 @@
 // @ts-check
 import { defineConfig } from 'astro/config'
+import sitemap from '@astrojs/sitemap'
 import { unified } from '@astrojs/markdown-remark'
 import { remarkPlugins } from './src/markdown'
 
@@ -8,6 +9,9 @@ export default defineConfig({
   site: 'https://quanming1.github.io',
   base: '/minimal-blog',
   trailingSlash: 'always',
+  // SEO：自动生成 sitemap-index.xml（site + base 拼绝对 URL，见 docs/seo.md §3）。
+  // 不启用 i18n 配置（本站中英路由是手写 /en 前缀，非 Astro i18n 集成；hreflang 由 Base.astro 输出）
+  integrations: [sitemap()],
   markdown: {
     // Markdown 处理器：Astro 7 新 API（legacy markdown.remarkPlugins 已废弃）。
     // 语法拓展注册表 src/markdown/index.ts（新增拓展见 docs/markdown-extensions.md）。
