@@ -3,6 +3,26 @@
 > 版本变更记录。**约定：`src/content/posts/` 下的文章增删改（写作）不进入本文件**——那是内容维护，不是项目版本变更。
 > 仅记录工程层面（代码/结构/功能/构建/测试/部署）的变化。
 
+## [1.2.0] - 2026-08-12
+
+### 新增
+- **响应式断点体系**（docs/ui-analysis.md §10）：A ≥1201px TOC 侧栏 / B 901-1200px TOC 折叠 / C ≤900px 底部导航 / D 触屏设备（pointer: coarse）/ E ≤480px 超小屏 / F 横屏矮屏 / G 打印——断点按内容折返点划分，B 档 44em 行宽约束保持
+- **标题流式字号**：`.posts-title/.post-title` 改 `clamp(1.9em, calc(1.4em + 1.2vw), 2.5em)`，消除 900px 处 1.9em→2.5em 突变；≤767px 保持 1.9em 中文适配下限，1687px 封顶 2.5em。**已知视觉变化**：901-1200px（B 档）标题约 36-40px，比 v1.1.0 固定 46px 小 12-20%（平滑流式的有意取舍）
+- **触屏目标放大**（`@media (pointer: coarse)`，不依赖宽度）：底部导航项 ≥44px、theme-toggle 40×40、TOC summary 44px、code-copy ≥32px、¶ 锚点 24px、回顶 44px（WCAG 2.5.5）
+- **正文表格响应式**：`.post-body table` 极简边框（th 用 `--divider-strong`，非文本对比 ≥3:1）+ `display:block; overflow-x:auto` 横向滚动 + `border-spacing:0` 兜底
+- **超小屏适配**（≤480px）：首页表格日期列收缩 0.9em、标题列 word-break、导航间距收紧、`.site` 左右 padding 0.8em；标题 `overflow-wrap: break-word` 防超长单词溢出
+- **横屏矮屏适配**（landscape + max-height 500px）：底部导航紧凑化（项 36px、总高约 48px）、回顶 bottom 3.2em、safe-area-inset-left/right（iPhone 横屏 home indicator）
+- **打印样式**（`@media print`）：隐藏底部导航/进度条/回顶/TOC/代码操作头；白底黑字（含 Shiki token 全量重置 #000 + `color-scheme: light`，修复暗色主题打印代码不可读）；分隔线纯黑；代码块 `break-inside: avoid` + pre-wrap；正文表格恢复 table 布局防列裁剪；`@page` 2cm
+
+### 变更
+- 嵌套 `@media` 全部扁平合并（`@media (pointer: coarse) and (max-width: 1200px)` 等），不依赖浏览器 CSS Nesting 支持
+- clamp 显式 `calc()` 写法（旧浏览器兼容）
+- 底部导航 li/a 显式 `min-height: 44px` + flex 居中（总高由 ~47px 增至 ~72px，触屏目标代价，回顶/页脚间距已充足避让）
+
+### 修复
+- 打印路径 3 项：暗色主题 Shiki token 浅色印白底不可读（Major）、`color-scheme` 未重置（Major）、`.has-actions` 顶部 2em 空白残留
+- 文档-实现偏差对齐：§10.1 D 档（pointer: coarse 非 ≤767px）、§10.3 触屏表（TOC 44px/¶ 锚点）、§10.4（0.9em/--divider-strong）、§10.5（padding 0.3em + 36px）、§10.6（打印字号收缩 11-12pt）
+
 ## [1.1.0] - 2026-08-12
 
 ### 新增

@@ -1,7 +1,7 @@
 {
   "name": "minimal-blog",
   "type": "module",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Minimal blog - MD-driven static site, olivierlacan-style, bilingual (zh/en), light/dark themes",
   "packageManager": "bun@1.3.14",
   "engines": {

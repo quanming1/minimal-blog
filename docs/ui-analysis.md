@@ -221,4 +221,74 @@ h2 文章标题（900 粗）
 
 ---
 
+## 10. 响应式断点体系（v1.2.0 实现决策）
+
+> 本章是本项目自己的实现决策（非原站分析），基于第 4 章原站响应式分析 + 中文适配差异（第 8 章）推导。
+
+### 10.1 断点矩阵（基于内容折返点，非设备清单）
+
+| 断点 | 视口 | 布局形态 | 要点 |
+|---|---|---|---|
+| A | ≥1201px | 大屏桌面 | TOC 右侧 sticky 侧栏（210px）+ 44em 内容单栏 + 顶部导航 |
+| B | 901-1200px | 小屏桌面 / 平板横 | TOC 折叠到文章顶部（details）；44em 内容（92vw 约束）；顶部导航 |
+| C | ≤900px | 平板竖 / 手机 | **底部固定导航**（拇指可达，沿原站 760-1020 决策）；TOC 折叠顶部；正文 1.1em/1.8；回顶避让 4.6em |
+| D | 触屏设备 | 手机/平板（pointer: coarse，无宽度断点） | 触屏目标放大（导航项 ≥44px 高、theme-toggle ≥40px、TOC summary 44px、code-copy ≥32px、¶ 锚点 24px、回顶 44px）；标题 clamp 在 ≤767px 达 1.9em 下限（自动） |
+| E | ≤480px | 超小屏 | 首页表格日期列收缩、导航项间距收紧、.site 左右 padding 0.8em |
+| F | 横屏矮屏 | landscape + max-height 500px | 底部导航紧凑化（高约 48px）、回顶 bottom 避让至 3.2em、safe-area 左右适配 |
+| G | 打印 | @media print | 隐藏 fixed/底部导航/进度条/回顶/TOC；纯黑白去底色；代码块 break-inside avoid + pre-wrap；@page 2cm |
+
+**断点决策理由：**
+- 底部导航保持 ≤900px（不照搬原站 1020px）：768-900px 竖屏平板实测顶部导航空间充足（站名 ~62px + 导航 ~300px < 706px 内容宽），且 ≤900 底部导航已线上验证，降低回归风险。
+- TOC 侧栏折返点 1201px 保持：210px 侧栏 + 3em gap + 44em 内容的最小宽度约束。
+- 新增 D/E 两档是纯增量细分：原 900px 一档把 375px 手机与 820px 平板混在一起，触屏目标与字号诉求不同。
+
+### 10.2 字号决策：标题流式 clamp（消除 900px 突变）
+
+现状问题：900px 处标题从 1.9em 阶跃到 2.5em（突变 ~11px）。改为流式：
+
+```css
+.posts-title, .post-title {
+  font-size: clamp(1.9em, calc(1.4em + 1.2vw), 2.5em);
+}
+```
+
+- 375px → 1.9em（中文适配下限，保持不放大到 3.5em 的决策）；
+- 767px 起随视口线性增长，901px ≈ 36.6px、1200px ≈ 40.2px，**1687px 封顶 2.5em（46px）**——注意 B 档（901-1200px）标题比 v1.1.0 的固定 46px 小约 12-20%，这是消除 900px 突变的有意取舍（13-15 寸笔记本窗口化场景 36-40px 的 700 粗体标题仍够醒目），已记入 CHANGELOG；
+- 正文/行高保持断点式（1.2em/1.75 桌面 → 1.1em/1.8 移动），差异小无需流式。
+
+### 10.3 触屏目标（触屏设备 `@media (pointer: coarse)` 生效，不依赖宽度断点）
+
+| 元素 | 桌面（fine pointer） | 触屏（coarse pointer） |
+|---|---|---|
+| 底部导航 li | — | 高度 ≥44px（≤900px 底部导航内显式 min-height + flex 居中） |
+| theme-toggle | 3px 7px | min 40×40px |
+| TOC summary | 仅文字 | min-height 44px + flex 居中（折叠态 ≤1200px 内，全宽触屏区） |
+| code-copy | 0.15em 0.7em | min-height 32px + padding 0.3em 0.8em |
+| back-to-top | 40px | 44px |
+| 年份 ¶ 锚点 | 行内文字 | min-height 24px（inline-block） |
+
+> 注：theme-toggle 40px、code-copy 32px 满足 WCAG 2.5.5 AA（≥24px），低于推荐值 44px——极简风格下的已知权衡。
+
+### 10.4 溢出处理
+
+- **正文表格**（.post-body table，未来文章可能用）：`display: block; max-width: 100%; overflow-x: auto;` + `border-spacing: 0` 兜底（display:block 后匿名 table box 可能回退 separate 出现缝隙）；th/td 极简边框（border-bottom divider），表头 th 用 `--divider-strong`（非文本对比 ≥3:1，WCAG 1.4.11）。
+- **首页 posts-table**（≤480px）：日期列字号 0.9em + 标题列 `word-break: break-word`，防止 320px 溢出；`.site` padding 0 0.8em 保证最小边距。
+- **标题防溢出**：`.posts-title/.post-title` 均加 `overflow-wrap: break-word`（超长英文单词/URL 不溢出）。
+- pre 横向滚动（overflow-x auto）与图片 max-width 100% 已有，复查保持。
+
+### 10.5 横屏与安全区
+
+- 横屏矮屏（max-height 500px + landscape）：底部导航 padding 收紧至 0.3em、字号 0.95em、导航项 min-height 收至 36px（总高约 48px，WCAG AA 达标）；回顶 bottom 3.2em（导航矮了不浪费 4.6em）；底部导航补 padding-left/right `env(safe-area-inset-left/right)`（iPhone 横屏 home indicator 在左右）。
+- 竖屏底部导航已有 `padding-bottom: env(safe-area-inset-bottom)`（v1.1.0）。
+
+### 10.6 打印样式
+
+- 隐藏：`.header nav`（含移动端底部导航）、`.reading-progress`、`.back-to-top`、`.toc-wrap`（TOC 不打印）、`.code-actions`（操作头，并还原 pre 顶部 padding）。
+- 黑白：body/code/table/blockquote 背景清空（#fff）、文字纯黑；**Shiki token 变量全部重置 #000**（暗色主题下浅色 token 印白底不可读）+ `html { color-scheme: light }`；分隔线（header/hr/表格线）`border-color: #000`；链接保留下划线不打印 URL（极简哲学）。
+- 代码块：`break-inside: avoid`（整块不跨页）+ `white-space: pre-wrap; word-break: break-word`（长行打印不截断）。
+- 正文表格：打印恢复 `display: table; width: 100%; overflow: visible`（display:block 在分页媒体会裁剪列）。
+- `@page { margin: 2cm }`；打印统一收缩字号（正文 11pt / 代码 9pt）。
+
+---
+
 *分析完稿：2026-08-12。实现偏差以代码与线上效果为准，本文档为设计意图记录。*

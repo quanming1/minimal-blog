@@ -14,7 +14,7 @@
 | `src/layouts/Base.astro` | 全局布局（导航/语言切换/主题/页脚） | 布局改动 |
 | `src/components/PostList.astro` | 首页年份分组列表 | 列表改动 |
 | `src/pages/**` | 页面路由（zh 无前缀 / en 前缀） | 页面改动 |
-| `src/styles/global.css` | 全部样式（olivierlacan 风格 + 双主题） | 样式改动 |
+| `src/styles/global.css` | 全部样式（olivierlacan 风格 + 双主题 + 响应式断点体系 §10） | 样式改动 |
 | `docs/ui-analysis.md` | 设计规范来源（改样式前先读） | 设计决策 |
 | `.github/workflows/deploy.yml` | lint → test → build(smoke) → deploy | 部署改动 |
 
@@ -38,6 +38,7 @@
 
 - **`date` 必须带引号**（`'YYYY-MM-DD'`）；`slug` 用小写短横线；同 slug 中英两篇必须同一日期语义（可不相同）
 - **不要动** `src/layouts` / `src/pages` / `src/styles` 除非任务明确涉及样式或功能
+- 改响应式规则（断点/媒体查询/触屏目标）→ 先读 `docs/ui-analysis.md §10` 断点矩阵，改完在 375/768/1024/1280 至少四个视口验证无横向溢出；设计决策变更必须同步文档
 - 新增纯函数逻辑 → 放 `src/lib/` 并**必须配单测**（`src/lib/*.test.ts`，bun test）
 - 提交信息：写作 `post: 标题`；工程 `feat/fix/ci:` 前缀
 

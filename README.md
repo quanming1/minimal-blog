@@ -59,7 +59,7 @@ tags: [标签1, 标签2]        # 可选
 - **View Transitions**：站内导航平滑过渡，无整页刷新
 - **微交互**：导航下划线滑入、列表行 hover、链接底色反馈（克制的印刷感动效）
 - 可访问性：`focus-visible` 焦点环、`prefers-reduced-motion` 全站降级
-- 移动端：导航固定底部（olivierlacan 风格）
+- **响应式**（断点体系见 docs/ui-analysis.md §10）：≤900px 导航固定底部（olivierlacan 风格）；触屏设备（pointer: coarse）交互目标放大至 44px；≤480px 超小屏表格收缩；横屏矮屏导航紧凑；支持打印样式（黑白、无导航、代码不跨页）
 
 ## 开发
 
@@ -95,7 +95,7 @@ minimal-blog/
 
 ## 设计规范
 
-UI 风格源自对 [olivierlacan.com](https://olivierlacan.com) 的完整分析（CSS/UI/UX），见 **[docs/ui-analysis.md](./docs/ui-analysis.md)**：色彩体系、字体层级、排版节奏、布局、响应式、借鉴清单与中文适配差异决策。
+UI 风格源自对 [olivierlacan.com](https://olivierlacan.com) 的完整分析（CSS/UI/UX），见 **[docs/ui-analysis.md](./docs/ui-analysis.md)**：色彩体系、字体层级、排版节奏、布局、响应式断点体系、借鉴清单与中文适配差异决策。
 
 ## 版本管理
 

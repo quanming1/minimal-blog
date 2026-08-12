@@ -11,6 +11,7 @@
   --accent: #3c5011;               /* 橄榄绿 */
   --accent-line: rgba(60, 80, 17, 0.46);
   --divider: rgba(0, 0, 0, 0.3);
+  --divider-strong: rgba(0, 0, 0, 0.45); /* 表头边界：非文本对比 ≥3:1（WCAG 1.4.11） */
   --code-bg: #f4f4f4;
   --code-text: #24292f;
 
@@ -47,6 +48,7 @@
   --accent: #a3c26b;                 /* 暗色下提亮的橄榄绿 */
   --accent-line: rgba(163, 194, 107, 0.4);
   --divider: rgba(230, 237, 243, 0.25);
+  --divider-strong: rgba(230, 237, 243, 0.4);
   --code-bg: #161b22;
   --code-text: #e6edf3;
 
@@ -195,10 +197,11 @@ a:hover {
 
 /* ============ 首页：文章列表（年份分组 + 极简表格） ============ */
 .posts-title {
-  font-size: 2.5em;
+  font-size: clamp(1.9em, calc(1.4em + 1.2vw), 2.5em); /* 流式：375px→1.9em（中文适配下限），随视口平滑至 2.5em，消除 900px 突变（见 docs/ui-analysis.md §10.2） */
   font-weight: 700;
   line-height: 1.2;
   margin: 0 0 0.3em -0.5em; /* 负边距：标题顶左对齐（olivierlacan 细节） */
+  overflow-wrap: break-word; /* 超长英文单词/URL 不溢出容器 */
 }
 
 .year-group {
@@ -263,10 +266,11 @@ a:hover {
 }
 
 .post-title {
-  font-size: 2.5em;
+  font-size: clamp(1.9em, calc(1.4em + 1.2vw), 2.5em); /* 同 .posts-title：流式无突变 */
   font-weight: 700;
   line-height: 1.25;
   margin: 0 0 0.3em -0.5em; /* 标题顶左对齐 */
+  overflow-wrap: break-word; /* 超长英文单词/URL 不溢出容器 */
 }
 
 .post-meta {
@@ -390,6 +394,31 @@ a:hover {
 .post-body img {
   max-width: 100%;
   height: auto;
+}
+
+/* 正文表格：极简边框 + 横向滚动（display:block 保留内部 table 布局，超宽时出现滚动条） */
+.post-body table {
+  display: block;
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border-collapse: collapse;
+  border-spacing: 0; /* display:block 后匿名 table box 可能回退 separate，兜底消除默认缝隙 */
+  margin: 1.2em 0;
+  font-size: 0.95em;
+  line-height: 1.6;
+}
+
+.post-body table th,
+.post-body table td {
+  border-bottom: 1px solid var(--divider);
+  padding: 0.5em 0.8em;
+  text-align: left;
+}
+
+.post-body table th {
+  font-weight: 700;
+  border-bottom: 2px solid var(--divider-strong); /* 表头边界加深，满足 WCAG 1.4.11 非文本对比 ≥3:1 */
 }
 
 .post-body hr {
@@ -607,7 +636,18 @@ html {
   padding-left: 2em;
 }
 
-/* 小屏/窄屏：TOC 移到文章顶部，折叠展开 */
+/* ============================================================
+   响应式断点体系（docs/ui-analysis.md §10）：
+   A ≥1201px    TOC 右侧 sticky 侧栏 + 顶部导航
+   B 901-1200px TOC 折叠文章顶部 + 顶部导航 + 44em 内容（92vw 约束）
+   C ≤900px     底部固定导航（拇指可达）+ TOC 折叠 + 正文 1.1em/1.8 + 回顶避让
+   D ≤767px     手机细分：触屏目标放大（theme-toggle 40px / TOC summary / code-copy）
+   E ≤480px     超小屏：首页表格日期列收缩、导航间距收紧
+   F 横屏矮屏   底部导航紧凑 + 回顶避让 + safe-area 左右
+   G 打印       隐藏 fixed / 黑白 / 代码块断页保护
+   ============================================================ */
+
+/* ============ 小屏/窄屏：TOC 移到文章顶部，折叠展开 ============ */
 @media only screen and (max-width: 1200px) {
   .post-layout {
     flex-direction: column;
@@ -758,11 +798,17 @@ html {
 
   .header nav ul li {
     margin-left: 0;
+    min-height: 44px; /* 触屏目标（WCAG 2.5.5）：底部导航项 ≥44px 高 */
+    display: flex;
+    align-items: center;
   }
 
-  .posts-title,
-  .post-title {
-    font-size: 1.9em; /* 中文适配：汉字信息密度高，移动端不放大到 3.5em（见 docs/ui-analysis.md 差异决策） */
+  .header nav ul li a,
+  .header nav ul li button {
+    display: flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0 0.6em;
   }
 
   .post-body,
@@ -773,5 +819,237 @@ html {
 
   .posts-table td {
     font-size: 1.05em;
+  }
+}
+
+/* ============ D 档（触屏设备 pointer: coarse）：触屏目标放大（WCAG 2.5.5） ============ */
+@media (pointer: coarse) {
+  /* 主题切换按钮：触屏目标 ≥40×40px */
+  .theme-toggle {
+    min-width: 40px;
+    min-height: 40px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* 代码复制按钮：触屏目标 ≥32px */
+  .code-copy {
+    min-height: 32px;
+    padding: 0.3em 0.8em;
+  }
+
+  /* 回到顶部：触屏目标 44px */
+  .back-to-top {
+    width: 44px;
+    height: 44px;
+    font-size: 1.2em;
+  }
+
+  /* 年份 ¶ 锚点：行内可聚焦目标补足 24px 高度（WCAG 2.5.5 AA） */
+  .year-group h2 a {
+    display: inline-block;
+    min-height: 24px;
+  }
+}
+
+/* TOC 折叠头：全宽触屏区（折叠态 ≤1200px；扁平合并防旧浏览器不识别嵌套媒体） */
+@media (pointer: coarse) and (max-width: 1200px) {
+  .toc summary {
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    padding: 0.5em 0;
+  }
+}
+
+/* ============ E 档（≤480px 超小屏）：表格与导航收紧，防 320px 溢出 ============ */
+@media only screen and (max-width: 480px) {
+  /* 容器最小左右边距 0.8em（对齐 docs/ui-analysis.md §10.1 E 档承诺） */
+  .site {
+    padding: 0 0.8em;
+  }
+
+  /* 首页文章表：整体缩小 + 日期列进一步收缩 + 标题列允许折行 */
+  .posts-table td {
+    font-size: 0.95em;
+  }
+
+  .posts-table td:last-child {
+    font-size: 0.9em;
+  }
+
+  .posts-table td:first-child a {
+    word-break: break-word;
+  }
+
+  /* 底部导航：4 项（文章/关于/语言/主题）在 320px 不挤 */
+  .header nav {
+    font-size: 1em;
+  }
+
+  .header nav ul {
+    padding: 0.4em 0;
+  }
+
+  .header nav ul li a,
+  .header nav ul li button {
+    padding: 0 0.3em;
+  }
+}
+
+/* ============ F 档（横屏矮屏：landscape + 矮视口，导航紧凑化） ============ */
+@media (max-height: 500px) and (orientation: landscape) {
+  .site {
+    margin: 1em auto 5em;
+  }
+}
+
+/* 底部导航紧凑化 + 回顶避让（仅存在底部导航的视口 ≤900px；扁平合并防旧浏览器不识别嵌套媒体） */
+@media (max-height: 500px) and (orientation: landscape) and (max-width: 900px) {
+  .header nav {
+    font-size: 0.95em;
+    padding-left: env(safe-area-inset-left); /* iPhone 横屏 home indicator 在左右 */
+    padding-right: env(safe-area-inset-right);
+  }
+
+  .header nav ul {
+    padding: 0.3em 0;
+  }
+
+  /* 横屏矮屏：触屏目标收紧至 36px（WCAG AA 达标），导航总高约 48px */
+  .header nav ul li,
+  .header nav ul li a,
+  .header nav ul li button {
+    min-height: 36px;
+  }
+
+  /* 回顶避让：导航变矮后不浪费 4.6em */
+  .back-to-top {
+    bottom: 3.2em;
+  }
+}
+
+/* ============ G 档（打印）：黑白、无 fixed、代码可读 ============ */
+@media print {
+  @page {
+    margin: 2cm;
+  }
+
+  /* 暗色主题下打印：强制 light color-scheme（原生控件/滚动条走白底） */
+  html {
+    color-scheme: light;
+  }
+
+  body {
+    background: #fff !important;
+    color: #000 !important;
+    font-size: 12pt;
+    transition: none;
+  }
+
+  /* 隐藏界面元素：底部导航 / 进度条 / 回顶 / TOC 侧栏 / 代码操作头 */
+  .header nav,
+  .reading-progress,
+  .back-to-top,
+  .toc-wrap,
+  .post-body pre .code-actions {
+    display: none !important;
+  }
+
+  /* 容器不约束宽度 */
+  .site {
+    width: 100%;
+    max-width: none;
+    margin: 0;
+  }
+
+  .post-body,
+  .about-body {
+    font-size: 11pt;
+    line-height: 1.6;
+  }
+
+  /* 链接：保留下划线（不打印 URL，极简哲学） */
+  a {
+    color: #000;
+    border-bottom-color: #000;
+  }
+
+  /* 分隔线/表头线全部纯黑（暗色 --divider 在白纸上会消失） */
+  .header,
+  .year-group h2,
+  hr,
+  .post-body table th,
+  .post-body table td {
+    border-color: #000 !important;
+  }
+
+  /* 代码/表格去底色 */
+  .post-body pre,
+  .post-body code,
+  .post-body blockquote,
+  .post-body table {
+    background: #fff !important;
+    color: #000 !important;
+  }
+
+  /* Shiki token 颜色重置纯黑：暗色下浅色 token（#a5d6ff 等）印白底不可读 */
+  .post-body pre {
+    --astro-code-foreground: #000;
+    --astro-code-background: #fff;
+    --astro-code-token-comment: #000;
+    --astro-code-token-keyword: #000;
+    --astro-code-token-string: #000;
+    --astro-code-token-string-expression: #000;
+    --astro-code-token-function: #000;
+    --astro-code-token-number: #000;
+    --astro-code-token-constant: #000;
+    --astro-code-token-operator: #000;
+    --astro-code-token-punctuation: #000;
+    --astro-code-token-tag: #000;
+    --astro-code-token-attr-name: #000;
+    --astro-code-token-attr-value: #000;
+    --astro-code-token-variable: #000;
+    --astro-code-token-property: #000;
+    --astro-code-token-type: #000;
+    --astro-code-token-regexp: #000;
+    --astro-code-token-inserted: #000;
+    --astro-code-token-deleted: #000;
+    --astro-code-token-markup-heading: #000;
+    --astro-code-token-markup-bold: #000;
+    --astro-code-token-meta: #000;
+  }
+
+  /* 代码块：整块不跨页 + 长行打印折行；操作头隐藏后还原顶部 padding */
+  .post-body pre {
+    white-space: pre-wrap;
+    word-break: break-word;
+    break-inside: avoid;
+    padding-top: 1em;
+  }
+
+  .post-body pre code {
+    font-size: 9pt;
+  }
+
+  /* 正文表格：恢复 table 布局 + 全宽，避免 display:block 在分页媒体裁剪列 */
+  .post-body table {
+    display: table;
+    width: 100%;
+    overflow: visible;
+  }
+
+  .post-body table th,
+  .post-body table td {
+    break-inside: avoid;
+  }
+
+  /* 避免图片/标题跨页 */
+  .post-body img,
+  .post-body h2,
+  .post-body h3 {
+    break-inside: avoid;
   }
 }
