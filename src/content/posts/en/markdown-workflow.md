@@ -1,6 +1,6 @@
----
+﻿---
 title: The Joy of a Markdown-Powered Blog
-date: 2026-08-11
+date: '2026-08-11'
 description: Static blog workflow — write MD locally, push, auto-deploy. Everything is a file.
 tags: [Static Blog, Workflow]
 ---

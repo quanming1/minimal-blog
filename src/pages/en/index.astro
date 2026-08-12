@@ -2,10 +2,10 @@
 import Base from '../../layouts/Base.astro'
 import PostList from '../../components/PostList.astro'
 import { getCollection } from 'astro:content'
-import { langOfId } from '../../lib/utils'
+import { langOfId, parseDateString } from '../../lib/utils'
 
 const posts = (await getCollection('posts', ({ id }) => langOfId(id) === 'en'))
-  .map((p) => ({ id: p.id, title: p.data.title, date: p.data.date }))
+  .map((p) => ({ id: p.id, title: p.data.title, date: parseDateString(p.data.date) }))
   .sort((a, b) => b.date.valueOf() - a.date.valueOf())
 ---
 

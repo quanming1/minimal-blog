@@ -15,8 +15,8 @@ const posts = defineCollection({
   schema: z.object({
     /** 文章标题（列表与详情页展示） */
     title: z.string(),
-    /** 初写日期：YYYY-MM-DD（列表按年份分组、详情页展示） */
-    date: z.coerce.date(),
+    /** 初写日期：YYYY-MM-DD（schema 保持字符串，页面/工具用 parseDateString 转本地时区日期） */
+    date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'date must be YYYY-MM-DD'),
     /** 摘要：列表页可展示，建议 1-2 句 */
     description: z.string().optional(),
     /** 标签（可选，详情页展示） */

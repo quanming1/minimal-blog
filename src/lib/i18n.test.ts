@@ -20,9 +20,9 @@ describe('i18n 字典', () => {
   })
 
   it('所有 key 双语言均有值', () => {
-    const keys = ['siteName', 'tagline', 'navHome', 'navPosts', 'navAbout', 'switchLang',
-      'postsTitle', 'aboutTitle', 'firstWritten', 'minRead', 'allPosts', 'backHome',
-      'footerNote', 'emailLabel'] as const
+    const keys = ['siteName', 'tagline', 'navPosts', 'navAbout', 'switchLang',
+      'postsTitle', 'aboutTitle', 'firstWritten', 'minRead', 'backHome',
+      'footerNote', 'navAria'] as const
     for (const k of keys) {
       expect(t('zh', k).length).toBeGreaterThan(0)
       expect(t('en', k).length).toBeGreaterThan(0)

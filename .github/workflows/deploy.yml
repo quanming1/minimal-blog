@@ -19,9 +19,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      # bun 版本自动读取 package.json 的 packageManager 字段
       - uses: oven-sh/setup-bun@v2
-        with:
-          bun-version: 1.3.14
       - run: bun install --frozen-lockfile
       - run: bun run lint
       - run: bun run test
@@ -32,10 +31,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: oven-sh/setup-bun@v2
-        with:
-          bun-version: 1.3.14
       - run: bun install --frozen-lockfile
       - run: bun run build
+      # 构建冒烟：页面数、关键目录、base 前缀（防内容丢失型静默故障）
+      - name: Smoke test build output
+        run: |
+          test -f dist/index.html
+          test -d dist/en
+          test -d dist/posts
+          test "$(find dist -name 'index.html' | wc -l)" -ge 9
+          grep -q '/minimal-blog/' dist/index.html
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist

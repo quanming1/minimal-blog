@@ -17,6 +17,7 @@
     "test:coverage": "bun test --coverage --parallel=1"
   },
   "dependencies": {
+    "@fontsource/lato": "^5.3.0",
     "astro": "^7.2.1"
   },
   "devDependencies": {

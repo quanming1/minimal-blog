@@ -1,7 +1,11 @@
 ---
+import '@fontsource/lato/300.css'
+import '@fontsource/lato/400.css'
+import '@fontsource/lato/700.css'
+import '@fontsource/lato/900.css'
 import '../styles/global.css'
-import { t, type I18nKey } from '../lib/i18n'
-import type { Lang } from '../lib/utils'
+import { t } from '../lib/i18n'
+import { switchHref, type Lang } from '../lib/utils'
 
 interface Props {
   lang: Lang
@@ -11,6 +15,8 @@ interface Props {
   description?: string
   /** 自定义页面标题（覆盖默认 站点名 - 页名） */
   pageTitle?: string
+  /** 当前页面是否有对应语言版本（无翻译时语言切换指向首页，避免 404） */
+  hasTranslation?: boolean
 }
 
 const { lang, path, description } = Astro.props
@@ -22,30 +28,35 @@ const href = (p: string) => `${base}${p.replace(/^\//, '')}`
 const siteTitle = t(lang, 'siteName')
 const pageTitle = Astro.props.pageTitle ?? siteTitle
 
-/** 语言切换目标：en 前缀 + 当前路径 */
-const switchTarget = lang === 'zh' ? href(`en${path}`) : href(path.replace(/^en/, ''))
+/** 语言切换目标：默认切换当前路径，无翻译时切到目标语言首页 */
+const switchTarget = switchHref(base, lang, path, Astro.props.hasTranslation ?? true)
 
 // 导航：文章（首页）、关于
-const navLinks: { key: I18nKey; url: string }[] = [
+const navLinks: { key: 'navPosts' | 'navAbout'; url: string }[] = [
   { key: 'navPosts', url: lang === 'zh' ? href('') : href('en/') },
   { key: 'navAbout', url: lang === 'zh' ? href('about/') : href('en/about/') },
 ]
+const isHome = path === '/'
+const isAbout = path === '/about/'
 ---
 
 <!doctype html>
 <html lang={lang === 'zh' ? 'zh-CN' : 'en'} data-theme="light">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="generator" content={Astro.generator} />
     <title>{pageTitle}</title>
     <meta name="description" content={description ?? siteTitle} />
     <link rel="icon" type="image/svg+xml" href={`${base}favicon.svg`} />
     <script is:inline>
-      // 首帧主题：localStorage 优先，否则跟随系统；默认亮色
+      // 首帧主题：仅 localStorage 显式 'dark' 时用暗色；默认亮色（防闪烁脚本先于渲染）
       ;(function () {
-        var t = localStorage.getItem('mb-theme')
-        if (t === 'dark' || (t !== 'light' && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        var t = null
+        try {
+          t = localStorage.getItem('mb-theme')
+        } catch (e) {}
+        if (t === 'dark') {
           document.documentElement.dataset.theme = 'dark'
         }
       })()
@@ -57,10 +68,17 @@ const navLinks: { key: I18nKey; url: string }[] = [
         <h1 class="site-title">
           <a href={lang === 'zh' ? href('') : href('en/')}>{siteTitle}</a>
         </h1>
-        <nav aria-label="primary">
+        <nav aria-label={t(lang, 'navAria')}>
           <ul>
             {navLinks.map((l) => (
-              <li><a href={l.url}>{t(lang, l.key)}</a></li>
+              <li>
+                <a
+                  href={l.url}
+                  aria-current={(l.key === 'navPosts' && isHome) || (l.key === 'navAbout' && isAbout) ? 'page' : undefined}
+                >
+                  {t(lang, l.key)}
+                </a>
+              </li>
             ))}
             <li class="lang-switch">
               <a href={switchTarget} title={t(lang, 'switchLang')}>{t(lang, 'switchLang')}</a>
@@ -97,7 +115,9 @@ const navLinks: { key: I18nKey; url: string }[] = [
         var icon = btn && btn.querySelector('.theme-icon')
         function apply(dark) {
           document.documentElement.dataset.theme = dark ? 'dark' : 'light'
-          try { localStorage.setItem('mb-theme', dark ? 'dark' : 'light') } catch (e) {}
+          try {
+            localStorage.setItem('mb-theme', dark ? 'dark' : 'light')
+          } catch (e) {}
           if (icon) icon.textContent = dark ? '☀️' : '🌙'
         }
         if (btn) {

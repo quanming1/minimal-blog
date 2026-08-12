@@ -4,9 +4,27 @@ import {
   formatMonthDay,
   groupByYear,
   langOfId,
+  parseDateString,
+  postHref,
   readingMinutes,
   slugOfId,
+  switchHref,
 } from './utils'
+
+describe('parseDateString', () => {
+  it('按本地时区解析 YYYY-MM-DD（避免 UTC 偏移）', () => {
+    const d = parseDateString('2026-08-12')
+    expect(d.getFullYear()).toBe(2026)
+    expect(d.getMonth()).toBe(7)
+    expect(d.getDate()).toBe(12)
+  })
+
+  it('跨年 1 月 1 日归属正确', () => {
+    const d = parseDateString('2026-01-01')
+    expect(d.getFullYear()).toBe(2026)
+    expect(d.getMonth()).toBe(0)
+  })
+})
 
 describe('formatMonthDay', () => {
   it('中文：8月12日（数字月日）', () => {
@@ -19,6 +37,11 @@ describe('formatMonthDay', () => {
 
   it('英文：January 5', () => {
     expect(formatMonthDay(new Date(2026, 0, 5), 'en')).toBe('January 5')
+  })
+
+  it('中文：12月31日 与 1月1日', () => {
+    expect(formatMonthDay(new Date(2026, 11, 31), 'zh')).toBe('12月31日')
+    expect(formatMonthDay(new Date(2026, 0, 1), 'zh')).toBe('1月1日')
   })
 })
 
@@ -51,7 +74,7 @@ describe('groupByYear', () => {
 })
 
 describe('langOfId / slugOfId', () => {
-  it('zh 前缀识别', () => {
+  it('zh/en 前缀识别', () => {
     expect(langOfId('zh/hello')).toBe('zh')
     expect(langOfId('en/hello')).toBe('en')
   })
@@ -62,15 +85,66 @@ describe('langOfId / slugOfId', () => {
   })
 })
 
+describe('postHref', () => {
+  it('zh 无语言前缀', () => {
+    expect(postHref('/minimal-blog/', 'zh', 'zh/hello-mingzhi')).toBe(
+      '/minimal-blog/posts/hello-mingzhi/',
+    )
+  })
+
+  it('en 带语言前缀', () => {
+    expect(postHref('/minimal-blog/', 'en', 'en/hello-mingzhi')).toBe(
+      '/minimal-blog/en/posts/hello-mingzhi/',
+    )
+  })
+})
+
+describe('switchHref', () => {
+  it('zh → en 切换当前路径', () => {
+    expect(switchHref('/minimal-blog/', 'zh', '/posts/hello/')).toBe(
+      '/minimal-blog/en/posts/hello/',
+    )
+  })
+
+  it('en → zh 去掉语言前缀', () => {
+    expect(switchHref('/minimal-blog/', 'en', '/posts/hello/')).toBe(
+      '/minimal-blog/posts/hello/',
+    )
+  })
+
+  it('首页切换', () => {
+    expect(switchHref('/minimal-blog/', 'zh', '/')).toBe('/minimal-blog/en/')
+    expect(switchHref('/minimal-blog/', 'en', '/')).toBe('/minimal-blog/')
+  })
+
+  it('无翻译时切到目标语言首页（防 404）', () => {
+    expect(switchHref('/minimal-blog/', 'zh', '/posts/only-zh/', false)).toBe(
+      '/minimal-blog/en/',
+    )
+    expect(switchHref('/minimal-blog/', 'en', '/posts/only-en/', false)).toBe(
+      '/minimal-blog/',
+    )
+  })
+})
+
 describe('readingMinutes', () => {
   it('中文按 400 字/分估算', () => {
-    const zhText = '字'.repeat(800)
-    expect(readingMinutes(zhText, 'zh')).toBe(2)
+    expect(readingMinutes('字'.repeat(800), 'zh')).toBe(2)
+  })
+
+  it('中文舍入边界：599 字 → 1 分，600 字 → 2 分', () => {
+    expect(readingMinutes('字'.repeat(599), 'zh')).toBe(1)
+    expect(readingMinutes('字'.repeat(600), 'zh')).toBe(2)
   })
 
   it('英文按 180 wpm 估算', () => {
     const enText = Array.from({ length: 180 }, () => 'word').join(' ')
     expect(readingMinutes(enText, 'en')).toBe(1)
+  })
+
+  it('英文舍入边界：270 词 → 2 分', () => {
+    const enText = Array.from({ length: 270 }, () => 'word').join(' ')
+    expect(readingMinutes(enText, 'en')).toBe(2)
   })
 
   it('至少 1 分钟', () => {

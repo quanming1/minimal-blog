@@ -1,6 +1,6 @@
----
+﻿---
 title: Hello, Mingzhi
-date: 2026-08-12
+date: '2026-08-12'
 description: Why this blog is called Mingzhi, and what it intends to write about.
 tags: [About, First Post]
 ---

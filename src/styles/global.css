@@ -7,13 +7,12 @@
 :root {
   --bg: #ffffff;
   --text: #333333;
-  --muted: #777777;
-  --accent: #3c5011;                 /* 橄榄绿 */
+  --muted: #6b6b6b;                /* ≥4.5:1 对比度（WCAG AA） */
+  --accent: #3c5011;               /* 橄榄绿 */
   --accent-line: rgba(60, 80, 17, 0.46);
   --divider: rgba(0, 0, 0, 0.3);
   --code-bg: #f4f4f4;
   --code-text: #24292f;
-  --table-hover: rgba(0, 0, 0, 0.03);
 }
 
 :root[data-theme='dark'] {
@@ -25,7 +24,6 @@
   --divider: rgba(230, 237, 243, 0.25);
   --code-bg: #161b22;
   --code-text: #e6edf3;
-  --table-hover: rgba(255, 255, 255, 0.04);
 }
 
 * {
@@ -99,10 +97,6 @@ a:hover {
   border-bottom: none;
 }
 
-html[data-theme='dark'] .site-title a:hover::after {
-  color: var(--muted);
-}
-
 .header nav {
   float: right;
   font-size: 1.1em;
@@ -166,7 +160,7 @@ html[data-theme='dark'] .site-title a:hover::after {
   font-size: 1.7em;
   font-weight: 700;
   line-height: 1.2;
-  margin: 0;
+  margin: 0 0 0 -0.5em; /* 标题顶左对齐，与 .posts-title 一致 */
 }
 
 .year-group h2 a {
@@ -210,9 +204,8 @@ html[data-theme='dark'] .site-title a:hover::after {
   font-size: 1em;
 }
 
-.posts-table tr:hover td:first-child {
-  text-decoration: underline;
-  text-decoration-color: var(--accent-line);
+.posts-table tr:hover td:first-child a {
+  color: var(--accent);
 }
 
 /* ============ 文章详情页 ============ */
@@ -224,7 +217,7 @@ html[data-theme='dark'] .site-title a:hover::after {
   font-size: 2.5em;
   font-weight: 700;
   line-height: 1.25;
-  margin: 0 0 0.3em;
+  margin: 0 0 0.3em -0.5em; /* 标题顶左对齐 */
 }
 
 .post-meta {
@@ -271,7 +264,7 @@ html[data-theme='dark'] .site-title a:hover::after {
 .post-body blockquote {
   margin: 1.2em 2.2em;
   padding-left: 0.4em;
-  color: var(--muted);
+  color: var(--text);
 }
 
 .post-body blockquote p {
@@ -342,6 +335,16 @@ html[data-theme='dark'] .site-title a:hover::after {
   margin: 1em 0;
 }
 
+.about-body ul,
+.about-body ol {
+  margin: 1em 0;
+  padding-left: 1.6em;
+}
+
+.about-body li {
+  margin: 0.35em 0;
+}
+
 /* ============ 页脚 ============ */
 .footer {
   margin-top: 3.5em;
@@ -366,8 +369,8 @@ html[data-theme='dark'] .site-title a:hover::after {
   color: var(--accent);
 }
 
-/* ============ 响应式：移动端底部导航 ============ */
-@media only screen and (max-width: 640px) {
+/* ============ 响应式：移动端/平板底部导航（olivierlacan 风格，≤900px 生效） ============ */
+@media only screen and (max-width: 900px) {
   .site {
     margin: 1.2em auto 6em;
     max-width: 94vw;
@@ -393,6 +396,7 @@ html[data-theme='dark'] .site-title a:hover::after {
     z-index: 10;
     font-size: 1.05em;
     line-height: 1;
+    padding-bottom: env(safe-area-inset-bottom); /* iPhone 底部指示条避让 */
   }
 
   .header nav ul {
@@ -408,7 +412,7 @@ html[data-theme='dark'] .site-title a:hover::after {
 
   .posts-title,
   .post-title {
-    font-size: 1.9em;
+    font-size: 1.9em; /* 中文适配：汉字信息密度高，移动端不放大到 3.5em（见 docs/ui-analysis.md 差异决策） */
   }
 
   .post-body,
