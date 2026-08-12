@@ -1,0 +1,113 @@
+---
+import '../styles/global.css'
+import { t, type I18nKey } from '../lib/i18n'
+import type { Lang } from '../lib/utils'
+
+interface Props {
+  lang: Lang
+  /** 当前路径（不含语言前缀与 base），如 '/posts/hello-mingzhi/'、'/about/'、'/' */
+  path: string
+  title?: string
+  description?: string
+  /** 自定义页面标题（覆盖默认 站点名 - 页名） */
+  pageTitle?: string
+}
+
+const { lang, path, description } = Astro.props
+
+// base 如 '/minimal-blog/'（尾部带斜杠）
+const base = import.meta.env.BASE_URL
+const href = (p: string) => `${base}${p.replace(/^\//, '')}`
+
+const siteTitle = t(lang, 'siteName')
+const pageTitle = Astro.props.pageTitle ?? siteTitle
+
+/** 语言切换目标：en 前缀 + 当前路径 */
+const switchTarget = lang === 'zh' ? href(`en${path}`) : href(path.replace(/^en/, ''))
+
+// 导航：文章（首页）、关于
+const navLinks: { key: I18nKey; url: string }[] = [
+  { key: 'navPosts', url: lang === 'zh' ? href('') : href('en/') },
+  { key: 'navAbout', url: lang === 'zh' ? href('about/') : href('en/about/') },
+]
+---
+
+<!doctype html>
+<html lang={lang === 'zh' ? 'zh-CN' : 'en'} data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{pageTitle}</title>
+    <meta name="description" content={description ?? siteTitle} />
+    <link rel="icon" type="image/svg+xml" href={`${base}favicon.svg`} />
+    <script is:inline>
+      // 首帧主题：localStorage 优先，否则跟随系统；默认亮色
+      ;(function () {
+        var t = localStorage.getItem('mb-theme')
+        if (t === 'dark' || (t !== 'light' && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+          document.documentElement.dataset.theme = 'dark'
+        }
+      })()
+    </script>
+  </head>
+  <body>
+    <div class="site">
+      <header class="header">
+        <h1 class="site-title">
+          <a href={lang === 'zh' ? href('') : href('en/')}>{siteTitle}</a>
+        </h1>
+        <nav aria-label="primary">
+          <ul>
+            {navLinks.map((l) => (
+              <li><a href={l.url}>{t(lang, l.key)}</a></li>
+            ))}
+            <li class="lang-switch">
+              <a href={switchTarget} title={t(lang, 'switchLang')}>{t(lang, 'switchLang')}</a>
+            </li>
+            <li>
+              <button type="button" class="theme-toggle" id="theme-toggle" aria-label="切换主题 / toggle theme">
+                <span class="theme-icon">🌙</span>
+              </button>
+            </li>
+          </ul>
+        </nav>
+      </header>
+
+      <main class="content">
+        <slot />
+      </main>
+
+      <footer class="footer">
+        <p>{t(lang, 'footerNote')}</p>
+        <p class="footer-meta">
+          {lang === 'zh' ? (
+            <>© 2026 蒋全明 · <a href={`mailto:quanming1@gmail.com`}>邮箱</a></>
+          ) : (
+            <>© 2026 Quanming Jiang · <a href={`mailto:quanming1@gmail.com`}>Email</a></>
+          )}
+        </p>
+      </footer>
+    </div>
+
+    <script is:inline>
+      // 主题切换（亮/暗 + localStorage 记忆）
+      ;(function () {
+        var btn = document.getElementById('theme-toggle')
+        var icon = btn && btn.querySelector('.theme-icon')
+        function apply(dark) {
+          document.documentElement.dataset.theme = dark ? 'dark' : 'light'
+          try { localStorage.setItem('mb-theme', dark ? 'dark' : 'light') } catch (e) {}
+          if (icon) icon.textContent = dark ? '☀️' : '🌙'
+        }
+        if (btn) {
+          var isDark = (document.documentElement.dataset.theme || 'light') === 'dark'
+          if (icon) icon.textContent = isDark ? '☀️' : '🌙'
+          btn.addEventListener('click', function () {
+            apply((document.documentElement.dataset.theme || 'light') !== 'dark')
+          })
+        }
+      })()
+    </script>
+  </body>
+</html>

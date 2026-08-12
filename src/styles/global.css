@@ -1,0 +1,423 @@
+/* ============================================================
+   明志 · minimal-blog
+   设计来源：docs/ui-analysis.md（olivierlacan.com 风格分析）
+   要点：44em 单栏 / 细字重正文 / 粗标题 / 橄榄绿链接下划线 / 零装饰
+   ============================================================ */
+
+:root {
+  --bg: #ffffff;
+  --text: #333333;
+  --muted: #777777;
+  --accent: #3c5011;                 /* 橄榄绿 */
+  --accent-line: rgba(60, 80, 17, 0.46);
+  --divider: rgba(0, 0, 0, 0.3);
+  --code-bg: #f4f4f4;
+  --code-text: #24292f;
+  --table-hover: rgba(0, 0, 0, 0.03);
+}
+
+:root[data-theme='dark'] {
+  --bg: #0d1117;
+  --text: #e6edf3;
+  --muted: #8b949e;
+  --accent: #a3c26b;                 /* 暗色下提亮的橄榄绿 */
+  --accent-line: rgba(163, 194, 107, 0.4);
+  --divider: rgba(230, 237, 243, 0.25);
+  --code-bg: #161b22;
+  --code-text: #e6edf3;
+  --table-hover: rgba(255, 255, 255, 0.04);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  color-scheme: light;
+}
+html[data-theme='dark'] {
+  color-scheme: dark;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: Lato, 'Noto Serif SC', 'Songti SC', 'STSong', SimSun, Georgia, serif;
+  font-size: 115%;
+  line-height: 1.5;
+  text-align: center;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+  border-bottom: 1px solid var(--accent-line);
+}
+
+a:hover {
+  border-bottom-color: var(--accent);
+}
+
+/* ============ 容器：44em 单栏居中 ============ */
+.site {
+  width: 44em;
+  max-width: 92vw;
+  margin: 3em auto 2em;
+  font-weight: 400;
+  text-align: left;
+  line-height: 1.6;
+}
+
+/* ============ Header：品牌 + 导航同行 ============ */
+.header {
+  border-bottom: 1px solid var(--divider);
+  padding-bottom: 0.5em;
+  margin-bottom: 2.2em;
+}
+
+.site-title {
+  display: inline-block;
+  margin: 0;
+}
+
+.site-title a {
+  font-size: 1.7em;
+  font-style: italic;
+  font-weight: 400;
+  border-bottom-width: 0;
+  color: var(--text);
+}
+
+.site-title a:hover::after {
+  content: ' ← 回首页';
+  font-size: 0.6em;
+  font-style: normal;
+  color: var(--muted);
+  border-bottom: none;
+}
+
+html[data-theme='dark'] .site-title a:hover::after {
+  color: var(--muted);
+}
+
+.header nav {
+  float: right;
+  font-size: 1.1em;
+  line-height: 2.6;
+}
+
+.header nav ul {
+  list-style: none;
+  text-align: right;
+}
+
+.header nav ul li {
+  display: inline-block;
+  margin-left: 0.8em;
+}
+
+.header nav a {
+  color: var(--muted);
+  border-bottom-width: 0;
+}
+
+.header nav a:hover {
+  color: var(--accent);
+}
+
+.header nav .lang-switch a {
+  border-bottom: 1px solid var(--accent-line);
+  color: var(--accent);
+  padding-bottom: 1px;
+}
+
+/* 主题切换按钮 */
+.theme-toggle {
+  background: none;
+  border: 1px solid var(--divider);
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.95em;
+  line-height: 1;
+  padding: 3px 7px;
+  vertical-align: middle;
+}
+
+.theme-toggle:hover {
+  border-color: var(--accent);
+}
+
+/* ============ 首页：文章列表（年份分组 + 极简表格） ============ */
+.posts-title {
+  font-size: 2.5em;
+  font-weight: 700;
+  line-height: 1.2;
+  margin: 0 0 0.3em -0.5em; /* 负边距：标题顶左对齐（olivierlacan 细节） */
+}
+
+.year-group {
+  margin-bottom: 1.6em;
+}
+
+.year-group h2 {
+  font-size: 1.7em;
+  font-weight: 700;
+  line-height: 1.2;
+  margin: 0;
+}
+
+.year-group h2 a {
+  border-bottom: none;
+  color: var(--muted);
+  font-size: 0.6em;
+  margin-left: 0.4em;
+  font-weight: 400;
+}
+
+.year-group h2 a:hover {
+  color: var(--accent);
+}
+
+.posts-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 0.4em;
+}
+
+.posts-table td {
+  font-size: 1.15em;
+  line-height: 1.5;
+  padding: 0.35em 0;
+  text-align: left;
+}
+
+.posts-table td:first-child a {
+  font-weight: 400;
+  color: var(--accent);
+}
+
+.posts-table td:first-child a:hover {
+  border-bottom-color: var(--accent);
+}
+
+.posts-table td:last-child {
+  text-align: right;
+  color: var(--muted);
+  white-space: nowrap;
+  font-size: 1em;
+}
+
+.posts-table tr:hover td:first-child {
+  text-decoration: underline;
+  text-decoration-color: var(--accent-line);
+}
+
+/* ============ 文章详情页 ============ */
+.post-header {
+  margin-bottom: 1.6em;
+}
+
+.post-title {
+  font-size: 2.5em;
+  font-weight: 700;
+  line-height: 1.25;
+  margin: 0 0 0.3em;
+}
+
+.post-meta {
+  color: var(--muted);
+  font-size: 0.95em;
+}
+
+.post-meta .min-read {
+  margin-left: 0.8em;
+}
+
+.post-body {
+  font-size: 1.2em;   /* ≈ 22px */
+  line-height: 1.75;
+}
+
+.post-body p {
+  margin: 1em 0;
+}
+
+.post-body h2 {
+  font-size: 1.6em;
+  font-weight: 700;
+  margin: 1.6em 0 0.5em;
+  line-height: 1.3;
+}
+
+.post-body h3 {
+  font-size: 1.3em;
+  font-weight: 700;
+  margin: 1.4em 0 0.4em;
+}
+
+.post-body ul,
+.post-body ol {
+  margin: 1em 0;
+  padding-left: 1.6em;
+}
+
+.post-body li {
+  margin: 0.35em 0;
+}
+
+.post-body blockquote {
+  margin: 1.2em 2.2em;
+  padding-left: 0.4em;
+  color: var(--muted);
+}
+
+.post-body blockquote p {
+  margin: 0.6em 0;
+}
+
+.post-body code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.85em;
+  background: var(--code-bg);
+  color: var(--code-text);
+  padding: 0.15em 0.4em;
+  border-radius: 3px;
+}
+
+.post-body pre {
+  background: var(--code-bg);
+  color: var(--code-text);
+  border-radius: 6px;
+  padding: 1em 1.2em;
+  overflow-x: auto;
+  margin: 1.2em 0;
+  line-height: 1.6;
+}
+
+.post-body pre code {
+  background: none;
+  padding: 0;
+  font-size: 0.88em;
+}
+
+.post-body img {
+  max-width: 100%;
+  height: auto;
+}
+
+.post-body hr {
+  border: none;
+  border-top: 1px solid var(--divider);
+  margin: 2em 0;
+}
+
+.post-back {
+  display: inline-block;
+  margin-top: 2.5em;
+  font-size: 0.95em;
+}
+
+.post-tags {
+  margin-top: 2em;
+  font-size: 0.9em;
+  color: var(--muted);
+}
+
+.post-tags .tag {
+  color: var(--accent);
+  margin-right: 0.6em;
+  border-bottom: 1px solid var(--accent-line);
+}
+
+/* ============ 关于页 ============ */
+.about-body {
+  font-size: 1.2em;
+  line-height: 1.75;
+}
+
+.about-body p {
+  margin: 1em 0;
+}
+
+/* ============ 页脚 ============ */
+.footer {
+  margin-top: 3.5em;
+  padding-top: 1.2em;
+  border-top: 1px solid var(--divider);
+  text-align: center;
+  font-size: 0.92em;
+  color: var(--muted);
+}
+
+.footer-meta {
+  margin-top: 0.4em;
+  font-size: 0.92em;
+}
+
+.footer a {
+  color: var(--muted);
+  border-bottom-color: var(--divider);
+}
+
+.footer a:hover {
+  color: var(--accent);
+}
+
+/* ============ 响应式：移动端底部导航 ============ */
+@media only screen and (max-width: 640px) {
+  .site {
+    margin: 1.2em auto 6em;
+    max-width: 94vw;
+  }
+
+  .header {
+    margin-bottom: 1.6em;
+  }
+
+  .site-title {
+    display: block;
+    text-align: center;
+  }
+
+  .header nav {
+    float: none;
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--bg);
+    border-top: 1px solid var(--divider);
+    z-index: 10;
+    font-size: 1.05em;
+    line-height: 1;
+  }
+
+  .header nav ul {
+    display: flex;
+    justify-content: space-around;
+    text-align: center;
+    padding: 0.7em 0;
+  }
+
+  .header nav ul li {
+    margin-left: 0;
+  }
+
+  .posts-title,
+  .post-title {
+    font-size: 1.9em;
+  }
+
+  .post-body,
+  .about-body {
+    font-size: 1.1em;
+    line-height: 1.8;
+  }
+
+  .posts-table td {
+    font-size: 1.05em;
+  }
+}

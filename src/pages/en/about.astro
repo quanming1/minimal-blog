@@ -1,0 +1,22 @@
+---
+import Base from '../../layouts/Base.astro'
+import { t } from '../../lib/i18n'
+---
+
+<Base lang="en" path="/about/" description="About Mingzhi and the author" pageTitle={`${t('en', 'aboutTitle')} · ${t('en', 'siteName')}`}>
+  <article class="about-body">
+    <h1 class="posts-title">{t('en', 'aboutTitle')}</h1>
+    <p>Hi, I'm Quanming Jiang (GitHub: quanming1).</p>
+    <p>This blog is called "Mingzhi", from the line "without indifference there is no clear aspiration." I blog to sediment what I've figured out, and to write out what I haven't.</p>
+    <p>Three kinds of content:</p>
+    <ul>
+      <li>Technical notes: engineering practice, pitfalls, AI tools & workflow exploration</li>
+      <li>Reading & thinking: books, articles, and things beyond code</li>
+      <li>Occasional ramblings: not guaranteed useful, guaranteed honest</li>
+    </ul>
+    <p>This is a purely static site: Markdown authoring, GitHub hosting, no database, no tracking scripts.</p>
+    <p>
+      Reach me: <a href="mailto:quanming1@gmail.com">quanming1@gmail.com</a>
+    </p>
+  </article>
+</Base>
