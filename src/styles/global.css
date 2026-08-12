@@ -572,6 +572,7 @@ html {
 .post-article {
   flex: 1;
   min-width: 0;
+  max-width: 100%; /* column 折叠态下 align-items:flex-start 让子项取 max-content（Shiki 长行不换行）会撑出容器，限制宽度让 pre 内部滚动 */
 }
 
 .toc-wrap {
@@ -937,9 +938,9 @@ html {
     margin: 2cm;
   }
 
-  /* 暗色主题下打印：强制 light color-scheme（原生控件/滚动条走白底） */
+  /* 暗色主题下打印：强制 light color-scheme（原生控件/滚动条走白底）；!important 压过 :root[data-theme='dark'] 的特异性 */
   html {
-    color-scheme: light;
+    color-scheme: light !important;
   }
 
   body {

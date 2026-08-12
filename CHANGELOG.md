@@ -20,7 +20,8 @@
 - 底部导航 li/a 显式 `min-height: 44px` + flex 居中（总高由 ~47px 增至 ~72px，触屏目标代价，回顶/页脚间距已充足避让）
 
 ### 修复
-- 打印路径 3 项：暗色主题 Shiki token 浅色印白底不可读（Major）、`color-scheme` 未重置（Major）、`.has-actions` 顶部 2em 空白残留
+- 打印路径 3 项：暗色主题 Shiki token 浅色印白底不可读（Major）、`color-scheme` 未重置（Major，`!important` 压过 `:root[data-theme='dark']` 特异性）、`.has-actions` 顶部 2em 空白残留
+- **文章页移动端横向溢出（v1.1.0 遗留）**：`.post-layout` 折叠态 `align-items: flex-start` 使 `.post-article` 取内容 max-content 宽（Shiki 长行不换行撑出容器），补 `.post-article { max-width: 100% }` 让 pre 内部滚动
 - 文档-实现偏差对齐：§10.1 D 档（pointer: coarse 非 ≤767px）、§10.3 触屏表（TOC 44px/¶ 锚点）、§10.4（0.9em/--divider-strong）、§10.5（padding 0.3em + 36px）、§10.6（打印字号收缩 11-12pt）
 
 ## [1.1.0] - 2026-08-12
