@@ -33,13 +33,13 @@ jobs:
       - uses: oven-sh/setup-bun@v2
       - run: bun install --frozen-lockfile
       - run: bun run build
-      # 构建冒烟：页面数、关键目录、base 前缀（防内容丢失型静默故障）
+      # 构建冒烟：页面数（当前 10）、关键目录、base 前缀（防内容丢失型静默故障）
       - name: Smoke test build output
         run: |
           test -f dist/index.html
           test -d dist/en
           test -d dist/posts
-          test "$(find dist -name 'index.html' | wc -l)" -ge 9
+          test "$(find dist -name 'index.html' | wc -l)" -eq 10
           grep -q '/minimal-blog/' dist/index.html
       - uses: actions/upload-pages-artifact@v3
         with:

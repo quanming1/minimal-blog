@@ -8,7 +8,8 @@ export default defineConfig({
   trailingSlash: 'always',
   markdown: {
     shikiConfig: {
-      theme: 'github-light',
+      // css-variables：token 颜色走 CSS 变量（--astro-code-*），跟随手动亮暗主题
+      theme: 'css-variables',
     },
   },
 })
