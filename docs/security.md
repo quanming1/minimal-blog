@@ -25,8 +25,9 @@
 ## 3. 已加固项
 
 ### 3.1 客户端安全（src/layouts/Base.astro head）
-- **meta CSP**：`default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; frame-src 'none'; object-src 'none'; worker-src 'none'; base-uri 'self'; form-action 'self'`
+- **meta CSP**：`default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; connect-src 'self'; frame-src 'none'; object-src 'none'; worker-src 'none'; base-uri 'self'; form-action 'self'`
   - 纵深防御：即使内容被注入脚本，**无法**加载外部脚本（script-src 'self'）、**无法** iframe/object/Worker 副载（frame-src/object-src/worker-src 'none'）、**无法** XHR 数据外传（connect-src 'self'）、**无法**改 base URI / 提交表单到外部
+  - `font-src 'self' data:`：**data: 必需**——@fontsource/lato 被 Vite 构建为 data: URI 内联字体（线上实证 `font-src 'self'` 误伤 4 个字体加载）
   - `img-src 'self' data:` 已收紧（当前零外链图）；**引入外链图时按实际图床域加白名单**（如 `img-src 'self' data: https://img.example.com`），否则第三方图床可获访客 IP
   - `'unsafe-inline'` 必须保留：防闪烁脚本（首帧执行）+ Astro 内联小脚本（SearchDialog/VT）+ VT 内联 style（astro-xxxx 构建期随机）+ Shiki token 内联 style 属性
   - GitHub Pages 无法自定义 HTTP 头 → 用 `<meta http-equiv>`（浏览器支持除 frame-ancestors 外主要指令；Safari 15.4+ 支持 base-uri/form-action）

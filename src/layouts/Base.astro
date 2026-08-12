@@ -53,12 +53,13 @@ const isAbout = path === '/about/'
     <meta name="description" content={description ?? siteTitle} />
     <!-- 安全头（GitHub Pages 无法自定义 HTTP 头，用 meta 实现 CSP 纵深防御 + 隐私 referrer）：
          script/style 保留 'unsafe-inline'（防闪烁/内联脚本/VT 内联 style/Shiki token style 必需）；
+         font-src 含 data:（@fontsource/lato 被 Vite 构建为 data: URI 内联字体，'self' 会误伤）；
          frame-src/object-src/worker-src 'none' 阻止 iframe/object/Worker 副载；
          connect-src 'self' 阻止注入脚本数据外传；img-src 收紧（当前零外链图，引入时按图床域加白名单）。
          见 docs/security.md §3.1 -->
     <meta
       http-equiv="Content-Security-Policy"
-      content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; frame-src 'none'; object-src 'none'; worker-src 'none'; base-uri 'self'; form-action 'self'"
+      content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; connect-src 'self'; frame-src 'none'; object-src 'none'; worker-src 'none'; base-uri 'self'; form-action 'self'"
     />
     <meta name="referrer" content="no-referrer" />
     <link rel="icon" type="image/svg+xml" href={`${base}favicon.svg`} />

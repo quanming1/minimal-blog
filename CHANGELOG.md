@@ -26,6 +26,7 @@
 
 ### 修复
 - 无代码级 Blocker/Major（三人安全审查结论）；修复 8 项 Minor：img-src 收紧（当前零外链图）、worker-src 'none' 补齐、JSON.parse 兜底、端到端注入测试、deploy.yml job 权限细化、SHA 注释精确版本、workflow_dispatch 分支限制、generator 指纹移除
+- **CSP font-src 误伤（线上验证发现）**：@fontsource/lato 被 Vite 构建为 data: URI 内联字体，`font-src 'self'` 阻止 4 个字体加载（Lato 字重丢失）→ `font-src 'self' data:`
 
 ## [1.3.0] - 2026-08-12
 
