@@ -3,6 +3,22 @@
 > 版本变更记录。**约定：`src/content/posts/` 下的文章增删改（写作）不进入本文件**——那是内容维护，不是项目版本变更。
 > 仅记录工程层面（代码/结构/功能/构建/测试/部署）的变化。
 
+## [1.9.0] - 2026-08-13
+
+### 新增
+- **Style Token 系统（Tailwind v4.3.3）**（docs/design-tokens.md 完整文档）：三层架构——Primitive（global.css :root 双主题物理值）→ Semantic（@theme 块 `--color-*`/`--font-*`/`--text-*`/`--spacing-*`，var 引用随主题联动）→ Utility（Tailwind 原子类 `text-muted`/`bg-surface`/`text-xl` 等）；@tailwindcss/vite 集成（astro.config vite.plugins）
+- **olivierlacan.com 深度美学实测**（docs/ui-analysis.md §12）：CSS 源文件 + computed style 像素级数据——配色（链接绿 #3C5011/#a0a871、下划线 rgba(60,80,17,.46) 不随主题）、字体（根 13.34px + .site 115%、标题 2.5em/900 vs 正文 1.4em/300、字重即层级）、间距（44em 容器、h2 负边距 -0.5em、段距=字号、全 em 体系）、移动端放大；映射表（实测值 → 本站 token）
+- **试点应用**（token 链路验证）：Base.astro 站点标题 `text-xl italic font-normal text-text border-b-0`、PostList 年份标题 `text-xl font-bold` + 表格日期 `text-right whitespace-nowrap text-sm text-muted`；对应手写 CSS 规则移除
+- 新增 devDependency：tailwindcss / @tailwindcss/vite（4.3.3）
+
+### 变更
+- global.css：顶部 `@import 'tailwindcss'`（含 preflight）+ `@theme` token 块；**`*` 之后全部自定义规则包进 `@layer components`**——CSS Cascade Layers 下无 layer 规则优先级高于 Tailwind utilities（v1.9.0 实证：token 类被全局 a/td 压过），进层后 Tailwind 类可覆盖
+- 字号 token 显式配 `--text-*--line-height`（防 Tailwind 自动行高破坏体系）
+
+### 验证
+- 本地 preview 视觉回归：站点标题 #333/0 border、年份 1.7em/700、日期 right/muted/nowrap 全部生效；暗色 token 联动（muted #8b949e/text #e6edf3）；文章页 mark/callout/dl/sub 零回归；375 无溢出；preflight + 层化后响应式/打印规则正常
+- 测试 121 全绿、lint 0 errors 0 warnings
+
 ## [1.8.0] - 2026-08-13
 
 ### 审计与清理（v1.0.0-v1.7.0 八版迭代代码审计，零行为变更）

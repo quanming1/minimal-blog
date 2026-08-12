@@ -23,8 +23,10 @@
 | `src/styles/global.css` | 全部样式（olivierlacan 风格 + 双主题 + 响应式断点体系 §10） | 样式改动 |
 | `docs/ui-analysis.md` | 设计规范来源（改样式前先读） | 设计决策 |
 | `docs/security.md` | 安全基线（威胁模型/加固项/维护约定——**改安全代码前先读**） | 安全改动 |
+| `docs/design-tokens.md` | Style Token 体系（三层架构/token 表/Tailwind 使用——**改样式前先读**） | 样式改动 |
 | `docs/seo.md` | SEO 架构（meta 清单/JSON-LD/hreflang 规则/sitemap/frontmatter 元数据约定——**改 SEO 代码前先读**） | SEO 改动 |
 | `src/lib/seo.ts` | SEO 纯函数（absoluteUrl/JSON-LD/alternateUrls/serializeJsonLd） | SEO 改动 |
+| `astro.config.mjs` | Astro + Tailwind(vite) + sitemap + markdown.processor 配置 | 构建配置 |
 | `bunfig.toml` | registry 显式声明（npmmirror，lockfile 来源） | 依赖配置 |
 | `.github/workflows/deploy.yml` | lint → test → build(smoke) → deploy | 部署改动 |
 
@@ -72,4 +74,5 @@
 - 不提交 `dist` / `node_modules` / `.astro`（.gitignore 已排除，别 `git add -f`）
 - 不把文章内容写进 `CHANGELOG.md`（仅工程变更）
 - 不引入跟踪脚本/外链字体 CDN（字体已自托管，隐私优先；参考 about 页"无跟踪脚本"声明）
-- 改样式前先读 `docs/ui-analysis.md`（保持与设计规范一致，新偏差要记录到文档）
+- 改样式前先读 `docs/ui-analysis.md`（保持与设计规范一致，新偏差要记录到文档）+ `docs/design-tokens.md`（token 体系：新样式优先用 token 类；自定义规则必须放 `@layer components`，否则压不过 Tailwind utilities）
+- 新增 token：`:root` 变量（双主题）→ `@theme` 语义引用 → 模板使用（未使用的 token 不生成，需实际引用）

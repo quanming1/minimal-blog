@@ -153,7 +153,7 @@ const isAbout = path === '/about/'
     <div class="site">
       <header class="header">
         <h1 class="site-title">
-          <a href={lang === 'zh' ? href('') : href('en/')} transition:animate="fade">{siteTitle}</a>
+          <a href={lang === 'zh' ? href('') : href('en/')} transition:animate="fade" class="text-xl italic font-normal text-text border-b-0">{siteTitle}</a>
         </h1>
         <nav aria-label={t(lang, 'navAria')}>
           <ul>

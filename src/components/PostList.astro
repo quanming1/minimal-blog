@@ -17,7 +17,7 @@ const years = groupByYear(posts)
 
 {years.map((g) => (
   <section class="year-group">
-    <h2 id={`${g.year}-ref`}>
+    <h2 id={`${g.year}-ref`} class="text-xl font-bold">
       {g.year}
       <a href={`#${g.year}-ref`} aria-label={`${g.year}`}>¶</a>
     </h2>
@@ -28,7 +28,7 @@ const years = groupByYear(posts)
             <td>
               <a href={postHref(base, lang, p.id)}>{p.title}</a>
             </td>
-            <td>{formatMonthDay(p.date, lang)}</td>
+            <td class="text-right whitespace-nowrap text-sm text-muted">{formatMonthDay(p.date, lang)}</td>
           </tr>
         ))}
       </tbody>

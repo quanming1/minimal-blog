@@ -348,4 +348,84 @@ CSS 自定义属性**穿透 shadow DOM**（规范行为）：`:host { ... var(--
 
 ---
 
-*分析完稿：2026-08-12。实现偏差以代码与线上效果为准，本文档为设计意图记录。*
+## 12. 深度美学实测（v1.9.0：字体 / 间距 / 大小 / 配色）
+
+> 2026-08-13 对 https://olivierlacan.com/ 的 **CSS 源文件（/css/styles.css）+ computed style** 二次深度实测。
+> §1-§9 为 v1.0.0 首次分析的结论，本节为像素级实测数据，是 design token 体系（docs/design-tokens.md）的取值依据。
+
+### 12.1 配色（完整提取，含暗色）
+
+| Token | 亮色 | 暗色 | 用途 |
+|---|---|---|---|
+| 背景 | `#fff` | `black` | body |
+| 正文 | `#333` | `#eee` | body color |
+| **链接绿** | `#3C5011` | `#a0a871` | 全部链接 |
+| 链接 hover | `#1c2608`（更深） | `#868e57` | a:hover |
+| 链接下划线 | `rgba(60,80,17,.46)` | 同（暗色不变） | a border-bottom |
+| 次要文字 | `#777` | 同正文 `#eee` | 页脚/元信息 |
+| 站点名 hover 提示 | `#888` | `#eee` | .site-title a:hover:after |
+| 强调 `#111` | 标题相关 | | |
+
+要点：**唯一彩色仍是橄榄绿**（亮 `#3C5011` / 暗提亮 `#a0a871`），hover 加深（亮 `#1c2608`）或减亮（暗 `#868e57`）；下划线颜色**不随主题变**（亮暗都是 `rgba(60,80,17,.46)`）。
+
+### 12.2 字体（Lato + 13.34px 根字号）
+
+| 角色 | 字号 | 字重 | 样式 | 备注 |
+|---|---|---|---|---|
+| body 根 | **13.34px** | 300（.site） | - | Lato 特调：`font-size: 13.34px` 而非 16px |
+| .site 容器 | **115%**（≈15.3px） | 300 | - | 全站基准字号 |
+| 站点名 h1 | **1.7em**（≈26px） | 300 | **italic** | 细斜体 logo 感 |
+| 导航 nav | **1.2em** | 400 | - | line-height 2.5 |
+| 区块标题 h2 | **2.5em**（≈38px） | **900** | - | 与正文极端反差 |
+| h3 | 1.7em | 默认 | - | |
+| h4 | 1.2em | - | - | |
+| 正文 p | **1.4em**（≈21.5px） | 300 | - | 细字重 + 大字号 |
+| 表格 td | 1.3em（≈20px） | 400 | - | 列表项 |
+| 页脚 | 1em | 300 | - | 弱化 |
+| 行内 code | **0.85em** | - | - | padding `0.15em 0.3em 0.15em 0.4em` |
+| 代码块 | 0.9em | - | mono | SourceCodePro/Monaco/monospace |
+
+要点：**字重即层级**（标题 900 vs 正文 300）；根字号 13.34px + .site 115% 是"轻阅读"气质的源头。
+
+### 12.3 间距（em 相对体系）
+
+| 位置 | 值 | 说明 |
+|---|---|---|
+| 容器宽度 | **44em** | `.site`，`margin: 3em auto 2em` |
+| 容器行高 | 1.5em | `.site` |
+| header | `padding-bottom: 0.5em` + `border-bottom rgba(0,0,0,.3)` | |
+| nav 项 | `margin-left: 0.5em`；`padding: 0.6em 0.9em` | |
+| 区块标题 h2 | `line-height: 1.2`；**`margin-left: -0.5em`** | 标题顶左对齐编辑感 |
+| 正文段距 | `p { margin: 1em 0 }` | 段距 = 字号 |
+| 文章内 h2 | `margin-top: 1.5em; margin-bottom: 1em` | |
+| ul/ol | `margin-left: 1.35em` | |
+| 表格 | td `padding: 0 0.4em`；tr `line-height: 1.3` | |
+| blockquote | `padding-left: 2em`（无竖线，纯缩进） | |
+| 页脚 | 上边线 + `margin-right: 3em`（contact） | |
+| 移动端（320-568） | site `padding: 1.5em 2em`；站点名 `2.4em` + `letter-spacing: 0.1em` | 大幅放大 |
+
+要点：间距全部用 **em**（跟随字号，无 px 魔数）；负边距 `-0.5em` 制造标题贴左的编辑感。
+
+### 12.4 移动端字号放大（与 v1.0.0 结论一致）
+
+- 320-568 竖屏：h2 `3.5em`、正文 `2.2em`、nav `2.2em` 固定底部、站点名 `2.4em` letter-spacing 0.1em
+- 760-1020 竖屏：h2 `350%`、正文 `2.2em`
+
+### 12.5 与本站实现的映射（docs/design-tokens.md 取值依据）
+
+| olivierlacan 实测 | 本站 token | 本站实现 |
+|---|---|---|
+| 背景 #fff / black | `--bg` | #fff / #0d1117（暗色柔化，不照搬纯黑） |
+| 正文 #333 / #eee | `--text` | #333 / #e6edf3 |
+| 链接绿 #3C5011 / #a0a871 | `--accent` | #3c5011 / #a3c26b |
+| 下划线 rgba(60,80,17,.46) | `--accent-line` | 同 |
+| 次要 #777 | `--muted` | #6b6b6b（AA 4.5:1） |
+| 根字号 115% | body font-size | 115%（同） |
+| 正文 1.4em/300 | .post-body | 1.2em/行高 1.75（中文更宽松，v1.0.0 决策） |
+| 标题 2.5em/900 | 区块标题 | clamp(1.9em, 1.4em+1.2vw, 2.5em)（v1.2.0 流式） |
+| 44em 容器 | .site | 44em + max-width 92vw |
+| 段距 1em | p margin | 1em 0 |
+
+---
+
+*分析完稿：2026-08-12（v1.0.0）；2026-08-13 追加 §12 深度实测（v1.9.0）。实现偏差以代码与线上效果为准，本文档为设计意图记录。*

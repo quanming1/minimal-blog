@@ -47,6 +47,7 @@ tags: [标签1, 标签2]        # 可选
 - **Astro 7**（内容优先 SSG：MD 原生、构建时静态导出、零 JS 默认）
 - **Bun**（包管理 / 测试运行器，workspace 单包）
 - **TypeScript 6**（astro check 类型检查）
+- **Tailwind CSS v4**（Style Token 系统：@theme 语义 token → 原子类，见 [docs/design-tokens.md](./docs/design-tokens.md)）
 - **@fontsource/lato**（自托管 Lato 300/400/700/900，中文回退系统宋体）
 - **自研 mb-\* 组件库**（原生 Web Components，零依赖：mb-dialog 弹层 / mb-toast 通知）
 - **bun test**（纯函数单测 + jsdom 组件测试）
@@ -95,8 +96,9 @@ minimal-blog/
 │   ├── pages/              # 首页/关于/文章详情（zh 无前缀，en 前缀）
 │   ├── lib/                # 纯函数：i18n 字典 / 日期/分组/slug / search（搜索索引与过滤）/ seo（URL/JSON-LD/hreflang）/ html（内联 JSON 序列化）
 │   ├── test/setup-dom.ts   # jsdom 测试基座（组件测试 preload）
-│   └── styles/global.css   # 全局样式（olivierlacan 风格，亮暗双主题）
+│   └── styles/global.css   # 全局样式 + Tailwind @theme token 层 + @layer components（见 docs/design-tokens.md）
 ├── docs/ui-analysis.md     # olivierlacan.com UI/UX 设计分析文档（设计规范来源）
+├── docs/design-tokens.md   # Style Token 体系（token 表 + Tailwind 使用指南 + 新增流程）
 ├── docs/security.md        # 安全基线（威胁模型/加固项/维护约定——改安全代码前先读）
 ├── docs/seo.md             # SEO 架构（meta 清单/JSON-LD/hreflang/sitemap/frontmatter 元数据约定）
 ├── .github/workflows/deploy.yml  # lint → test → build(smoke) → deploy

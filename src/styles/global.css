@@ -4,6 +4,54 @@
    要点：44em 单栏 / 细字重正文 / 粗标题 / 橄榄绿链接下划线 / 零装饰
    ============================================================ */
 
+/* ---- Style Token 系统（Tailwind v4，见 docs/design-tokens.md） ---- */
+@import 'tailwindcss';
+
+@theme {
+  /* 语义 token → 引用 :root / [data-theme='dark'] 变量（跟随主题切换），
+     生成 Tailwind utilities：bg-bg / text-text / text-accent / border-border /
+     bg-surface / font-sans / font-mono / text-* / p-* / m-* 等 */
+  --color-bg: var(--bg);
+  --color-text: var(--text);
+  --color-muted: var(--muted);
+  --color-accent: var(--accent);
+  --color-accent-line: var(--accent-line);
+  --color-border: var(--divider);
+  --color-border-strong: var(--divider-strong);
+  --color-surface: var(--code-bg);
+  --color-warning: var(--warning);
+  --color-important: var(--important);
+  --color-overlay: var(--overlay);
+
+  /* 字体 */
+  --font-sans: 'Lato', 'Noto Sans SC', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+  /* 字号 scale（em，跟随 .site 115% 基准；值来自 olivierlacan 实测，docs/ui-analysis.md §1.2）
+     --text-*--line-height：Tailwind 会为 text-* 自动配行高，显式覆盖保持体系一致 */
+  --text-xs: 0.85em; /* inline code */
+  --text-xs--line-height: 1.6;
+  --text-sm: 1em; /* 页脚/meta */
+  --text-sm--line-height: 1.6;
+  --text-base: 1.15em; /* 基准（.site 115%） */
+  --text-base--line-height: 1.6;
+  --text-lg: 1.4em; /* 正文/列表 */
+  --text-lg--line-height: 1.6;
+  --text-xl: 1.7em; /* 站点名/h3 */
+  --text-xl--line-height: 1.2;
+  --text-2xl: 2.5em; /* 区块标题 */
+  --text-2xl--line-height: 1.2;
+
+  /* 间距 scale（em 比例） */
+  --spacing-1: 0.25em;
+  --spacing-2: 0.5em;
+  --spacing-3: 0.75em;
+  --spacing-4: 1em;
+  --spacing-5: 1.5em;
+  --spacing-6: 2em;
+  --spacing-7: 3em;
+}
+
 :root {
   --bg: #ffffff;
   --text: #333333;
@@ -84,6 +132,7 @@
   --astro-code-token-meta: #a5d6ff;
 }
 
+@layer components {
 * {
   margin: 0;
   padding: 0;
@@ -139,13 +188,7 @@ a:hover {
   margin: 0;
 }
 
-.site-title a {
-  font-size: 1.7em;
-  font-style: italic;
-  font-weight: 400;
-  border-bottom-width: 0;
-  color: var(--text);
-}
+/* .site-title a 样式已 Tailwind 化（Base.astro class="text-xl italic font-normal text-text border-b-0"，见 docs/design-tokens.md） */
 
 .site-title a:hover::after {
   content: ' ← 回首页';
@@ -219,10 +262,9 @@ a:hover {
 }
 
 .year-group h2 {
-  font-size: 1.7em;
-  font-weight: 700;
   line-height: 1.2;
   margin: 0 0 0 -0.5em; /* 标题顶左对齐，与 .posts-title 一致 */
+  /* font-size/font-weight 已 Tailwind 化（PostList class="text-xl font-bold"） */
 }
 
 .year-group h2 a {
@@ -257,13 +299,6 @@ a:hover {
 
 .posts-table td:first-child a:hover {
   border-bottom-color: var(--accent);
-}
-
-.posts-table td:last-child {
-  text-align: right;
-  color: var(--muted);
-  white-space: nowrap;
-  font-size: 1em;
 }
 
 .posts-table tr:hover td:first-child a {
@@ -1165,4 +1200,6 @@ html {
   .post-body h3 {
     break-inside: avoid;
   }
+}
+
 }
