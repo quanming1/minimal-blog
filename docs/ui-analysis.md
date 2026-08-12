@@ -291,4 +291,61 @@ h2 文章标题（900 粗）
 
 ---
 
+## 11. 组件库体系（v1.3.0 实现决策）
+
+> 本章是本项目自己的组件库设计决策。选型基于 3 路并行实测调研（Shoelace / React+Mantine / 原生），核心约束是保住"默认零 JS"哲学与极简印刷风。
+
+### 11.1 选型结论：原生 Web Components（mb-\* 组件体系）
+
+| 路线 | 实测数据 | 结论 |
+|---|---|---|
+| Shoelace 2.20.1 | 兼容性全通过但**官方已 sunset**（无维护）；按需 7 组件 44.5KB gzip；无原生 toast；图标资产 1.55MB | ❌ 不引入已停更库 |
+| React 19.2.8 + Mantine 9.5.1 | 版本链精确匹配可行；**JS 5.5KB → ~123KB gzip（约 22 倍）**；范式翻转（islands） | ❌ 与零 JS 哲学冲突 |
+| **原生自研 mb-\*** | **0 依赖 0 增量**；CSS 变量穿透 shadow DOM 天然双主题；customElements 注册表跨 VT 导航存活；jsdom 实测可测 | ✅ **选定** |
+
+**升级路径**：组件规模未来增长到 ≥6-8 个时再评估引入 Lit（~5.9KB gzip），WC 是标准、可替换实现不动调用方。
+
+### 11.2 组件清单（v1.3.0）
+
+| 组件 | 类型 | 职责 |
+|---|---|---|
+| `mb-dialog` | 通用 WC | 弹层壳：`open` 属性、slot、focus trap（Tab 循环/归还）、Escape 关闭、外部点击关闭、body 滚动锁定、`role=dialog` + `aria-modal` |
+| `mb-toast` | 通用 WC | 通知：`show(message)` API、`aria-live=polite`、队列（纯函数）、自动消失、多实例 |
+| `SearchDialog` | Astro 业务组件 | 用 `mb-dialog` 做容器 + 搜索 UI + 键盘导航（↑↓/Enter/Escape）+ Cmd+K 全局快捷键 |
+| 纯函数模块 | `src/lib/search.ts` | `buildSearchIndex()`（构建期）/ `filterPosts()`（前端过滤），单测友好 |
+
+### 11.3 站内搜索设计
+
+- **索引**：SSG 构建期 `getCollection` 生成（title/description/tags/slug/url，双语），`JSON.stringify` 内联到页面 `<script type="application/json">`——3 篇文章量级极小，无需独立 JSON 文件
+- **触发**：`Cmd+K` / `Ctrl+K` 全局快捷键 + 导航栏搜索按钮（含移动端底部导航）
+- **过滤**：标题/描述/标签，大小写不敏感，中英文都走同一索引（按当前语言过滤 + 可选跨语言）
+- **空态**：无匹配时显示 i18n 空态文案
+- **键盘**：↑↓ 移动选择、Enter 打开、Escape 关闭（mb-dialog 已有）；结果项 `aria-selected`
+- **VT 兼容**：注册脚本（module）靠 Astro 去重机制只跑一次；打开状态跨页导航时关闭（Dialog 是模态，导航即关闭合理）
+
+### 11.4 Toast 复制反馈
+
+- 替换 Base.astro 现有复制反馈（`textContent` 临时替换 + setTimeout）→ 复制按钮派发 `mb:toast` CustomEvent，`mb-toast` 展示
+- 顺带修复 a11y：Toast 用 `aria-live=polite`（现在按钮文字变化无 live 区域）
+- 主题：`--bg/--text/--accent/--divider` 变量继承，亮暗自动跟随
+
+### 11.5 主题对接
+
+CSS 自定义属性**穿透 shadow DOM**（规范行为）：`:host { ... var(--accent) }` 直接用项目现有双主题变量，零 JS 零同步。WC 内不做 `data-theme` 条件逻辑（命令式耦合），全部走变量继承。
+
+### 11.6 VT 兼容（源码级验证）
+
+- `customElements` 注册表挂在 window，跨导航永远存活（Astro 自身 runtime 就是自定义元素体系）
+- Astro VT 脚本去重（`scriptsAlreadyRan` 字节级）保证注册脚本只跑一次；`customElements.get()` 守卫幂等
+- WC 生命周期用 `connectedCallback`/`disconnectedCallback` 管理；跨导航全局操作仍走 `astro:page-load`（两层不冲突）
+
+### 11.7 测试方案
+
+- `src/test/setup-dom.ts`：jsdom 30 globals **无条件覆盖**注入（Bun 自带 Event/CustomEvent 与 jsdom 实例互不认，必须 `g[k] = w[k]` 覆盖而非 `if (!(k in g))`）——`bun test --preload` 引用
+- 纯函数单测：`filterPosts`/索引构建/Toast 队列/focus 顺序（`IntersectionObserver` jsdom 无，相关判定抽纯函数）
+- WC 测试：`customElements.define` + shadowRoot + 生命周期 + 事件派发
+- 现有 33 个纯函数单测原样共存
+
+---
+
 *分析完稿：2026-08-12。实现偏差以代码与线上效果为准，本文档为设计意图记录。*

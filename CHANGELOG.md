@@ -3,6 +3,30 @@
 > 版本变更记录。**约定：`src/content/posts/` 下的文章增删改（写作）不进入本文件**——那是内容维护，不是项目版本变更。
 > 仅记录工程层面（代码/结构/功能/构建/测试/部署）的变化。
 
+## [1.3.0] - 2026-08-12
+
+### 新增
+- **自研 mb-\* 组件库**（Web Components，零依赖）：`mb-dialog`（通用模态弹层：focus trap / Escape / 遮罩点击 / 滚动锁定 / aria-modal）+ `mb-toast`（通知：aria-live / 队列 / 自动消失）；选型经 3 路并行实测调研：Shoelace 2.20.1（官方已 sunset）与 React+Mantine（~123KB gzip 增量 ≈ 现状 22 倍）均否决，原生方案 0 依赖契合『默认零 JS』哲学（见 docs/ui-analysis.md §11）
+- **站内搜索**（Cmd+K / Ctrl+K / 导航 🔍 按钮）：SSG 构建期生成文章索引（zh+en，内联 JSON），标题/描述/标签实时过滤，双语，空态提示，↑↓/Enter/Escape 键盘可达（APG listbox + aria-activedescendant 模式，焦点驻留输入框）
+- **Toast 复制反馈**：代码块复制成功从按钮文字变化改为 mb-toast 通知（视觉近端提示 + aria-label 读屏同步，修复 v1.2.0 复制反馈无 live 区域的可访问性短板）
+- **测试基座**：`src/test/setup-dom.ts`（jsdom 30 globals 注入，处理 Bun 自带 Event 冲突与 jsdom timer 在 Bun 下递归爆栈两个坑）；新增 23 个单测（搜索过滤 12 + mb-dialog 10 + mb-toast 4 → 共 56 个）
+- 产物体积：JS 增量约 +6KB raw（Base 5.5→7.1KB 含组件注册 + 内联搜索脚本 ~1.8KB + 索引 ~2KB/页），对比 React 路线 123KB gzip 优势显著
+
+### 变更
+- 导航从 4 项增至 5 项（文章/关于/语言/🔍/🌙）；🔍 与 🌙 按钮同款视觉，触屏 40×40 / 桌面 min 24×24（WCAG 2.5.8）
+- 复制反馈：按钮文字保持『复制』（原 textContent 临时替换移除），Toast 承担视觉反馈；aria-label 防连续复制 timer 竞态
+- 全局样式新增 `--overlay` 变量（模态遮罩，亮 rgba(0,0,0,.35) / 暗 rgba(0,0,0,.55)）
+
+### 修复
+- **生产构建搜索索引失效（Blocker）**：`type="application/json"` 的 script 被 Astro 透传不求值（产物为字面量 `{indexJson}`）→ 改 `is:inline set:html` 显式注入，构建产物已确认真实 JSON
+- **focus trap 对 slot 内容失效（Major）**：`_panel.querySelectorAll` 查 shadow tree 查不到 light DOM → 改从 host 收集 + 可见性判断（offsetParent 布局级 / hidden+display DOM 级兜底）
+- **点击面板误触发关闭（Major）**：shadow retargeting 使 `e.target === this` 误判 → 改 `e.composedPath()[0] === this`
+- **Cmd+K 跨 VT 导航监听累积（Major）**：window keydown 每次 page-load 重复绑定不清理 → 模块级单例 + cleanup
+- **↑↓ 键盘导航一次后失效（Major）**：焦点移入结果 `<a>` 后 input 监听失效 → 重构为焦点驻留 + aria-activedescendant 模式
+- **搜索输入框无焦点环（Major，WCAG 2.4.7）**：`outline:none` 移除焦点指示 → 改 `.search-head:focus-within` accent 下划线 + 全局 :focus-visible 兜底
+- **Toast 与回到顶部按钮重叠（Major）**：同锚右下角必遮挡 → toast bottom 避让 `calc(1.2em + 48px)` / 移动端 `calc(4.6em + 48px)`
+- 其余：Enter 硬导航改 `a.click()`（走 VT）、索引转义全量 `<`、空态未输入不显示、对话框可访问名改『站内搜索』、toast 边条 3px→2px 克制、打印隐藏 mb-toast、注释 4→5 项、jsdom rAF mock 防爆栈
+
 ## [1.2.0] - 2026-08-12
 
 ### 新增

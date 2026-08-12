@@ -13,6 +13,10 @@
 | `src/lib/*` | 纯函数（i18n 字典 / 日期/分组/slug/URL 构造） | 功能改动 |
 | `src/layouts/Base.astro` | 全局布局（导航/语言切换/主题/页脚） | 布局改动 |
 | `src/components/PostList.astro` | 首页年份分组列表 | 列表改动 |
+| `src/components/SearchDialog.astro` | 站内搜索（Cmd+K，mb-dialog 容器 + 过滤 + 键盘导航） | 搜索改动 |
+| `src/components/wc/*.ts` | mb-\* 组件库（mb-dialog / mb-toast，零依赖 Web Components） | 组件库改动 |
+| `src/lib/search.ts` | 搜索索引构建 / 过滤纯函数 | 功能改动 |
+| `src/test/setup-dom.ts` | jsdom 测试基座（组件测试注入全局） | 测试基建 |
 | `src/pages/**` | 页面路由（zh 无前缀 / en 前缀） | 页面改动 |
 | `src/styles/global.css` | 全部样式（olivierlacan 风格 + 双主题 + 响应式断点体系 §10） | 样式改动 |
 | `docs/ui-analysis.md` | 设计规范来源（改样式前先读） | 设计决策 |
@@ -40,6 +44,7 @@
 - **不要动** `src/layouts` / `src/pages` / `src/styles` 除非任务明确涉及样式或功能
 - 改响应式规则（断点/媒体查询/触屏目标）→ 先读 `docs/ui-analysis.md §10` 断点矩阵，改完在 375/768/1024/1280 至少四个视口验证无横向溢出；设计决策变更必须同步文档
 - 新增纯函数逻辑 → 放 `src/lib/` 并**必须配单测**（`src/lib/*.test.ts`，bun test）
+- 新增 mb-\* 组件 → 放 `src/components/wc/`，需 `customElements.get()` 守卫注册 + 组件测试（`src/components/wc/*.test.ts`，首行 `import '../../test/setup-dom'` 注入 jsdom；主题一律走 CSS 变量继承，不硬编码颜色）
 - 提交信息：写作 `post: 标题`；工程 `feat/fix/ci:` 前缀
 
 ## 构建与部署

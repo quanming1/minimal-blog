@@ -12,6 +12,7 @@
   --accent-line: rgba(60, 80, 17, 0.46);
   --divider: rgba(0, 0, 0, 0.3);
   --divider-strong: rgba(0, 0, 0, 0.45); /* 表头边界：非文本对比 ≥3:1（WCAG 1.4.11） */
+  --overlay: rgba(0, 0, 0, 0.35); /* 模态遮罩（mb-dialog） */
   --code-bg: #f4f4f4;
   --code-text: #24292f;
 
@@ -49,6 +50,7 @@
   --accent-line: rgba(163, 194, 107, 0.4);
   --divider: rgba(230, 237, 243, 0.25);
   --divider-strong: rgba(230, 237, 243, 0.4);
+  --overlay: rgba(0, 0, 0, 0.55); /* 暗色下遮罩加深，保证面板浮层感 */
   --code-bg: #161b22;
   --code-text: #e6edf3;
 
@@ -180,7 +182,8 @@ a:hover {
 }
 
 /* 主题切换按钮 */
-.theme-toggle {
+.theme-toggle,
+.search-open {
   background: none;
   border: 1px solid var(--divider);
   border-radius: 4px;
@@ -189,9 +192,12 @@ a:hover {
   line-height: 1;
   padding: 3px 7px;
   vertical-align: middle;
+  min-width: 24px; /* WCAG 2.5.8 最小目标尺寸 24×24 */
+  min-height: 24px;
 }
 
-.theme-toggle:hover {
+.theme-toggle:hover,
+.search-open:hover {
   border-color: var(--accent);
 }
 
@@ -825,8 +831,9 @@ html {
 
 /* ============ D 档（触屏设备 pointer: coarse）：触屏目标放大（WCAG 2.5.5） ============ */
 @media (pointer: coarse) {
-  /* 主题切换按钮：触屏目标 ≥40×40px */
-  .theme-toggle {
+  /* 主题/搜索按钮：触屏目标 ≥40×40px */
+  .theme-toggle,
+  .search-open {
     min-width: 40px;
     min-height: 40px;
     padding: 0;
@@ -885,7 +892,7 @@ html {
     word-break: break-word;
   }
 
-  /* 底部导航：4 项（文章/关于/语言/主题）在 320px 不挤 */
+  /* 底部导航：5 项（文章/关于/语言/搜索/主题）在 320px 不挤 */
   .header nav {
     font-size: 1em;
   }
@@ -950,12 +957,13 @@ html {
     transition: none;
   }
 
-  /* 隐藏界面元素：底部导航 / 进度条 / 回顶 / TOC 侧栏 / 代码操作头 */
+  /* 隐藏界面元素：底部导航 / 进度条 / 回顶 / TOC 侧栏 / 代码操作头 / Toast 容器 */
   .header nav,
   .reading-progress,
   .back-to-top,
   .toc-wrap,
-  .post-body pre .code-actions {
+  .post-body pre .code-actions,
+  mb-toast {
     display: none !important;
   }
 

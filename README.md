@@ -47,7 +47,8 @@ tags: [标签1, 标签2]        # 可选
 - **Bun**（包管理 / 测试运行器，workspace 单包）
 - **TypeScript 6**（astro check 类型检查）
 - **@fontsource/lato**（自托管 Lato 300/400/700/900，中文回退系统宋体）
-- **bun test**（纯函数单测）
+- **自研 mb-\* 组件库**（原生 Web Components，零依赖：mb-dialog 弹层 / mb-toast 通知）
+- **bun test**（纯函数单测 + jsdom 组件测试）
 - **GitHub Actions** 自动构建部署 Pages
 
 ## 页面与功能
@@ -56,6 +57,8 @@ tags: [标签1, 标签2]        # 可选
 - 文章页：标题、初写日期、阅读时长、正文排版（代码高亮 + 语言标签 + 一键复制）、**右侧目录 TOC**（滚动高亮，小屏折叠）、**阅读进度条**、**回到顶部**
 - 关于页
 - 语言切换（中/英）+ 亮暗主题（localStorage 记忆，默认亮色）
+- **站内搜索**（Cmd+K / Ctrl+K / 导航 🔍）：按标题/描述/标签实时过滤全部文章，键盘可达，双语
+- **Toast 通知**：代码复制成功提示（mb-toast，aria-live）
 - **View Transitions**：站内导航平滑过渡，无整页刷新
 - **微交互**：导航下划线滑入、列表行 hover、链接底色反馈（克制的印刷感动效）
 - 可访问性：`focus-visible` 焦点环、`prefers-reduced-motion` 全站降级
@@ -83,9 +86,10 @@ minimal-blog/
 │   │       └── en/         # 英文文章
 │   ├── content.config.ts   # 文章集合 schema（title/date/description/tags）
 │   ├── layouts/Base.astro  # 全局布局：导航/语言切换/主题/页脚
-│   ├── components/         # PostList（年份分组列表）
+│   ├── components/         # PostList（年份分组列表）、SearchDialog（站内搜索）、wc/（mb-* 组件库）
 │   ├── pages/              # 首页/关于/文章详情（zh 无前缀，en 前缀）
-│   ├── lib/                # 纯函数：i18n 字典 / 日期/分组/slug（可单测）
+│   ├── lib/                # 纯函数：i18n 字典 / 日期/分组/slug / search（搜索索引与过滤）
+│   ├── test/setup-dom.ts   # jsdom 测试基座（组件测试 preload）
 │   └── styles/global.css   # 全局样式（olivierlacan 风格，亮暗双主题）
 ├── docs/ui-analysis.md     # olivierlacan.com UI/UX 设计分析文档（设计规范来源）
 ├── .github/workflows/deploy.yml  # lint → test → build(smoke) → deploy

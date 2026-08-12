@@ -7,6 +7,7 @@ import '../styles/global.css'
 import { ClientRouter } from 'astro:transitions'
 import { t } from '../lib/i18n'
 import { switchHref, type Lang } from '../lib/utils'
+import SearchDialog from '../components/SearchDialog.astro'
 
 interface Props {
   lang: Lang
@@ -101,6 +102,11 @@ const isAbout = path === '/about/'
               <a href={switchTarget} title={t(lang, 'switchLang')}>{t(lang, 'switchLang')}</a>
             </li>
             <li>
+              <button type="button" class="search-open" id="search-open" aria-label={t(lang, 'searchAria')}>
+                <span class="search-icon" aria-hidden>🔍</span>
+              </button>
+            </li>
+            <li>
               <button type="button" class="theme-toggle" id="theme-toggle" aria-label="切换主题 / toggle theme">
                 <span class="theme-icon" aria-hidden>🌙</span>
               </button>
@@ -125,12 +131,17 @@ const isAbout = path === '/about/'
       </footer>
     </div>
 
+    <!-- 组件库：Toast 通知 + 站内搜索（mb-* Web Components，见 docs/ui-analysis.md §11） -->
+    <mb-toast id="toast"></mb-toast>
+    <SearchDialog lang={lang} />
+
     <!--
       交互脚本（主题/进度条/回顶/代码复制）：
       用 astro:page-load 事件驱动——module script 只执行一次（Astro VT 脚本去重），
       每次页面导航（含 VT 切换）后触发 handler 重建绑定；清理函数防止 window 监听累积泄漏。
     -->
     <script>
+      import '../components/wc/index'
       // ---- 主题 ----
       function applyTheme(dark: boolean) {
         document.documentElement.dataset.theme = dark ? 'dark' : 'light'
@@ -222,12 +233,18 @@ const isAbout = path === '/about/'
           copyBtn.className = 'code-copy'
           copyBtn.textContent = copyLabel
           copyBtn.setAttribute('aria-label', `${copyLabel} code`)
+          const toastEl = document.querySelector<HTMLElement & { show: (m: string, o?: { duration?: number }) => void }>('mb-toast')
+          let labelTimer: ReturnType<typeof setTimeout> | null = null
           const feedback = (ok: boolean) => {
-            copyBtn.textContent = ok ? copiedLabel : isZh ? '复制失败' : 'Failed'
-            copyBtn.setAttribute('aria-label', `${ok ? copiedLabel : isZh ? '复制失败' : 'Failed'} code`)
-            setTimeout(() => {
-              copyBtn.textContent = copyLabel
+            const msg = ok ? copiedLabel : isZh ? '复制失败' : 'Failed'
+            // 按钮文字保持 '复制'，反馈走 mb-toast（aria-label 同步读屏）
+            copyBtn.setAttribute('aria-label', `${msg} code`)
+            toastEl?.show(msg)
+            // 防连续复制时多个 timer 竞态提前还原 aria-label
+            if (labelTimer) clearTimeout(labelTimer)
+            labelTimer = setTimeout(() => {
               copyBtn.setAttribute('aria-label', `${copyLabel} code`)
+              labelTimer = null
             }, 1500)
           }
           const doCopy = () => {

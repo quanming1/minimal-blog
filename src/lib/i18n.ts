@@ -14,6 +14,11 @@ const dictDef = {
   backHome: { zh: '← 回首页', en: '← home' },
   footerNote: { zh: '写，是因为想明白了一些事，想把它留下来。', en: 'I write because I figured something out and want to keep it.' },
   navAria: { zh: '主导航', en: 'Primary navigation' },
+  searchAria: { zh: '打开搜索', en: 'Open search' },
+  searchTitle: { zh: '站内搜索', en: 'Search' },
+  searchPlaceholder: { zh: '搜索文章标题或标签…', en: 'Search by title or tag…' },
+  searchResults: { zh: '搜索结果', en: 'Search results' },
+  searchEmpty: { zh: '没有找到匹配的文章', en: 'No matching posts' },
 } as const
 
 export type I18nKey = keyof typeof dictDef
