@@ -13,6 +13,7 @@
   --divider: rgba(0, 0, 0, 0.3);
   --divider-strong: rgba(0, 0, 0, 0.45); /* 表头边界：非文本对比 ≥3:1（WCAG 1.4.11） */
   --overlay: rgba(0, 0, 0, 0.35); /* 模态遮罩（mb-dialog） */
+  --warning: #7a5c10; /* callout warning/caution（亮色：对 #f4f4f4 对比 5.7:1，WCAG AA） */
   --code-bg: #f4f4f4;
   --code-text: #24292f;
 
@@ -51,6 +52,7 @@
   --divider: rgba(230, 237, 243, 0.25);
   --divider-strong: rgba(230, 237, 243, 0.4);
   --overlay: rgba(0, 0, 0, 0.55); /* 暗色下遮罩加深，保证面板浮层感 */
+  --warning: #c9a227; /* callout warning/caution（暗色：对 #161b22 对比 >5:1） */
   --code-bg: #161b22;
   --code-text: #e6edf3;
 
@@ -324,6 +326,55 @@ a:hover {
   margin: 1.2em 2.2em;
   padding-left: 0.4em;
   color: var(--text);
+}
+
+/* ============ Markdown 拓展样式（语法见 docs/markdown-extensions.md） ============ */
+
+/* Callout 提示框：> [!NOTE|TIP|WARNING|CAUTION]（GitHub 风格子集，标题由 CSS ::before + data-callout 生成） */
+.post-body .callout {
+  margin: 1.2em 0;
+  padding: 0.9em 1.1em;
+  border-left: 3px solid var(--accent);
+  background: var(--code-bg);
+  font-size: 0.95em;
+  line-height: 1.7;
+  overflow-wrap: break-word; /* callout 内长 URL/code 窄屏不溢出 */
+}
+
+.post-body .callout::before {
+  content: attr(data-callout);
+  display: block;
+  font-weight: 700;
+  font-size: 0.78em;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--accent);
+  margin-bottom: 0.4em;
+}
+
+.post-body .callout-warning,
+.post-body .callout-caution {
+  border-left-color: var(--warning);
+}
+
+.post-body .callout-warning::before,
+.post-body .callout-caution::before {
+  color: var(--warning);
+}
+
+.post-body .callout > :first-child {
+  margin-top: 0;
+}
+
+.post-body .callout > :last-child {
+  margin-bottom: 0;
+}
+
+/* ==高亮== → <mark>：底色 accent 透明层（极简，非实心高亮笔） */
+.post-body mark {
+  background: var(--accent-line);
+  color: inherit;
+  padding: 0 0.15em;
 }
 
 .post-body blockquote p {
@@ -995,12 +1046,24 @@ html {
     border-color: #000 !important;
   }
 
-  /* 代码/表格去底色 */
+  /* 代码/表格/引用/提示框去底色 */
   .post-body pre,
   .post-body code,
   .post-body blockquote,
+  .post-body .callout,
+  .post-body mark,
   .post-body table {
     background: #fff !important;
+    color: #000 !important;
+  }
+
+  .post-body .callout {
+    border-left-color: #000 !important;
+  }
+
+  .post-body .callout::before,
+  .post-body .callout-warning::before,
+  .post-body .callout-caution::before {
     color: #000 !important;
   }
 

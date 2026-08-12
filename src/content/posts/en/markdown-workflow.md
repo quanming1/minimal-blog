@@ -34,3 +34,15 @@ git add . && git commit -m "post: title" && git push
 - **Focused writing**: no rich-text editor distractions — just a cursor and plain text
 
 Ten years from now, these `.md` files will still be readable. That is the confidence of "Mingzhi."
+
+## Extended syntax
+
+This blog supports some Markdown extensions (full list in [docs/markdown-extensions.md](https://github.com/quanming1/minimal-blog/blob/main/docs/markdown-extensions.md)):
+
+> [!TIP]
+> Tip: start a blockquote with `> [!TIP]` for a callout — supported types are `NOTE` / `TIP` / `WARNING` / `CAUTION`.
+
+> [!WARNING]
+> Warnings work the same way; the type carries the semantics.
+
+Inline `==highlights==` mark key points, like "the joy of writing is ==building up, one post at a time==."

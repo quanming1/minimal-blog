@@ -34,3 +34,15 @@ git add . && git commit -m "post: 标题" && git push
 - **专注写作**：没有富文本编辑器的干扰，只有一个光标和纯文本
 
 十年后回头看，这些 `.md` 文件依然可读。这大概就是「明志」的底气。
+
+## 拓展语法
+
+这个博客支持一些 Markdown 拓展语法（完整清单见 [docs/markdown-extensions.md](https://github.com/quanming1/minimal-blog/blob/main/docs/markdown-extensions.md)）：
+
+> [!TIP]
+> 提示框：用 `> [!TIP]` 开头即可，支持 `NOTE` / `TIP` / `WARNING` / `CAUTION` 四种。
+
+> [!WARNING]
+> 警告框也是同样写法，语义由类型决定。
+
+正文里可以用 `==高亮==` 标记重点，比如「写作的快乐就在 ==一篇一篇积累== 的过程里」。

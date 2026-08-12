@@ -55,6 +55,7 @@ tags: [标签1, 标签2]        # 可选
 
 - 首页：按年份分组的极简表格文章列表（标题 + 月日 + ¶ 锚点）
 - 文章页：标题、初写日期、阅读时长、正文排版（代码高亮 + 语言标签 + 一键复制）、**右侧目录 TOC**（滚动高亮，小屏折叠）、**阅读进度条**、**回到顶部**
+- **Markdown 拓展语法**：Callout 提示框（`> [!TIP]`）、`==高亮==`、GFM 全量（表格/任务/删除线/自动链接/脚注）——语法清单与开发指南见 [docs/markdown-extensions.md](./docs/markdown-extensions.md)
 - 关于页
 - 语言切换（中/英）+ 亮暗主题（localStorage 记忆，默认亮色）
 - **站内搜索**（Cmd+K / Ctrl+K / 导航 🔍）：按标题/描述/标签实时过滤全部文章，键盘可达，双语
@@ -88,6 +89,7 @@ minimal-blog/
 │   ├── content.config.ts   # 文章集合 schema（title/date/description/tags）
 │   ├── layouts/Base.astro  # 全局布局：导航/语言切换/主题/页脚
 │   ├── components/         # PostList（年份分组列表）、SearchDialog（站内搜索）、wc/（mb-* 组件库）
+│   ├── markdown/           # Markdown 语法拓展（index.ts 注册表 + remark/ 插件，见 docs/markdown-extensions.md）
 │   ├── pages/              # 首页/关于/文章详情（zh 无前缀，en 前缀）
 │   ├── lib/                # 纯函数：i18n 字典 / 日期/分组/slug / search（搜索索引与过滤）
 │   ├── test/setup-dom.ts   # jsdom 测试基座（组件测试 preload）

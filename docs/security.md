@@ -1,7 +1,7 @@
 # 安全基线（Security Baseline）
 
-> 明志博客（minimal-blog）安全审查与加固记录（v1.4.0）。本文档定义威胁模型、攻击面审计结论、已加固项与已知边界。
-> 修改安全相关代码（CSP/头/CI 权限/依赖）前先读本文档。
+> 明志博客（minimal-blog）安全审查与加固记录（v1.4.0 起，随版本持续更新）。本文档定义威胁模型、攻击面审计结论、已加固项与已知边界。
+> 修改安全相关代码（CSP/头/CI 权限/依赖/Markdown 插件产出 HTML 的点）前先读本文档。
 
 ## 1. 威胁模型
 
@@ -15,6 +15,8 @@
 |---|---|---|
 | frontmatter title/description/tags | Astro 模板表达式**自动 HTML 转义**（`<script>` → `&lt;script&gt;`，引号 → `&quot;`） | ✅ 安全 |
 | 搜索索引（v1.3.0） | 结果渲染用 `textContent`（非 innerHTML）；`serializeIndexForHtml` 全量转义 `<`（`</script>`/`<!--` 均失效），端到端 jsdom 测试覆盖注入链路 | ✅ 安全 |
+| **Callout 提示框**（v1.5.0） | 子树保留 mdast 由 rehype 统一转义（`data.hName` 方案）；`data-callout`/`aria-label` 为插件生成常量，无注入面 | ✅ 安全 |
+| **==高亮==**（v1.5.0） | 产出 html 节点时手动 `escapeHtml`（& < > " 全转义，单测覆盖）；raw HTML 由 remark 原生解析不触碰 | ✅ 安全 |
 | Markdown 正文 raw HTML | **原样透传**（`<script>`/`img onerror`/`iframe`/`div onmouseover` 可执行） | ⚠️ 设计特性，见威胁模型 |
 | Markdown `[链接](javascript:...)` | 原样输出 `href="javascript:..."` | ⚠️ 内容可信范围 |
 | 代码块（shiki） | 代码内容纯文本转义 | ✅ 安全 |
@@ -46,7 +48,7 @@
 - `bun.lock` 锁定全部依赖；`bun install --frozen-lockfile`（CI）
 - **`bunfig.toml` 显式声明 registry = registry.npmmirror.com**（lockfile 的 tarball URL 全部来自此镜像，显式化避免隐式依赖；完整性由 lockfile sha512 校验兜底）
 - **npm audit：0 vulnerabilities**（v1.4.0 验证，临时 lockfile 方式）
-- 依赖极简：astro / @fontsource/lato / jsdom(dev) / typescript(dev) / @astrojs/check(dev)
+- 依赖极简：astro / @fontsource/lato / @astrojs/markdown-remark(dev，构建期处理器) / unified+remark-parse+@types/mdast(dev，插件测试) / jsdom(dev) / typescript(dev) / @astrojs/check(dev)
 
 ### 3.4 隐私
 - **无任何跟踪脚本**（GA/统计均无，about 页有声明）

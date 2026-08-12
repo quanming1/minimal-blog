@@ -15,6 +15,8 @@
 | `src/components/PostList.astro` | 首页年份分组列表 | 列表改动 |
 | `src/components/SearchDialog.astro` | 站内搜索（Cmd+K，mb-dialog 容器 + 过滤 + 键盘导航） | 搜索改动 |
 | `src/components/wc/*.ts` | mb-\* 组件库（mb-dialog / mb-toast，零依赖 Web Components） | 组件库改动 |
+| `src/markdown/**` | Markdown 语法拓展（index.ts 注册表 + remark/ 插件 + 单测） | 语法拓展 |
+| `docs/markdown-extensions.md` | 语法清单 + 新增拓展开发指南（**新增语法前先读**） | 语法拓展 |
 | `src/lib/search.ts` | 搜索索引构建 / 过滤纯函数 | 功能改动 |
 | `src/test/setup-dom.ts` | jsdom 测试基座（组件测试注入全局） | 测试基建 |
 | `src/pages/**` | 页面路由（zh 无前缀 / en 前缀） | 页面改动 |
@@ -48,6 +50,7 @@
 - 新增纯函数逻辑 → 放 `src/lib/` 并**必须配单测**（`src/lib/*.test.ts`，bun test）
 - 新增 mb-\* 组件 → 放 `src/components/wc/`，需 `customElements.get()` 守卫注册 + 组件测试（`src/components/wc/*.test.ts`，首行 `import '../../test/setup-dom'` 注入 jsdom；主题一律走 CSS 变量继承，不硬编码颜色）
 - 改安全相关代码（CSP/头/CI 权限/依赖/注入点）→ 先读 `docs/security.md`（威胁模型与维护约定），改完跑 `npm audit`（临时 lockfile 方式）并同步文档
+- 新增 Markdown 语法拓展 → 先读 `docs/markdown-extensions.md`（6 步流程：插件放 `src/markdown/remark/` + index.ts 注册 + 单测 + CSS + 文档 + 验证）；遵守 XSS 约束（优先 data.hName，html 节点必须 escapeHtml）与插件顺序（结构级在前）
 - 提交信息：写作 `post: 标题`；工程 `feat/fix/ci:` 前缀
 
 ## 构建与部署

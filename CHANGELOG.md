@@ -3,6 +3,23 @@
 > 版本变更记录。**约定：`src/content/posts/` 下的文章增删改（写作）不进入本文件**——那是内容维护，不是项目版本变更。
 > 仅记录工程层面（代码/结构/功能/构建/测试/部署）的变化。
 
+## [1.5.0] - 2026-08-12
+
+### 新增
+- **Markdown 语法拓展架构**（src/markdown/）：插件注册表单一入口（index.ts）+ remark 层插件目录 + Astro 7 新 API `markdown.processor = unified({remarkPlugins})`（弃用 legacy remarkPlugins 配置）；完整开发文档 **docs/markdown-extensions.md**（语法总览 / 如何新增拓展 6 步模板 / 测试约定 / XSS 约束 / 常见坑）
+- **Callout 提示框**（> [!NOTE|TIP|WARNING|CAUTION]，GitHub 风格子集）：`data.hName` 方案产出 `<div class="callout callout-{type}" role="note" data-callout aria-label>`；标题由 CSS ::before 生成 + aria-label 读屏可感知；warning/caution 用 `--warning` 主题变量（亮 #7a5c10 / 暗 #c9a227，WCAG AA 对比）；支持多段落与 inline 语法；不支持嵌套
+- **==高亮==**：text 节点拆分产出 `<mark>`（手动 escapeHtml 防 XSS，& < > " 全转义单测覆盖）；未闭合/含 `=`/raw HTML 行为均有测试固化
+- **GFM 基线确认**（实证）：Astro 7 默认支持表格/任务列表/删除线/自动链接/脚注，无需额外插件
+- 测试 61 → **79**（插件单测 18：callout 8 + highlight 10）；新 devDependencies：@astrojs/markdown-remark / unified / remark-parse / @types/mdast
+
+### 变更
+- astro.config.mjs：`markdown.remarkPlugins`（deprecated）→ `markdown.processor = unified(...)`（含 gfm:true / smartypants:false 显式声明）；shiki css-variables 高亮与自定义 processor 共存验证通过
+- global.css：新增 `.post-body .callout` / `::before` / `mark` 样式 + `--warning` 变量 + 打印样式（去底色/纯黑）；callout 加 overflow-wrap 防窄屏溢出
+- markdown-workflow（zh/en 双语）：新增「拓展语法」演示段（TIP/WARNING callout + 高亮），链接指向 GitHub 仓库 docs（线上站点无 docs 目录）
+
+### 修复
+- 三人审查 2 Blocker + 2 Major + 15 Minor 全部处理：文档测试模板缺 `unified()` 工厂调用（B1）、data-callout 文档与实现对齐（B1）、warning 亮色对比度 2.96:1 不达标 → `--warning` 变量（Major）、callout 类型读屏不可达 → aria-label（Major）、重复测试删除、escapeHtml 断言补 & "、相邻 ==/含 = 行为固化测试、callout XSS 用例、文档模板/命令路径/import 注释/transform 示例、security.md 审计表补两行、index.ts 注释修正
+
 ## [1.4.0] - 2026-08-12
 
 ### 新增
