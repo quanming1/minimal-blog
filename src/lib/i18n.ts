@@ -22,6 +22,14 @@ const dictDef = {
   searchPlaceholder: { zh: '搜索文章标题或标签…', en: 'Search by title or tag…' },
   searchResults: { zh: '搜索结果', en: 'Search results' },
   searchEmpty: { zh: '没有找到匹配的文章', en: 'No matching posts' },
+  /** 标签页 */
+  tagsTitle: { zh: '标签', en: 'Tags' },
+  tagPostsTitle: { zh: '标签「{tag}」', en: 'Posts tagged "{tag}"' },
+  allTags: { zh: '← 所有标签', en: '← all tags' },
+  /** 详情页导航 */
+  prevPost: { zh: '← 上一篇', en: '← Previous' },
+  nextPost: { zh: '下一篇 →', en: 'Next →' },
+  relatedPosts: { zh: '相关文章', en: 'Related posts' },
 } as const
 
 export type I18nKey = keyof typeof dictDef

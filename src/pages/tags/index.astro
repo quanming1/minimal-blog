@@ -1,0 +1,29 @@
+---
+/** 标签云页（zh）：全部标签 + 文章数，点击进入 /tags/<tag>/ 筛选 */
+import Base from '../../layouts/Base.astro'
+import { getCollection } from 'astro:content'
+import { getAllTags } from '../../lib/posts'
+import { langOfId } from '../../lib/utils'
+import { t } from '../../lib/i18n'
+
+const posts = await getCollection('posts', ({ id }) => langOfId(id) === 'zh')
+const tags = getAllTags(posts.map((p) => ({ tags: p.data.tags })))
+const base = import.meta.env.BASE_URL
+---
+
+<Base lang="zh" path="/tags/" description="按标签浏览全部文章" pageTitle={`${t('zh', 'tagsTitle')} · ${t('zh', 'siteName')}`}>
+  <h1 class="posts-title">{t('zh', 'tagsTitle')}</h1>
+
+  {tags.length > 0 ? (
+    <div class="tags-cloud">
+      {tags.map((tag) => (
+        <a class="tag-link" href={`${base}tags/${encodeURIComponent(tag.tag)}/`}>
+          {tag.tag}
+          <span class="tag-count">({tag.count})</span>
+        </a>
+      ))}
+    </div>
+  ) : (
+    <p class="post-meta">{t('zh', 'searchEmpty')}</p>
+  )}
+</Base>

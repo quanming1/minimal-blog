@@ -18,6 +18,9 @@
 | `src/markdown/**` | Markdown 语法拓展（index.ts 注册表 + remark/ 插件 + 单测） | 语法拓展 |
 | `docs/markdown-extensions.md` | 语法清单 + 新增拓展开发指南（**新增语法前先读**） | 语法拓展 |
 | `src/lib/search.ts` | 搜索索引构建 / 过滤纯函数 | 功能改动 |
+| `src/lib/posts.ts` | 文章数据层纯函数（排序/相邻/相关/标签收集） | 功能改动 |
+| `src/lib/rss.ts` | RSS 2.0 生成器（escapeXml/toRfc822/buildRss） | 功能改动 |
+| `src/pages/tags/**` | 标签页路由（/tags/ 云 + /tags/[tag]/ 筛选，zh/en 双语） | 页面改动 |
 | `src/test/setup-dom.ts` | jsdom 测试基座（组件测试注入全局） | 测试基建 |
 | `src/pages/**` | 页面路由（zh 无前缀 / en 前缀） | 页面改动 |
 | `src/styles/global.css` | 全部样式（olivierlacan 风格 + 双主题 + 响应式断点体系 §10） | 样式改动 |

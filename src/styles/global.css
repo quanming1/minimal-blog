@@ -570,6 +570,110 @@ a:hover {
   border-bottom: 1px solid var(--accent-line);
 }
 
+.post-tags .tag:hover {
+  border-bottom-color: var(--accent);
+}
+
+/* ============ 标签页（/tags/ 云 + /tags/<tag>/ 筛选） ============ */
+.tags-cloud {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5em 1.1em;
+  margin: 1.5em 0 2em;
+}
+
+.tags-cloud .tag-link {
+  font-size: 1.05em;
+  color: var(--accent);
+  border-bottom: 1px solid var(--accent-line);
+  padding-bottom: 0.05em;
+}
+
+.tags-cloud .tag-link:hover {
+  border-bottom-color: var(--accent);
+}
+
+.tags-cloud .tag-count {
+  color: var(--muted);
+  font-size: 0.85em;
+  margin-left: 0.2em;
+}
+
+/* ============ 详情页：上下篇导航 + 相关文章 ============ */
+.post-nav {
+  display: flex;
+  justify-content: space-between;
+  gap: 1.5em;
+  margin: 2.5em 0 1.5em;
+  padding-top: 1.2em;
+  border-top: 1px solid var(--divider);
+}
+
+.post-nav-item {
+  flex: 1;
+  min-width: 0;
+}
+
+.post-nav-next {
+  text-align: right;
+}
+
+.post-nav-item a {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25em;
+  border-bottom: none;
+}
+
+.post-nav-label {
+  font-size: 0.8em;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.post-nav-title {
+  color: var(--accent);
+  border-bottom: 1px solid var(--accent-line);
+  align-self: flex-start;
+  max-width: 100%;
+  overflow-wrap: break-word;
+}
+
+.post-nav-next .post-nav-title {
+  align-self: flex-end;
+}
+
+.post-nav-item a:hover .post-nav-title {
+  border-bottom-color: var(--accent);
+}
+
+.related-posts {
+  margin: 1.5em 0 0.5em;
+}
+
+.related-posts h3 {
+  font-size: 1em;
+  color: var(--muted);
+  margin-bottom: 0.6em;
+}
+
+.related-posts ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.related-posts li {
+  margin: 0.4em 0;
+}
+
+.related-posts .related-date {
+  color: var(--muted);
+  font-size: 0.85em;
+  margin-left: 0.6em;
+}
+
 /* ============ 关于页 ============ */
 .about-body {
   font-size: 1.2em;

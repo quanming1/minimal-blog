@@ -2,25 +2,39 @@
 import Base from '../../../layouts/Base.astro'
 import TocSidebar from '../../../components/TocSidebar.astro'
 import { getCollection, render } from 'astro:content'
+import { getAdjacentPosts, getRelatedPosts, sortPostsByDate } from '../../../lib/posts'
 import { t } from '../../../lib/i18n'
-import { formatFullDate, langOfId, parseDateString, readingMinutes, slugOfId } from '../../../lib/utils'
+import { formatFullDate, formatMonthDay, langOfId, parseDateString, postHref, readingMinutes, slugOfId } from '../../../lib/utils'
 
 export async function getStaticPaths() {
   const posts = await getCollection('posts', ({ id }) => langOfId(id) === 'en')
   const zhPosts = await getCollection('posts', ({ id }) => langOfId(id) === 'zh')
   const zhSlugs = new Set(zhPosts.map((p) => slugOfId(p.id)))
-  return posts.map((p) => ({
+  const light = posts.map((p) => ({
+    id: p.id,
+    title: p.data.title,
+    date: parseDateString(p.data.date),
+    tags: p.data.tags,
+  }))
+  const sorted = sortPostsByDate(light)
+  return sorted.map((p) => ({
     params: { slug: slugOfId(p.id) },
-    props: { post: p, hasTranslation: zhSlugs.has(slugOfId(p.id)) },
+    props: {
+      post: posts.find((x) => x.id === p.id)!,
+      hasTranslation: zhSlugs.has(slugOfId(p.id)),
+      adjacent: getAdjacentPosts(sorted, p.id),
+      related: getRelatedPosts(sorted, p.id, 2),
+    },
   }))
 }
 
-const { post, hasTranslation } = Astro.props
+const { post, hasTranslation, adjacent, related } = Astro.props
 const { Content, headings } = await render(post)
 const { title, description, tags } = post.data
 const author = post.data.author ?? t('en', 'authorName')
 const date = parseDateString(post.data.date)
 const minutes = readingMinutes(post.body ?? '', 'en')
+const base = import.meta.env.BASE_URL
 ---
 
 <Base
@@ -52,12 +66,47 @@ const minutes = readingMinutes(post.body ?? '', 'en')
       {tags.length > 0 && (
         <div class="post-tags">
           {tags.map((tag) => (
-            <span class="tag">{tag}</span>
+            <a class="tag" href={`${base}en/tags/${encodeURIComponent(tag)}/`}>{tag}</a>
           ))}
         </div>
       )}
 
-      <a class="post-back" href={`${import.meta.env.BASE_URL}en/`}>{t('en', 'backHome')}</a>
+      {(adjacent.prev || adjacent.next) && (
+        <nav class="post-nav" aria-label={t('en', 'prevPost')}>
+          <div class="post-nav-item">
+            {adjacent.prev && (
+              <a href={postHref(base, 'en', adjacent.prev.id)}>
+                <span class="post-nav-label">{t('en', 'prevPost')}</span>
+                <span class="post-nav-title">{adjacent.prev.title}</span>
+              </a>
+            )}
+          </div>
+          <div class="post-nav-item post-nav-next">
+            {adjacent.next && (
+              <a href={postHref(base, 'en', adjacent.next.id)}>
+                <span class="post-nav-label">{t('en', 'nextPost')}</span>
+                <span class="post-nav-title">{adjacent.next.title}</span>
+              </a>
+            )}
+          </div>
+        </nav>
+      )}
+
+      {related.length > 0 && (
+        <section class="related-posts">
+          <h3>{t('en', 'relatedPosts')}</h3>
+          <ul>
+            {related.map((r) => (
+              <li>
+                <a href={postHref(base, 'en', r.id)}>{r.title}</a>
+                <span class="related-date">{formatMonthDay(r.date, 'en')}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
+      <a class="post-back" href={`${base}en/`}>{t('en', 'backHome')}</a>
     </article>
 
     <TocSidebar headings={headings} lang="en" />

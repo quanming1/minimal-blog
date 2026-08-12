@@ -3,6 +3,21 @@
 > 版本变更记录。**约定：`src/content/posts/` 下的文章增删改（写作）不进入本文件**——那是内容维护，不是项目版本变更。
 > 仅记录工程层面（代码/结构/功能/构建/测试/部署）的变化。
 
+## [1.10.0] - 2026-08-13
+
+### 新增
+- **RSS 2.0 feed**（/rss.xml）：手写零依赖生成器 src/lib/rss.ts（escapeXml/toRfc822/buildRss 纯函数 + 8 单测）+ src/pages/rss.xml.ts endpoint；含全部文章（zh+en 各自语言标题，日期倒序），RFC 822 日期（Date.UTC 防时区偏移）、XML 全转义、atom:link self 引用
+- **标签页系统**：/tags/（标签云 + 计数）+ /tags/<tag>/（该标签文章列表，日期倒序极简表格）+ en 双语对应页；前端 tag 链接 URL 编码（中文标签）；详情页标签从纯文本改为可点击链接
+- **文章上下篇导航**：详情页底部 prev/next（按日期排序相邻，首尾自动缺省），双语文案「上一篇/下一篇」
+- **相关文章推荐**：同标签优先（共享数降序再日期新优先，最多 2 篇），无共享标签不硬凑；当前 3 篇文章补充共享「写作」标签使推荐有真实展示
+- **内容数据层**：src/lib/posts.ts 纯函数（sortPostsByDate/getAdjacentPosts/getRelatedPosts/getAllTags）+ 15 单测
+- i18n 新键：tagsTitle/tagPostsTitle/allTags/prevPost/nextPost/relatedPosts
+- 测试 121 → **144**
+
+### 变更
+- 详情页 [slug].astro（zh/en）：getStaticPaths 构建期计算 adjacent/related（light 视图 + 找回原 post）；post-tags 区改 <a> 链接
+- 样式（@layer components 内）：.tags-cloud 标签云、.post-nav 上下篇（两列 flex 悬停）、.related-posts 相关列表
+
 ## [1.9.0] - 2026-08-13
 
 ### 新增
