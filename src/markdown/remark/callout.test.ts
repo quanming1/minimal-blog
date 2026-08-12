@@ -26,12 +26,14 @@ describe('remarkCallout', () => {
     expect(text).toBe('提示内容')
   })
 
-  test('四种类型 + 大小写不敏感', () => {
+  test('五种类型 + 大小写不敏感', () => {
     const cases = [
       ['> [!TIP]\n> x', 'tip'],
+      ['> [!IMPORTANT]\n> x', 'important'],
       ['> [!WARNING]\n> x', 'warning'],
       ['> [!CAUTION]\n> x', 'caution'],
       ['> [!note]\n> x', 'note'],
+      ['> [!Important]\n> x', 'important'],
       ['> [!Warning]\n> x', 'warning'],
     ] as const
     for (const [md, type] of cases) {

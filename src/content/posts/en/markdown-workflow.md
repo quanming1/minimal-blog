@@ -1,4 +1,4 @@
-﻿---
+---
 title: The Joy of a Markdown-Powered Blog
 date: '2026-08-11'
 description: Static blog workflow — write MD locally, push, auto-deploy. Everything is a file.
@@ -40,9 +40,20 @@ Ten years from now, these `.md` files will still be readable. That is the confid
 This blog supports some Markdown extensions (full list in [docs/markdown-extensions.md](https://github.com/quanming1/minimal-blog/blob/main/docs/markdown-extensions.md)):
 
 > [!TIP]
-> Tip: start a blockquote with `> [!TIP]` for a callout — supported types are `NOTE` / `TIP` / `WARNING` / `CAUTION`.
+> Tip: start a blockquote with `> [!TIP]` for a callout — supported types are `NOTE` / `TIP` / `IMPORTANT` / `WARNING` / `CAUTION`.
+
+> [!IMPORTANT]
+> Use `IMPORTANT` for things that matter: e.g. "decide what you want to say before you start writing."
 
 > [!WARNING]
 > Warnings work the same way; the type carries the semantics.
 
 Inline `==highlights==` mark key points, like "the joy of writing is ==building up, one post at a time==."
+
+Terms can be written as definition lists (term line followed by `: definition` lines):
+
+Mingzhi
+: From the Zhuge Liang line "without indifference there is no clear aspiration", the name and the stance of this blog.
+: Simply put: a clear ambition.
+
+Subscripts and superscripts suit formulas and units: water is H_{2}O, and E=mc^{2}.

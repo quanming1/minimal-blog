@@ -48,6 +48,7 @@
 ### 约束
 
 - **`date` 必须带引号**（`'YYYY-MM-DD'`）；`slug` 用小写短横线；同 slug 中英两篇必须同一日期语义（可不相同）
+- **md 文件必须 UTF-8 无 BOM**（BOM 会导致 Astro 正文渲染为空但 frontmatter 正常——见 docs/markdown-extensions.md §6）
 - **不要动** `src/layouts` / `src/pages` / `src/styles` 除非任务明确涉及样式或功能
 - 改响应式规则（断点/媒体查询/触屏目标）→ 先读 `docs/ui-analysis.md §10` 断点矩阵，改完在 375/768/1024/1280 至少四个视口验证无横向溢出；设计决策变更必须同步文档
 - 新增纯函数逻辑 → 放 `src/lib/` 并**必须配单测**（`src/lib/*.test.ts`，bun test）

@@ -1,4 +1,4 @@
-﻿---
+---
 title: 用 Markdown 维护一个博客的快乐
 date: '2026-08-11'
 description: 静态博客的工作流：本地写 MD、push、自动部署，一切都是文件。
@@ -40,9 +40,20 @@ git add . && git commit -m "post: 标题" && git push
 这个博客支持一些 Markdown 拓展语法（完整清单见 [docs/markdown-extensions.md](https://github.com/quanming1/minimal-blog/blob/main/docs/markdown-extensions.md)）：
 
 > [!TIP]
-> 提示框：用 `> [!TIP]` 开头即可，支持 `NOTE` / `TIP` / `WARNING` / `CAUTION` 四种。
+> 提示框：用 `> [!TIP]` 开头即可，支持 `NOTE` / `TIP` / `IMPORTANT` / `WARNING` / `CAUTION` 五种。
+
+> [!IMPORTANT]
+> 重要信息用 `IMPORTANT`：比如「写作前先想清楚要说什么」。
 
 > [!WARNING]
 > 警告框也是同样写法，语义由类型决定。
 
 正文里可以用 `==高亮==` 标记重点，比如「写作的快乐就在 ==一篇一篇积累== 的过程里」。
+
+术语可以用定义列表（`Term` 下一行 `: 定义`）：
+
+明志
+: 取自《诫子书》「非淡泊无以明志」，也是这个博客名字的来源。
+: 更简单地说，就是"明确的志向"。
+
+上标下标适合写公式与单位：水的化学式 H_{2}O，质能方程 E=mc^{2}。

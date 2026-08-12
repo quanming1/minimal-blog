@@ -9,12 +9,16 @@
  *   必须用 html 节点时手动 escapeHtml（见 highlight.ts 注释）
  */
 import { remarkCallout } from './remark/callout'
+import { remarkDeflist } from './remark/deflist'
 import { remarkHighlight } from './remark/highlight'
+import { remarkSupSub } from './remark/supsub'
 
 export const remarkPlugins = [
   remarkCallout,
+  remarkDeflist,
   remarkHighlight,
-  // 新增 remark 插件在这里追加一行（注意顺序）
+  remarkSupSub,
+  // 新增 remark 插件在这里追加一行（注意顺序：结构级在前，文本级在后）
 ]
 
 export const rehypePlugins = [

@@ -56,7 +56,7 @@ tags: [标签1, 标签2]        # 可选
 
 - 首页：按年份分组的极简表格文章列表（标题 + 月日 + ¶ 锚点）
 - 文章页：标题、作者 · 初写日期、阅读时长、正文排版（代码高亮 + 语言标签 + 一键复制）、**右侧目录 TOC**（滚动高亮，小屏折叠）、**阅读进度条**、**回到顶部**
-- **Markdown 拓展语法**：Callout 提示框（`> [!TIP]`）、`==高亮==`、GFM 全量（表格/任务/删除线/自动链接/脚注）——语法清单与开发指南见 [docs/markdown-extensions.md](./docs/markdown-extensions.md)
+- **Markdown 拓展语法**：Callout 提示框（`> [!TIP]`，含 IMPORTANT）、`==高亮==`、定义列表（`Term` + `: 定义`）、上标/下标（`H_{2}O` / `E=mc^{2}`）、GFM 全量（表格/任务/删除线/自动链接/脚注）——语法清单与开发指南见 [docs/markdown-extensions.md](./docs/markdown-extensions.md)
 - 关于页
 - 语言切换（中/英）+ 亮暗主题（localStorage 记忆，默认亮色）
 - **站内搜索**（Cmd+K / Ctrl+K / 导航 🔍）：按标题/描述/标签实时过滤全部文章，键盘可达，双语

@@ -14,6 +14,7 @@
   --divider-strong: rgba(0, 0, 0, 0.45); /* 表头边界：非文本对比 ≥3:1（WCAG 1.4.11） */
   --overlay: rgba(0, 0, 0, 0.35); /* 模态遮罩（mb-dialog） */
   --warning: #7a5c10; /* callout warning/caution（亮色：对 #f4f4f4 对比 5.7:1，WCAG AA） */
+  --important: #8250df; /* callout important（亮色：对 #f4f4f4 对比 ~4.8:1，WCAG AA） */
   --code-bg: #f4f4f4;
   --code-text: #24292f;
 
@@ -53,6 +54,7 @@
   --divider-strong: rgba(230, 237, 243, 0.4);
   --overlay: rgba(0, 0, 0, 0.55); /* 暗色下遮罩加深，保证面板浮层感 */
   --warning: #c9a227; /* callout warning/caution（暗色：对 #161b22 对比 >5:1） */
+  --important: #d2a8ff; /* callout important（暗色：对 #161b22 对比 >8:1） */
   --code-bg: #161b22;
   --code-text: #e6edf3;
 
@@ -330,7 +332,7 @@ a:hover {
 
 /* ============ Markdown 拓展样式（语法见 docs/markdown-extensions.md） ============ */
 
-/* Callout 提示框：> [!NOTE|TIP|WARNING|CAUTION]（GitHub 风格子集，标题由 CSS ::before + data-callout 生成） */
+/* Callout 提示框：> [!NOTE|TIP|IMPORTANT|WARNING|CAUTION]（GitHub 风格子集，标题由 CSS ::before + data-callout 生成） */
 .post-body .callout {
   margin: 1.2em 0;
   padding: 0.9em 1.1em;
@@ -362,6 +364,14 @@ a:hover {
   color: var(--warning);
 }
 
+.post-body .callout-important {
+  border-left-color: var(--important);
+}
+
+.post-body .callout-important::before {
+  color: var(--important);
+}
+
 .post-body .callout > :first-child {
   margin-top: 0;
 }
@@ -375,6 +385,29 @@ a:hover {
   background: var(--accent-line);
   color: inherit;
   padding: 0 0.15em;
+}
+
+/* 定义列表（Term\n: Definition → dl/dt/dd）：dt 加粗、dd 缩进 + 细边条（印刷风） */
+.post-body dl {
+  margin: 1.2em 0;
+}
+
+.post-body dl > dt {
+  font-weight: 700;
+}
+
+.post-body dl > dd {
+  margin: 0.2em 0 0.8em 1.2em;
+  padding-left: 0.9em;
+  border-left: 2px solid var(--divider);
+  color: var(--text);
+}
+
+/* 上标/下标（H_{2}O / x^{2}） */
+.post-body sub,
+.post-body sup {
+  font-size: 0.8em;
+  line-height: 0;
 }
 
 .post-body blockquote p {
@@ -1063,8 +1096,18 @@ html {
 
   .post-body .callout::before,
   .post-body .callout-warning::before,
-  .post-body .callout-caution::before {
+  .post-body .callout-caution::before,
+  .post-body .callout-important::before {
     color: #000 !important;
+  }
+
+  /* 定义列表：每组（dt + 其 dd）不跨页 */
+  .post-body dl {
+    break-inside: avoid;
+  }
+
+  .post-body dl > dd {
+    border-left-color: #000 !important;
   }
 
   /* Shiki token 颜色重置纯黑：暗色下浅色 token（#a5d6ff 等）印白底不可读 */

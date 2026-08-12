@@ -1,6 +1,6 @@
 /** remarkCallout：GitHub 风格提示框（Markdown 语法拓展，见 docs/markdown-extensions.md）
  *
- * 语法：blockquote 首行 `[!NOTE]` / `[!TIP]` / `[!WARNING]` / `[!CAUTION]`（大小写不敏感），
+ * 语法：blockquote 首行 `[!NOTE]` / `[!TIP]` / `[!IMPORTANT]` / `[!WARNING]` / `[!CAUTION]`（大小写不敏感），
  *       后续行/段为内容：
  *   > [!NOTE]
  *   > 提示内容
@@ -14,9 +14,9 @@
 import type { Plugin } from 'unified'
 import type { Root } from 'mdast'
 
-const CALLOUT_RE = /^\[!(NOTE|TIP|WARNING|CAUTION)\]\s*(?:\n|$)/i
+const CALLOUT_RE = /^\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\]\s*(?:\n|$)/i
 
-export type CalloutType = 'note' | 'tip' | 'warning' | 'caution'
+export type CalloutType = 'note' | 'tip' | 'important' | 'warning' | 'caution'
 
 export const remarkCallout: Plugin<[], Root> = () => (tree) => {
   walk(tree, null, -1)

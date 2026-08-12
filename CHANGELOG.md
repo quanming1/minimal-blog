@@ -3,6 +3,22 @@
 > 版本变更记录。**约定：`src/content/posts/` 下的文章增删改（写作）不进入本文件**——那是内容维护，不是项目版本变更。
 > 仅记录工程层面（代码/结构/功能/构建/测试/部署）的变化。
 
+## [1.7.0] - 2026-08-13
+
+### 新增
+- **定义列表 DefList**（src/markdown/remark/deflist.ts）：`Term\n: Definition`（PHP Markdown Extra 风格）→ `<dl><dt><dd>`（data.hName 方案）；支持一术语多定义、term/def 内 inline 语法；**实证 remark-parse 把无空行的连续行合并为单个 paragraph** → 插件按 `\n` 拆行重组（形态 A）+ 兄弟段落（形态 B）双处理；孤立 `: ` 行/混普通行原样保留
+- **上标/下标 SupSub**（src/markdown/remark/supsub.ts）：`H_{2}O` → `<sub>`、`E=mc^{2}` → `<sup>`（LaTeX 风格）；**实证 remark-gfm 4.x 删除线默认 singleTilde——`~2~` 会被转 `<del>`**，故弃 Pandoc 风格 `~x~` 改用 `_{x}`/`^{x}`（CommonMark 不触发强调、GFM 脚注无花括号不匹配）；escapeHtml 全字符转义
+- **Callout 补 IMPORTANT**：类型集 4 → 5（GitHub 完整子集），`--important` 主题变量（亮 #8250df / 暗 #d2a8ff，AA 对比）+ `.callout-important` 边条/标题样式；打印样式同步
+- **样式**：dl/dt/dd（dt 加粗、dd 缩进+细边条印刷风）、sub/sup 0.8em；打印段 dl break-inside: avoid + dd 边条重置
+- 测试 97 → **120**（deflist 10 + supsub 13 + callout +1）；演示文章 markdown-workflow（zh/en）新增 IMPORTANT/定义列表/上下标演示段
+
+### 变更
+- 插件注册顺序：callout → deflist（结构级）→ highlight → supsub（文本级）
+- docs/markdown-extensions.md：总览表 5 种拓展、§3.3/§3.4 详解、§6 常见坑 +5（`Term\n: Def` 单 paragraph、singleTilde 冲突、GFM parse 阶段、CJK emphasis）、§7 测试基线
+
+### 修复
+- 单测捕获的语法冲突：`~x~` 下标被 GFM singleTilde 删除线抢占（真实管线会渲染 `<del>`）→ 改 `_{x}`/`^{x}` 语法
+
 ## [1.6.0] - 2026-08-13
 
 ### 新增
