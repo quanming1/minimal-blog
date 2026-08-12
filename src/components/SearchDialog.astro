@@ -227,8 +227,9 @@ const indexJson = JSON.stringify(index).replace(/</g, '\\u003c')
         setActive(next)
         items[next]?.scrollIntoView({ block: 'nearest' })
       } else if (e.key === 'Enter') {
-        const active = items[activeIdx]
-        const a = active?.querySelector('a')
+        // activeIdx=-1（未导航过）时兜底打开第一条
+        const target = items[activeIdx] ?? items[0]
+        const a = target?.querySelector('a')
         if (a) a.click() // 触发 VT 软导航（与鼠标点击一致，不绕过 ClientRouter）
       }
     })

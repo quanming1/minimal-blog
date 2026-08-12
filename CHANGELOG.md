@@ -26,6 +26,7 @@
 - **搜索输入框无焦点环（Major，WCAG 2.4.7）**：`outline:none` 移除焦点指示 → 改 `.search-head:focus-within` accent 下划线 + 全局 :focus-visible 兜底
 - **Toast 与回到顶部按钮重叠（Major）**：同锚右下角必遮挡 → toast bottom 避让 `calc(1.2em + 48px)` / 移动端 `calc(4.6em + 48px)`
 - 其余：Enter 硬导航改 `a.click()`（走 VT）、索引转义全量 `<`、空态未输入不显示、对话框可访问名改『站内搜索』、toast 边条 3px→2px 克制、打印隐藏 mb-toast、注释 4→5 项、jsdom rAF mock 防爆栈
+- **Enter 未导航时无法打开第一条（线上验证发现）**：`activeIdx=-1` 时 `items[-1]` undefined → 兜底 `items[activeIdx] ?? items[0]`
 
 ## [1.2.0] - 2026-08-12
 
