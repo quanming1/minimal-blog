@@ -41,7 +41,7 @@ const tocLabel = lang === 'zh' ? '目录' : 'Contents'
       mqCleanup = null
     }
 
-    const toc = document.querySelector('.toc')
+    const toc = document.querySelector<HTMLDetailsElement>('.toc')
     if (!toc || !('IntersectionObserver' in window)) return
 
     // 大屏（≥1201px）强制展开：防止小屏折叠后拉宽导致目录不可见
