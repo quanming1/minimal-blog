@@ -22,4 +22,5 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
-.ftre/
+# ftre 本机工具配置（skills/ 下的工作区 Skill 随仓库分发，mcp.json 为本机配置不入库）
+.ftre/mcp.json

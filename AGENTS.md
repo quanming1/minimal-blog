@@ -35,6 +35,8 @@
 
 ## 写作规范（日常任务）
 
+> **发布 / 更新文章前先读 `.ftre/skills/publish-post/SKILL.md`**（发布流程 Skill：frontmatter 规范 / 验证链 / 提交格式 / 部署验证全流程，与本节一致但更完整）。
+
 ### 新增中文文章
 
 1. 新建 `src/content/posts/zh/<slug>.md`，frontmatter：
@@ -63,7 +65,7 @@
 - 改 SEO 相关代码（Base.astro head / src/lib/seo.ts / astro.config.mjs / robots.txt）→ 先读 `docs/seo.md`；JSON-LD 必须 `is:inline set:html` + `serializeJsonLd`（Astro 对非 JS script 透传不求值）；datePublished 用 frontmatter 原字符串不转 Date；hreflang 遵循 `alternateUrls` 规则（hasTranslation 才输出互译）
  - 提交信息（Conventional Commits）：`<type>(<scope>): <subject>`，subject 中文
    - type 白名单：`post`（文章）/ `feat`（功能）/ `fix`（修复）/ `docs`（文档）/ `style`（样式）/ `refactor`（重构）/ `chore`（杂项）/ `ci`（CI 与部署）/ `test`（测试）/ `perf`（优化）
-   - scope 用模块名（见上方路径表）：`posts` / `theme` / `layout` / `lib` / `components` / `styles` / `markdown` / `seo` / `rss` / `tags` / `search` / `ci` / `docs`
+   - scope 用模块名（见上方路径表）：`posts` / `theme` / `layout` / `lib` / `components` / `styles` / `markdown` / `seo` / `rss` / `tags` / `search` / `ci` / `docs` / `skills`
    - 例：`post(posts): 新增 git 提交规范文章`、`fix(styles): 加宽文章正文`、`ci(deploy): smoke 测试动态页数`
    - 单 main 分支 + GitHub Pages 部署，无 develop/main 之分，故不适用 develop↔main 走 PR 约束
 
