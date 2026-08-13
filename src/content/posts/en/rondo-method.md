@@ -1,14 +1,14 @@
 ---
-title: 'The Rondo Method: PRD-Driven Development with Hard Agent Constraints'
+title: 'The Rondo Method: PRD-Driven Development with Hard Agent Constraints (All-PR Edition)'
 date: '2026-08-13'
-description: A practical recipe for AI pair development distilled from the rondo project — PRD-driven development, hard AGENTS.md constraints, TODO-list governance, a six-step loop, and a PRD change decision machine.
+description: A practical recipe for AI pair development distilled from the rondo project — PRD-driven development, hard AGENTS.md constraints, TODO-list governance, an all-PR merge flow, and a downloadable asset pack (hooks + templates + example PRD) so AI and humans work under the same rules.
 column: Rondo Method
 tags: [Engineering, AI Agent, Dev Process]
 ---
 
 The biggest problem with AI pair development isn't "the AI isn't capable" — it's that **every session starts as a fresh hire**. No project memory, no knowledge of your conventions, prone to doing the right-looking thing in the wrong place. The rondo project solved this with a constraint system written into the repository.
 
-I practiced it end to end, and distilled it into the **Rondo Method**: three pillars + one process loop + a change discipline. This post presents it semi-structurally — tables, pseudocode, and hard MUSTs — so you can follow it directly.
+I practiced it end to end, and distilled it into the **Rondo Method**: three pillars + one process loop + a change discipline + an all-PR merge flow. This post ships with a **downloadable asset pack** (Git hooks + spec templates + example PRD) — copy it into your project, adapt, and you're running the full system.
 
 ## 1. Why you need a system
 
@@ -23,44 +23,42 @@ An AI agent has no persistent memory; its only stable input is **the files alrea
 | Readable | fixed paths, clear conventions | TODO.yaml / PROCESS.md / PRD |
 | Enforceable | machine-checked, not willpower | git hooks / CI |
 
+==The one core principle==: **constraints live in the repo, are readable, and are machine-enforced — AI and humans play by the same rules.** Details scale to your project — the spec is a guardrail, not a maze.
+
 ## 2. The three pillars
 
 ### Pillar 1: PRD-driven development
 
 **PRD first, code second** — no stage starts until its PRD is finalized (`approved`):
 
-- The PRD is the **single source of truth**: requirements, implementation, tests, and acceptance all reference it; building anything not defined in it is forbidden
-- **One stage, one PRD**: `docs/prd/PRD-<stage>-<name>.md`, copied from the template
-- **No acceptance, no completion**: every item in the acceptance criteria must pass before updating TODO / CHANGELOG
+- The PRD is the **single source of truth**: requirements, implementation, tests, and acceptance all trace to it; building anything undefined in the PRD is forbidden
+- **One PRD per stage**: `docs/prd/PRD-<stage>-<name>.md`, copied from the template
+- **Failed acceptance = not done**: every item in the PRD's "Acceptance Criteria" must pass before TODO / CHANGELOG are updated
 
 > [!TIP]
-> The value of a PRD template is that **structure is discipline** — it forces non-goals (to stop scope creep) and executable acceptance criteria (to stop "looks good enough").
+> The PRD template's value is **structure-as-discipline**: it forces a "Non-Goals" section (scope creep prevention) and executable acceptance criteria (prevents "looks fine").
 
-### Pillar 2: Hard AGENTS.md constraints
+### Pillar 2: AGENTS.md hard constraints
 
-`AGENTS.md` is the behavioral contract for **all AI agents** and humans in the repo — read and obey it fully before touching anything:
+`AGENTS.md` is the behavior spec for all AI agents and human contributors — **read it fully before touching anything**:
 
 ```text
-# Work style
-- Strictly follow the stage order in docs/TODO.yaml — no skipping, no overreach
-- Read the relevant docs and existing code before starting; follow existing patterns; don't invent parallel ones
-- No undeclared dependencies; only touch files in the task scope
+# Working style
+- Follow the stage order in docs/TODO.yaml strictly; no skipping, no overstepping
+- Read related docs and existing code before acting; follow existing patterns
+- No undeclared dependencies; only touch files in scope
 
-# Language & style
-- Comments, docstrings, commit messages, docs in Chinese; identifiers in English
-- Comments explain "why", not "what"; no emoji
-
-# Git enforcement
-- Never commit directly to main; develop accepts merges only
+# Git (all-PR flow)
+- main is never committed to directly; develop accepts only GitHub PR merges — no local merge
 - feat/fix scope must cross-check against the stage id in the branch name
-- Rules are enforced by .githooks/ — not by willpower
+- Discipline is machine-enforced by .githooks/ — not by willpower
 ```
 
-Key design: **rules must be machine-checkable**. The commit-msg hook parses `TODO.yaml` live to validate stage ids — a typo is rejected on the spot with a list of valid stages. Human review gets tired and makes exceptions; hooks don't.
+Key design: **rules must be machine-checkable**. The commit-msg hook parses `TODO.yaml` and validates stage ids in real time — typos are rejected on the spot. Human review gets tired and makes "just this once" exceptions; hooks don't.
 
 ### Pillar 3: TODO-list governance
 
-`docs/TODO.yaml` is the **single execution authority** — a structured task list expanded from the roadmap by stage:
+`docs/TODO.yaml` is the **single execution source** — a structured task list expanded by roadmap stage:
 
 ```yaml
 stages:
@@ -74,181 +72,277 @@ stages:
         acceptance: all passed — pytest 20 passed, ruff clean
 ```
 
-- Each step carries **modules / acceptance / status** (done / in_progress / todo)
-- **Status linkage**: mark `in_progress` at kickoff, flip to `done` only after acceptance; the PRD lifecycle moves in lockstep
-- **Consumed by machines**: the commit hook reads it to validate stage ids — the TODO is data for tooling, not a checklist for humans
+- Each step carries: **modules / acceptance criteria / status** (done / in_progress / todo)
+- **Status coupling**: set `in_progress` at kickoff, flip to `done` only after acceptance; the PRD lifecycle moves in lockstep
+- **Machine-consumed**: the commit hook reads it to validate stage ids — TODO is data for tools, not a to-do list for humans
 
-## 3. The full development process (six-step loop)
+## 3. The full development loop (six steps)
 
-> This section is the execution skeleton: from requirement to release, every step has a clear action, artifact, and state. **No stage starts without a finalized PRD.**
+> This section is the execution skeleton: every step from requirement to release has a defined action, artifact, and status. **No stage starts without a finalized PRD.**
 
-### 3.1 The six-step closed loop
+### 3.1 The six-step loop
 
 ```
-Kickoff → Review → Develop → Verify → Wrap up → Release
+Kickoff → Review → Build → Verify → Close → Release
 ```
 
-| Step | Action | Artifact / status |
+| Step | Action | Artifact / Status |
 |---|---|---|
-| 1. Kickoff | Pick a stage from TODO, write the PRD | `PRD-<stage>-<name>.md` (draft) |
-| 2. Review | Walk requirements & acceptance criteria line by line | PRD `approved` (frozen) |
-| 3. Develop | Implement per PRD; `feature/<stage>-<task>` branch | Code + tests |
-| 4. Verify | Run every acceptance item (lint / test / build / manual) | All pass → wrap up; fail → back to develop |
-| 5. Wrap up | Update CHANGELOG, TODO status, PRD `accepted` | Merge to develop, push |
-| 6. Release | Release branch + version freeze + regression + tag | `release/<ver>` → main + tag |
+| 1. Kickoff | Pick a stage from `docs/TODO.yaml`, **mark it `in_progress`**, draft the PRD | `PRD-<stage>-<name>.md` (status: draft) |
+| 2. Review | Walk through requirements and acceptance criteria, finalize | PRD status: `approved` (frozen; changes go through "Change Log") |
+| 3. Build | Implement per PRD; branch `feature/<stage>-<task>` | code + tests; PRD status: in development |
+| 4. Verify | Run every acceptance item (lint / test / build / manual) | all pass → close; any fail → back to build |
+| 5. Close | **Triple coupling, none optional**: PRD `accepted` + TODO `done` + CHANGELOG entry | push feature branch → GitHub PR into develop |
+| 6. Release | release branch + version freeze + regression + tag | `release/<ver>` → main + tag |
 
 ### 3.2 PRD lifecycle state machine
 
-Every state transition has an explicit trigger; **requirement changes can interrupt the main loop at any time** — the state machine routes them:
+Every state transition has an explicit trigger; **requirement changes can interrupt the main flow at any time**, routed by the state machine:
 
 ```text
-// ── PRD lifecycle state machine (with requirement-change routing) ──
-// States: draft → review → approved → developing → accepted
+// ── PRD lifecycle state machine (with requirement-change fork) ──
+// States: draft → review → approved → in development → accepted
 
 STATE = draft
 
-// Main loop (six steps)
-kickoff:  pick a stage from TODO → copy template → write PRD → STATE = draft
-review:   walk requirements & AC line by line
-          → all sound ? STATE = approved (frozen) : back to draft
-develop:  implement per PRD (PRD is the only authority, no overreach) → STATE = developing
-verify:   run every AC item (lint / test / build / manual)
-          → all pass ? STATE = accepted : back to developing (fix and re-verify)
-wrap-up:  sync states (PRD accepted + TODO done + CHANGELOG appended)
+// Main flow (six-step loop)
+kickoff: pick stage from TODO.yaml → copy template, write PRD → STATE = draft
+review:  walk through requirements and ACs
+         → all sound ? STATE = approved (frozen) : back to draft for edits
+build:   implement per PRD (PRD is the only source; no overreach) → STATE = in development
+verify:  run ACs one by one (lint / test / build / manual)
+         → all pass ? STATE = accepted : back to in development (fix, re-verify)
+close:   status coupling (PRD accepted + TODO done + CHANGELOG entry)
 
-// ── Requirement-change routing (on new requirements, any state) ──
+// ── Requirement-change fork (any state) ──
 on new requirement:
 
-    // Decision: open a new PRD or amend the existing one?
-    if requirement is within the existing PRD's scope (same stage / same topic / refinement
-       of existing FR·AC) and the PRD has not diverged into a different direction:
-        → route to [Path B] amend the existing PRD
-    else (new stage / brand-new topic / crosses the PRD boundary):
-        → route to [Path A] open a new PRD
+    // Which path: new PRD or amend?
+    if requirement fits the original PRD scope (same stage / same topic /
+       refinement of existing FRs·ACs) and hasn't diverged into a new direction:
+        → take 【Path B】amend the PRD
+    else (new stage / brand-new topic / scope crosses the PRD boundary):
+        → take 【Path A】open a new PRD
 
-// Path A: open a new PRD
-pathA:
-    pick/create a stage in TODO.yaml (mark in_progress)
+// Path A: new PRD
+Path A:
+    pick or add a stage in TODO.yaml (mark in_progress)
     copy PRD-TEMPLATE.md → docs/prd/PRD-<stage>-<name>.md
-    restart the main loop at [kickoff]
+    return to 【Kickoff】
 
-// Path B: amend the existing PRD
-pathB:
-    update the PRD body (corresponding FR / AC / technical approach)
-    MUST append a row to the trailing "Change log" section: date + change + reason
-    // The change log is mandatory — it is the audit trail of requirement changes
-    MUST re-check the affected AC:
-        if STATE == approved:   update AC, stay approved
-        elif STATE == developing: re-run affected AC → proceed only if passing
-        elif STATE == accepted:  re-run affected AC → if failing, STATE = developing
+// Path B: amend the PRD
+Path B:
+    edit the PRD body (update the relevant FRs / ACs / tech design)
+    MUST append to the "Change Log" at the end: date + what changed + why
+    // the log entry is mandatory — it's the audit trail for requirement changes
+    MUST re-verify affected ACs:
+        if STATE == approved:      update ACs, stay approved
+        elif STATE == in dev:      re-run affected ACs → continue only if they pass
+        elif STATE == accepted:    re-run affected ACs → if they fail, STATE = in development
 ```
 
-### 3.3 Requirement changes: two paths
+### 3.3 The requirement-change fork
 
-Requirement changes are normal — the point is to **decide first, then act**. The criteria:
+Requirement changes are the norm; the key is **judge first, then act**. The fork criteria:
 
-| Dimension | Path A: new PRD | Path B: amend existing PRD |
+| Dimension | Path A: new PRD | Path B: amend the PRD |
 |---|---|---|
 | Stage | new TODO stage / cross-stage | within the same stage |
-| Topic | brand-new direction | same topic, incremental/refinement |
-| Scope | crosses the PRD boundary | refinement of existing FR/AC |
-| PRD state | accepted and the new ask is a different thing | any state (including small post-acceptance tweaks) |
+| Topic | brand-new direction | incremental refinement of the same topic |
+| Scope | crosses the PRD boundary | correction/supplement to existing FRs·ACs |
+| PRD state | accepted and the need is a different thing | any state (incl. small tweaks after acceptance) |
 | Action | copy template, new doc, full loop | edit body + **MUST log the change at the end** |
 
 > [!IMPORTANT]
-> **Path B discipline**: when amending a PRD, MUST append a row to the trailing "Change log" section (date + change + reason) and re-check the affected acceptance criteria. This is the **audit trail** of requirement changes — without it, the PRD drifts silently, code and docs diverge again, and the whole system fails.
+> **Path B discipline**: when you amend a PRD, you MUST append one line to its "Change Log" (date + what changed + why) and re-verify the affected acceptance criteria. It's the **audit trail** for requirement changes — without it the PRD silently drifts, code and docs decouple again, and the whole system collapses.
 
-## 4. Git Flow pairing
+### 3.4 Backfilling an existing project (no PRD/TODO yet)
 
-- **Branch model**: `main` (releases only) → `develop` (daily integration, merges only) → `feature/<stage>-<task>` / `release/<ver>` / `hotfix/<name>`
-- **Commit format**: `<type>(<scope>): <subject>`; feat/fix scope must be a real stage id in TODO; feat additionally requires the staged files to include the stage PRD
-- **Machine enforcement**: `.githooks/commit-msg` validates the type whitelist / stage existence / feat-carries-PRD / branch cross-check; `.githooks/pre-push` protects main and develop
-- **AI and humans share the same rules**: no "special case for agents"
+Many projects are **already in development** and never had PRD / TODO / a spec system. Don't pretend to "start from zero" — backfill the history into assets first, then let the new rules take over:
 
-## 5. The key files
+```
+① Map the evolution: git log --oneline --date=short (group by feature/version)
+     ↓
+② Split into stages: cut milestones into N stages (e.g. foundation / core / polish / close)
+     ↓
+③ Backfill TODO: one line per stage (modules + acceptance + status done/todo)
+     ↓
+④ Backfill PRDs: copy the template; infer FRs/ACs from code and CHANGELOG
+```
 
-The core files are extracted as downloadable assets:
+- **Historical features = `done`, future plans = `todo`** — existing code is proof of done.
+- PRD status by reality: shipped feature → `accepted`; exists but no acceptance record → `approved` + note "backfilled, acceptance to be re-verified".
+- **Backfilling is not fabrication**: if you can't write an acceptance criterion, mark it "to be re-verified" — don't pretend history had one.
+
+## 4. Git Flow companion (all-PR)
+
+### 4.1 Branch model
+
+```
+main            ← release versions only (protected: never committed to directly)
+  └─ develop    ← daily integration branch (default base; only PR merges)
+       ├─ feature/<name>   new feature / task (branched from develop)
+       ├─ release/<ver>    release prep (version freeze, regression)
+       └─ hotfix/<name>    production hotfix (from main; merged back to main + develop)
+```
+
+### 4.2 The all-PR flow (core)
+
+**Every change entering develop goes through a GitHub PR/MR (Code Review)** — push the feature branch locally, never merge develop locally:
+
+| Path | Method | Forbidden |
+|---|---|---|
+| `feature/*` → `develop` | push branch → GitHub PR merge | local `git merge --no-ff` into develop |
+| `develop` → `main` | via `release/*` branch, open PR | local `git merge` |
+| `main` → `develop` | hotfix backflow via PR | local `git merge` |
+
+**Why all-PR**: every change is human-reviewed before entering the trunk; PRs leave a trail (discussion, review comments, merge record); a local merge into develop bypasses review. GitHub free-tier private repos can't enable server-side branch protection — the **local pre-push hook is the replacement** (see §4.4).
+
+### 4.3 Commit convention
+
+`<type>(<scope>): <subject>`, Chinese subject; feat/fix scope must be a real stage id from TODO; feat additionally requires the corresponding PRD staged.
+
+### 4.4 Machine enforcement (hooks)
+
+- `.githooks/commit-msg`: type whitelist / stage existence / feat-with-PRD / branch-name cross-check
+- `.githooks/pre-push`: all-PR protection — **main double protection** (no non-main → main; no local merge) + **develop triple protection** (no delete / no feature → develop / no local ahead-of-remote)
+- **AI and humans play by the same rules**: no "the agent gets a pass" exceptions
+
+## 5. Full flowchart
+
+```mermaid
+flowchart TD
+    START([New task / requirement]) --> HASDOC{Has<br/>PRD + TODO?}
+    HASDOC -- "no → existing project" --> REVERSE[§3.4 Backfill<br/>map via git log<br/>stage TODO<br/>write PRDs]
+    HASDOC -- yes --> PICK
+    REVERSE --> PICK[six-step loop<br/>pick stage<br/>mark in_progress]
+
+    PICK --> STEP1[1 Kickoff<br/>draft PRD]
+    STEP1 --> STEP2{2 Review<br/>requirements + ACs sound?}
+    STEP2 -- no / needs edits --> STEP1
+    STEP2 -- yes --> APPROVED[PRD approved<br/>frozen]
+    APPROVED --> STEP3[3 Build<br/>feature branch<br/>implement per PRD]
+    STEP3 --> STEP4{4 Verify<br/>run ACs<br/>lint/test/build}
+    STEP4 -- fail --> STEP3
+    STEP4 -- all pass --> STEP5[5 Close triple coupling<br/>PRD accepted<br/>+ TODO done<br/>+ CHANGELOG]
+    STEP5 --> STEP6[6 Release<br/>release branch<br/>+ freeze + tag]
+
+    CHANGE([in dev / post-acceptance<br/>new requirement]) --> JUDGE{Within original PRD?<br/>same stage/topic<br/>refinement of<br/>FRs/ACs}
+    JUDGE -- "yes → Path B" --> PATHB[edit PRD body<br/>MUST append change log<br/>+ re-verify ACs]
+    PATHB --> STEP3
+    JUDGE -- "no → Path A" --> PATHA[new PRD<br/>new stage/topic<br/>add stage in TODO]
+    PATHA --> PICK
+```
+
+## 6. Asset pack (download and adapt)
+
+The core files have been extracted as assets — **download, adapt to your project, and you're running the system**:
 
 > [!asset] rondo-method/AGENTS.md
-> The full agent behavioral contract — work style / code style / Git Flow / testing / docs / PRD-driven / security boundaries. The entry point of the whole system.
+> Full behavior spec for AI agents — working style / code style / Git Flow (all-PR) / testing / docs / PRD-driven / security. The entry file of the whole constraint system.
 
-> [!asset] rondo-method/PRD-TEMPLATE.md
-> The PRD template — structure is discipline: forces non-goals and executable acceptance criteria; the trailing "Change log" section is where Path B lands.
+> [!asset] rondo-method/.githooks/pre-push
+> Push protection hook — enforces the all-PR flow: main double protection + develop triple protection (no delete / no feature → develop / no local ahead). Copy to `.githooks/` and `git config core.hooksPath .githooks`.
 
-> [!asset] rondo-method/PRD-A1-cli-config.md
-> A real, accepted PRD (rondo stage A1) — what a finalized PRD looks like, with checked FR/AC and a change log.
+> [!asset] rondo-method/.githooks/commit-msg
+> Commit-validation hook wrapper (sh) — calls check_commit_msg.py.
 
-> [!asset] rondo-method/TODO.yaml
-> A structured task list example — staged, with modules and acceptance per step, machine-consumable by hooks.
+> [!asset] rondo-method/.githooks/check_commit_msg.py
+> Commit-validation logic (Python) — type whitelist / stage existence / feat-with-PRD / branch-name cross-check; customize the "cut points" config block at the top (module scopes, TODO/PRD paths).
+
+> [!asset] rondo-method/docs/TODO.yaml
+> Structured task-list template — expanded by stage, each step with modules and acceptance, machine-consumed by the hook.
+
+> [!asset] rondo-method/docs/PROCESS.md
+> Process playbook — six-step loop + status coupling + existing-project backfill flow.
+
+> [!asset] rondo-method/docs/prd/PRD-TEMPLATE.md
+> PRD template — structure-as-discipline: forces Non-Goals and executable acceptance criteria; the trailing "Change Log" is where Path B lands.
+
+> [!asset] rondo-method/docs/prd/PRD-example.md
+> Example PRD (accepted form) — what a finalized PRD looks like, with checked FRs/ACs and change-log entries.
+
+> [!asset] rondo-method/README.md
+> Asset guide — file list / new-project landing steps / existing-project backfill steps / adaptation guide / dependency map.
 
 > [!TIP]
-> The full asset pack (6 files, including `PROCESS.md` and a `README.md` explaining usage and minimal combos) lives in the asset directory.
+> Copy the whole `public/assets/rondo-method/` directory into your repo (including `.githooks/`), then follow the landing steps in README.md.
 
-## 6. Scaling it down
+## 7. Adapting to your scale
 
-The Rondo Method is battle-tested in rondo, and scales to fit:
+The Rondo Method is battle-tested in the rondo project; it scales up and down:
 
-| Size | Combo | Coverage |
+| Scale | Combination | Covers |
 |---|---|---|
-| Minimal | `AGENTS.md` + `PROCESS.md` + `PRD-TEMPLATE.md` | governs how agents work |
-| Medium | add `TODO.yaml` | staged progress with status linkage |
-| Full | add Git Flow + hooks | even commits are machine-validated |
+| Minimal | `AGENTS.md` + `PROCESS.md` + `PRD-TEMPLATE.md` | tames "how the agent works" |
+| Medium | add `TODO.yaml` | stage progression + status coupling |
+| Full | add Git Flow + hooks (this pack) | even commits and pushes are machine-checked |
 
-The ==core principle is one line==: **constraints live in the repo, are readable and enforceable, and AI obeys the same rules as humans**. The details — whether to have a develop branch, whether scopes are stage ids or module names — are yours to cut. Rules are guardrails, not mazes.
+| Scenario | Adaptation |
+|---|---|
+| Solo / tiny project | drop the PRD six-step loop; scope can use module names instead of stage ids |
+| Frontend project | swap the code-style section for the frontend toolchain; module scopes → component/package names |
+| No PRD | delete the PRD templates; the feat-with-PRD check auto-skips |
+| Single-main branch | drop develop/feature model; keep only the main protection in pre-push |
 
-## 7. One-click install: have an AI land this system into your project
+## 8. One-click landing: let AI install the system
 
-Copy the prompt below (one click) and send it to your AI collaborator (Claude / Cursor / other). It will read this article and the assets first, then **analyze your project's current state and install the Rondo Method into it** — rework AGENTS.md, reverse-engineer TODO/PRD, add Git Hooks — so the project runs by this system from then on:
+Copy the prompt below and send it to your AI collaborator (Claude / Cursor / others). It reads this post and the assets, **analyzes your project's current state, and lands the Rondo Method into it** — adapting AGENTS.md, backfilling TODO/PRD, adding Git hooks:
 
 ```text
 <role>
-You are the "Rondo Method installer". Task: rework the target project into a project governed by the Rondo Method (see the article below).
-Target project path: <fill in your project path here>
+You are the "Rondo Method installer". Task: transform the target project into one that
+follows the Rondo Method spec (see the article below).
+Target project path: <fill in your project path>
 </role>
 
 <must_read>
-MUST first read this article in full (all content, tables and code examples):
+MUST read the article in full (all content, tables, and code examples):
 https://quanming1.github.io/minimal-blog/posts/rondo-method/
 
-MUST read the asset files provided in the article (§5; they are the landing templates and references):
-- AGENTS.md               — hard behavioral contract for AI agents (landing template; trim for the project)
-- PROCESS.md              — PRD-driven six-step loop playbook
-- TODO.yaml               — structured task list shape (format reference for reverse-engineering the project TODO)
-- PRD-TEMPLATE.md         — PRD template (copy for every new stage)
-- PRD-A1-cli-config.md    — a real accepted PRD (reference while reverse-engineering the project PRDs)
+MUST read the asset files in section 6 (templates and examples to land):
+- AGENTS.md          — hard behavior spec for AI agents (landing template; adapt to the project)
+- PROCESS.md         — PRD-driven six-step loop playbook
+- TODO.yaml          — structured task list format (reference for backfilling the project TODO)
+- PRD-TEMPLATE.md    — PRD template (new stages copy from it)
+- PRD-example.md     — example PRD (accepted form; reference when backfilling)
+- .githooks/pre-push + commit-msg + check_commit_msg.py — Git hooks (all-PR protection + commit validation)
 </must_read>
 
 <analyze>
-MUST analyze the target project before changing anything:
-- Read the existing AGENTS.md / README / docs/ structure
-- Inspect git: branch model (git branch -a), hooks enabled? (git config core.hooksPath)
-- Use git log to reconstruct the project's evolution (group by feature/version → the basis for TODO stages)
+MUST analyze the target project before touching anything:
+- read existing AGENTS.md / README / docs/ structure
+- check git state: branch model (git branch -a), hooks enabled (git config core.hooksPath)
+- map the project's evolution with git log (group by feature/version → basis for TODO)
 </analyze>
 
 <landing>
-Land the system item by item (verify after each item; do not change everything at once):
-1. Rework AGENTS.md: add work style (TODO-driven) / code style / Git rules / PRD-driven sections;
-   keep the project's existing sensible conventions; trim to size (a single-main-branch project does NOT need develop/feature branches)
-2. Reverse-engineer docs/TODO.yaml: stages from the project's actual evolution (history marked done + future plans todo),
-   each step carrying: modules / acceptance criteria / status — shape follows the asset TODO.yaml
-3. Create docs/PROCESS.md + docs/prd/: the six-step loop playbook; copy PRD-TEMPLATE.md for the
-   first future stage (present for user review before marking approved)
-4. Add Git Hooks: .githooks/commit-msg (validate type/scope/subject whitelist) + pre-push (protect the trunk);
-   customize the scope whitelist per the project's modules; run git config core.hooksPath .githooks
-5. Sync docs: README / AGENTS.md reference the new norm files (TODO/PROCESS/PRD paths)
+Land the spec incrementally by project size (verify each step; don't change everything at once):
+1. Adapt AGENTS.md: add working style (TODO-driven) / code style / Git rules (all-PR) / PRD-driven
+   sections; keep existing reasonable conventions; trim by scale (single-main projects need no develop/feature model)
+2. Backfill docs/TODO.yaml: stages from the project's actual evolution (history = done, future = todo),
+   each with modules / acceptance / status — format per the asset TODO.yaml
+3. Create docs/PROCESS.md + docs/prd/: six-step loop; copy PRD-TEMPLATE.md for the first future
+   stage's PRD (have the user review before marking approved)
+4. Add Git hooks: .githooks/commit-msg + check_commit_msg.py (type/scope/subject whitelist)
+   + pre-push (all-PR trunk protection); customize scope whitelist per project modules
+   (the "cut points" block at the top of check_commit_msg.py); run git config core.hooksPath .githooks
+5. Sync docs: README / AGENTS.md reference the new spec files (TODO/PROCESS/PRD paths)
 </landing>
 
 <rules>
-- MUST analyze first, then change; do not break existing functionality (after each step run the project's own checks: lint/test/build stay green)
-- MUST respect the project's existing conventions (language/style/dependencies/docs); touch norm files only
-- Ask before deciding key choices: whether to introduce a develop branch, whether scopes are stage ids or module names,
-  whether hooks overlap with existing CI checks — give recommendations and let the user confirm; do not decide unilaterally
-- NEVER fake completion with TODOs or placeholders; for each landing item give verifiable evidence (file path + key content)
+- MUST analyze first, then change; don't break existing functionality (after each step, the project's
+  own verification stays green: lint/test/build)
+- MUST respect existing project conventions (language/style/deps/docs); touch only spec-related files
+- Ask before deciding key choices: whether to introduce develop, scope = stage id vs module name,
+  whether hooks duplicate existing CI checks — give a recommendation and get user confirmation
+- NEVER fake completion with TODO/placeholder content; give verifiable evidence for each item
+  (file path + key content)
 </rules>
 ```
 
 > [!TIP]
-> The prompt is **self-contained**: the AI reads the norms by URL and the templates via the asset manifest, then **analyzes your project's current state before acting** — it won't copy rondo's Python specifics; it trims the system to your stack and evolution. Key decisions (branch model, scope strategy) it must ask you, not decide alone.
+> The prompt is **self-contained**: the AI reads the spec via URL, reads the templates via the asset list, then **analyzes your project and acts** — it won't copy rondo's Python specifics, but adapts to your stack and evolution. Key decisions (branch model, scope strategy) it must ask you about, not decide unilaterally.
 
 > [!IMPORTANT]
-> This method has run a complete loop in rondo: from the foundation to multi-loop orchestration, hundreds of commits all traceable to concrete stages, PRDs always in sync with code, not a single "meaningless commit". It doesn't solve "can the AI write code" — it solves "how the AI's output stays under control".
+> This method completed the full loop in rondo: from foundation to multi-loop orchestration, hundreds of commits all traceable to specific stages, PRD and code always in sync, not a single "meaningless commit". It doesn't solve "whether AI can write code" — it solves "how to keep what AI writes under control".

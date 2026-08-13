@@ -1,300 +1,75 @@
-# rondo 开发任务清单（结构化数据，替代 TODO.md）
-# 按 docs/ROADMAP.md 的 12 步路线图展开；每步含：涉及模块 / 参考提交（comanda 对应实现）/ 验收标准 / 状态。
+# <项目名> 开发任务清单（TODO.yaml）
+
+# 【模板说明】结构化任务清单，替代 TODO.md——按路线图分阶段展开；每步含：
+#   涉及模块 / 参考 / 验收标准 / 状态。
 # 状态图例：done 已完成 · in_progress 进行中 · todo 未开始
 # PRD 驱动：每个阶段开工前先写 PRD（docs/prd/PRD-<阶段>-<名称>.md），流程见 docs/PROCESS.md。
 # 消费方：.githooks/check_commit_msg.py 校验 feat/fix 的 scope 阶段标识真实存在。
+# 使用：复制后替换阶段内容（A/B/C 分组名与步骤按项目实际路线图改）。
 
 meta:
-  source: docs/ROADMAP.md
+  source: docs/ROADMAP.md          # 若有路线图文档则引用，否则删除此行
   status_legend:
     done: 已完成
     in_progress: 进行中
     todo: 未开始
 
 stages:
+  # ---- 示例分组：A 地基 ----
   - id: A
     name: 地基
     steps:
       - id: A1
-        title: CLI 骨架 + 配置系统 + 多 Provider 抽象
+        title: CLI 骨架 + 配置系统
         status: done
         date: 2026-08-12
-        prd: docs/prd/PRD-A1-cli-config.md
+        prd: docs/prd/PRD-A1-<名称>.md
         prd_status: 已验收
         modules:
-          - rondo/cli.py（click 根命令 + version + hello）
-          - rondo/config/（~/.rondo/config.yaml 读写：load / save / get_provider / set_provider）
-          - rondo/models/（Provider 抽象：name / supports_model / configure / send_prompt + detect_provider 路由）
-          - rondo/models/openai.py（OpenAI 兼容实现，支持自定义 base_url 与 name→target 映射）
-          - rondo/models/opencode.py（OpenCodeProvider：opencode run 驱动 -m/--dir/--dangerously-skip-permissions/--format json + 流式事件聚合 + detect_provider opencode/ 前缀路由）
-        commands:
-          - rondo configure --provider <name> --api-key <key> [--base-url <url>] [--models ...] [--default-model <m>]
-        refs:
-          - comanda v0.0.1 cmd/configure.go
-          - comanda v0.0.1 cmd/process.go
-          - comanda v0.0.1 utils/config/env.go
-          - comanda v0.0.1 utils/models/provider.go
-        acceptance: 全部通过——zen 网关端到端回复、配置文件生成正确、rondo --version 正常、pytest 20 passed、ruff 全过
+          - <模块路径 1>
+          - <模块路径 2>
+        acceptance: 全部通过——<验收证据，如 pytest 20 passed、ruff 全过>
       - id: A2
-        title: DSL 解析 + 线性 step 管道
-        status: done
-        date: 2026-08-12
-        prd: docs/prd/PRD-A2-dsl-pipeline.md
-        prd_status: 已验收
+        title: 核心功能
+        status: in_progress
+        prd: docs/prd/PRD-A2-<名称>.md
+        prd_status: 开发中
         modules:
-          - rondo/processor/dsl.py（load_dsl(path)，兼容 list/map 两种 steps 写法）
-          - rondo/processor/processor.py（process_steps / process_step 四段式管道）
-          - 变量系统：$VAR / ${VAR} 替换、output 捕获到变量、${VAR:-default}
-          - input 处理：字面值 / 文件路径（读内容）/ $VAR / NA 占位
-          - output 处理：STDOUT / 文件路径（自动建目录）/ $VAR
-          - model / action 支持 string 与 []string（归一化）
-        commands:
-          - rondo process <workflow.yaml>
-        refs:
-          - comanda v0.0.1 utils/processor/types.go
-          - comanda v0.0.1 utils/processor/dsl.go
-          - comanda v0.0.1 utils/processor/model_handler.go
-        acceptance: 全部通过——真实端到端「读文件 → LLM 概括 → 变量传递 → 翻译 → 写文件」、pytest 41 passed、ruff 全过
-      - id: A3
-        title: 输入增强（多文件 + STDIN）
-        status: done
-        date: 2026-08-12
-        prd: docs/prd/PRD-A3-input-enhancement.md
-        prd_status: 已验收
-        modules:
-          - input：多文件（list / 逗号分隔 / 通配符 glob / 目录）
-          - input：STDIN（--stdin 存入 $STDIN 变量，step 引用）
-          - 'output：append 写入（output: ">>file"）'
-          - 编码兼容：UTF-8 失败回退 GBK（落实 AGENTS 10.2）
-          - 示例：examples/ 补多文件 / STDIN / append 三个示例（multi-file.yaml / stdin.yaml / append.yaml）
-        backlog:
-          - URL 抓取（现在用不上，按需再启）
-          - 数据库输入（现在用不上，按需再启）
-        refs:
-          - comanda multi-file
-          - comanda 5ab751f output_mode
-        acceptance: 全部通过——多文件合并（带来源标记）、STDIN 管道、append 追加、GBK 回退、真实端到端、pytest 53 passed
+          - <模块路径>
+        acceptance: <可执行的验收标准>
 
+  # ---- 示例分组：B 进阶 ----
   - id: B
     name: 进阶处理
     steps:
       - id: B1
-        title: batch / chunk
+        title: 批量处理
         status: todo
         modules:
-          - 'batch_mode: combined | individual（合并 vs 逐条）'
-          - 'chunk: by lines | tokens + overlap + max_chunks'
-          - chunk 结果合并输出
-        refs:
-          - comanda 6591293（parallel）
-          - comanda 42e1178（batch）
-          - comanda da09d8f（chunking）
-        acceptance: 大文件按行/token 分块处理再合并，输出完整
+          - <模块路径>
+        acceptance: <可执行的验收标准>
       - id: B2
-        title: 并行 step 处理
+        title: 并行执行
         status: todo
         modules:
-          - 并行执行无依赖步骤（asyncio / ThreadPoolExecutor）
-          - 竞态保护（输出/变量写入加锁）
-        refs:
-          - comanda 6591293
-          - comanda 2f691a5（race condition 修复）
-        acceptance: 并行步骤正确聚合，无数据竞争
-      - id: B3
-        title: 分支（branching）
-        status: todo
-        modules:
-          - 条件分支步骤
-          - 分支汇合
-        refs:
-          - comanda 248e98f
-        acceptance: 分支示例跑通
+          - <模块路径>
+        acceptance: <可执行的验收标准>
 
-  - id: C
-    name: agentic（重点投入）
-    steps:
-      - id: C1
-        title: agentic loop 引擎
-        status: done
-        date: 2026-08-12
-        prd: docs/prd/PRD-C1-agentic-loop.md
-        prd_status: 已验收
-        modules:
-          - rondo/processor/agentic_loop.py（AgenticLoopConfig + LoopContext + 迭代循环）
-          - 模板变量：loop.iteration / loop.previous_output / loop.total_iterations / loop.elapsed_seconds + $LOOP_CONTEXT 历史注入
-          - 历史注入：context_window（最近 N 轮迭代作为上下文）
-          - 退出条件：llm_decides（正则 DONE/COMPLETE/FINISHED）+ pattern_match（exit_pattern）
-          - 超时控制：timeout_seconds
-          - rondo/models/claude_code.py（ClaudeCodeProvider：send_prompt_agentic 实现 -p + stdin + --add-dir + --allowedTools + --output-format json + JSON 解包）
-          - 内联 agentic_loop 块语法支持（StepConfig.agentic_loop）
-          - checkpoint：每轮落盘 ~/.rondo/loop-states/<step>.json
-        refs:
-          - comanda 9d46db6（首版 217 行）
-          - comanda ad1428a（allowedTools）
-          - comanda 66a2da9（移除 --bare）
-          - comanda 9e7449c（JSON 解包）
-        acceptance: 全部通过——真实端到端 claude-code 创建文件、pytest 71 passed、ruff 全过
-      - id: C2
-        title: multi-loop 编排 + 条件分支（flow 结构化编排）
-        status: done
-        date: 2026-08-12
-        prd: docs/prd/PRD-C2-multi-loop.md
-        prd_status: 已验收
-        modules:
-          - 'flow 编排：run / if-do / retry / done 四个结构化原语（PRD-C2 定稿）'
-          - 'rondo/processor/loop_orchestrator.py（flow 顺序执行 + 条件分支 + 打回循环 + max_attempts 上限）'
-          - 'input_state / output_state 变量跨 loop 传递（output_state 导出 / input_state 作 initial_input）'
-          - '打回上下文自动注入：retry 重跑时上游输出经 initial_input → $LOOP_CONTEXT（复用 C1 机制）'
-          - 条件语法：contains（关键词）/ matches（正则，复用 exit_pattern 心智）
-          - 加载期校验：loop 存在性 / 条件变量产出链 / max_attempts 合法性
-          - 执行可见性：flow 逐节点输出
-        refs:
-          - comanda 2436d5a（orchestrator 引入，参考执行顺序与状态记录）
-          - comanda b658092（依赖字段丢失修复——写测试覆盖的教训）
-        acceptance: builder/reviewer 模式跑通，FAIL → 打回 → PASS 闭环（≤ max_attempts）；上限失败报错；条件 contains/matches 生效；加载期校验拒绝非法 flow；pytest 全绿
-      - id: C3
-        title: 工具权限与安全
-        status: todo
-        modules:
-          - tools 白名单（Read/Write/Edit/Bash/Glob/Grep）→ --allowedTools
-          - allowed_paths（~ 展开、自动建目录、校验存在）→ --add-dir
-          - 权限 smart defaults（默认安全配置）
-        refs:
-          - comanda 797457d / 09dc575 / e693441 / 4fcd791 / 140 / 141 / 183 / 188
-        acceptance: agentic 只能在 allowed_paths 内写文件；未授权工具被拒
-
-  - id: D
-    name: LLM 引导与复用
-    steps:
-      - id: D1
-        title: embedded guide（DSL 规范文档）
-        status: todo
-        modules:
-          - 编写 rondo 的 DSL 规范文档（Python 版，对标 comanda embedded_guide.go 3357 行）
-          - 结构化：语法 / 示例 / 常见错误 / 决策树（线性 vs agentic）
-        refs:
-          - comanda embedded_guide.go（utils/processor）
-        acceptance: 文档可被 LLM 直接用于生成正确 YAML
-      - id: D2
-        title: generate 命令
-        status: todo
-        modules:
-          - rondo generate "自然语言需求"：规范塞进 system prompt → LLM 生成 YAML
-          - 生成结果校验（DSL validation）+ 可执行反馈
-          - 默认偏线性 workflow
-        refs:
-          - comanda 8b41928 / 131 / 139 / 591d209
-        acceptance: 自然语言 → 有效 YAML → 执行成功
-      - id: D3
-        title: improve 命令
-        status: todo
-        modules:
-          - rondo improve：带反馈迭代优化工作流
-        refs:
-          - comanda eff1dee（206）
-          - comanda 9f30b09（prompt improvement）
-        acceptance: 给反馈 → 工作流被改进 → 复测通过
-      - id: D4
-        title: skills 系统
-        status: todo
-        modules:
-          - rondo/skills/loader.py（Markdown + YAML frontmatter 解析）
-          - rondo/skills/index.py（三级目录发现：~/.rondo/skills/ > .rondo/skills/ > 内置）
-          - rondo/skills/executor.py（${USER_INPUT} / ${ARG} / ${STDIN} / ${TIMESTAMP} / ${var:-default} 替换）
-          - skill: step 类型（workflow 内引用）
-          - 命令：rondo skills list / show / run
-          - 内置 skills：summarize / code-review（对标 comanda skills/）
-        refs:
-          - comanda 8ce0528（1537 行 + docs/SKILLS_SPEC.md 298 行）
-        acceptance: 定义 skill → workflow 引用 → 执行成功；skills list/show/run 正常
-
-  - id: E
-    name: 记忆与可观测
-    steps:
-      - id: E1
-        title: memory（持久记忆）
-        status: todo
-        modules:
-          - rondo/memory/（SQLite + FTS5 全文索引，namespace 隔离）
-          - 命令：rondo memory add / search / show
-          - 'step memory: 配置（namespace / recall：query / limit / max_chars / types）'
-        refs:
-          - comanda 8928f61（首版 662 行）
-          - comanda bb9268b（semantic memory，SQLite+FTS5）
-          - comanda 243 / 244
-        acceptance: add 事实 → search 命中 → workflow step 引用 memory
-      - id: E2
-        title: codebase-index
-        status: todo
-        modules:
-          - rondo index：扫描 / 索引代码库
-          - 输出格式：summary / structured / full
-          - 增量更新 + 压缩（先做简单版）
-        refs:
-          - comanda 8dc24ec / f49b486 / 71e55f2 / 5d2cf22 / 220 / 228
-        acceptance: 索引项目 → 查询上下文生成 → agentic loop 使用
-      - id: E3
-        title: knowledge graph
-        status: todo
-        modules:
-          - 从 codebase-index 构建知识图谱
-          - 图谱查询命令（rondo graph）
-          - 接入 generate（teach generation about graph context）
-        refs:
-          - comanda b8cbb1d / 245 / 246 / 247
-        acceptance: 图谱构建 → 查询 → 影响 generate 输出
-      - id: E4
-        title: 可观测性
-        status: todo
-        modules:
-          - rondo chart：ascii / mermaid / interactive
-          - --stream-log：实时进度写文件
-          - --live：TUI dashboard
-          - spinner / progress
-        refs:
-          - comanda 938a922 / 068996a / 9c42d89 / 5f42f93 / 2f0c785 / 80ef946 / caccf2b / 158
-        acceptance: 长 loop 可视化监控，无卡死，Ctrl+C 优雅退出
-
-  - id: F
-    name: 服务化
-    steps:
-      - id: F1
-        title: HTTP server
-        status: todo
-        modules:
-          - rondo serve：HTTP API（执行 workflow / 查询状态 / 健康检查）
-          - API 与 CLI 能力对齐
-        refs:
-          - comanda v0.0.1 cmd/serve.go
-          - comanda e23bd1d（API parity）
-          - comanda 251 / 252
-        acceptance: curl 调用 API 执行 workflow 成功
-      - id: F2
-        title: MCP server
-        status: todo
-        modules:
-          - rondo mcp：MCP server（workflows → tools、skills → prompts）
-          - MCP 客户端接入测试（claude-desktop / Cursor 等）
-        refs:
-          - comanda 4b3453a（234）
-          - comanda e23bd1d
-        acceptance: MCP 客户端能调用 workflow 与 skill
-
+  # ---- 示例分组：G 收尾 ----
   - id: G
     name: 收尾
     steps:
       - id: G1
         title: 测试与 CI
-        status: in_progress
+        status: todo
         modules:
-          - GitHub Actions CI：ruff + pytest + coverage 阈值检查（push/PR 触发，2026-08-12 起）
-          - 每阶段配单元测试（对标 comanda 每个 feature 都带测试；当前 146 用例，覆盖率 99%）
-          - release 发布流程（tag 触发构建 + 发布，未开始）
+          - GitHub Actions CI：lint + test + coverage 阈值
+          - 每阶段配单元测试
+        acceptance: <可执行的验收标准>
       - id: G2
         title: 文档与示例
-        status: in_progress
-        date: 2026-08-12
+        status: todo
         modules:
-          - 'README 完整化（安装 / 快速开始 / DSL 语法 / C1 agentic / C2 flow / 示例，已完成）'
-          - 'examples/ 覆盖每个阶段（A3/C1/C2 已有，后续阶段补充）'
-          - docs/ 补充各模块设计文档（未开始）
+          - README 完整化
+          - 示例目录
+        acceptance: <可执行的验收标准>

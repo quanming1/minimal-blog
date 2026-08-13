@@ -1,26 +1,76 @@
-# Rondo 方法资产包
+# 规范落地模板（examples）
 
-本目录是 [rondo](https://github.com/quanming1/rondo)（YAML 驱动的 LLM 工作流编排工具）实战项目中**真实使用的规范文件**，随《Rondo 方法》一文发布。
-
-> 所有文件原样取自 rondo 仓库（`develop` 分支，2026-08-13），仅转换换行为 LF、编码 UTF-8 无 BOM。你可以直接复制到自己的项目里改造使用。
+> 本目录是「团队开发流程规范」（`../DEVELOPMENT_FLOW.md`）的可落地文件集合。
+> 其他项目**直接复制本目录**到自己的仓库，替换占位符 + 按项目裁剪，即可获得一整套
+> 可机器强制的开发流程（全 PR 流 + 提交规范 + PRD 驱动 + 存量反推）。
 
 ## 文件清单
 
-| 文件 | 作用 | 建议用法 |
-|---|---|---|
-| `AGENTS.md` | **给 AI agent 的强制行为规范**——工作方式 / 代码风格 / Git Flow / 测试 / 文档 / PRD 驱动 / 安全边界。任何人在仓库动手前必须完整阅读 | 复制到项目根，让 AI agent（Claude Code / Cursor / 其他）一进来就遵守 |
-| `PROCESS.md` | 推进管理办法——PRD 驱动开发的六步闭环（立项→评审→开发→验证→收尾→发布）+ 状态联动 | 与 AGENTS.md 配套，讲清「每个阶段怎么推进」 |
-| `TODO.yaml` | 结构化任务清单——按路线图分阶段展开，每步含涉及模块 / 验收标准 / 状态，是开发的唯一执行依据 | 建立项目时按此结构写自己的 TODO |
-| `PRD-TEMPLATE.md` | PRD 文档模板——元信息 / 背景目标 / 需求范围 / 技术方案 / 接口 / 验收标准 / 测试计划 / 里程碑 / 风险 / 变更记录 | 每个 TODO 阶段开工前从模板复制 |
-| `PRD-A1-cli-config.md` | **真实 PRD 样例**（rondo A1 阶段，已验收）——展示一份定稿 PRD 长什么样，含已勾选的 FR/AC 与变更记录 | 写 PRD 时对照参考 |
+```
+examples/
+├── AGENTS.md                    # 对 AI agent 与人类协作者的行为规范（强制入口）
+├── docs/
+│   ├── PROCESS.md               # 推进管理办法（六步闭环 + 状态联动 + 存量反推）
+│   ├── TODO.yaml                # 结构化任务清单（阶段 id 唯一事实源，hook 机器消费）
+│   └── prd/
+│       ├── PRD-TEMPLATE.md      # PRD 模板（新阶段从模板复制）
+│       └── PRD-example.md       # 示例 PRD（已验收形态 + 变更记录留痕示范）
+└── .githooks/
+    ├── commit-msg               # commit 校验包装（sh）
+    ├── check_commit_msg.py      # commit 校验逻辑（Python，含「裁剪点」配置区）
+    └── pre-push                 # push 保护（全 PR 流：develop/main 三重保护）
+```
 
-## 最小落地组合
+## 落地步骤（新项目）
 
-- 单人 + AI agent 项目：`AGENTS.md` + `PROCESS.md` + `PRD-TEMPLATE.md`
-- 需要阶段推进：再加 `TODO.yaml`
-- 需要参考真实 PRD：看 `PRD-A1-cli-config.md`
+```bash
+# 1. 复制模板到项目仓库
+cp -r examples/* <你的项目>/
 
-## 注意
+# 2. 启用 hooks（仓库内执行一次）
+git config core.hooksPath .githooks
 
-- `AGENTS.md` 里引用了 rondo 专属内容（`docs/TODO.yaml`、`.githooks/` 等），复制到新项目时按需裁剪
-- Git Flow 部分（分支模型 / commit hook 强制）依赖 `.githooks/` 目录，需一并复制或按项目规模简化
+# 3. 替换占位符
+#    AGENTS.md —— 替换所有 <尖括号> 占位符（项目名/技术栈/lint 工具等）
+#    docs/TODO.yaml —— 按项目实际路线图改写阶段结构
+#    docs/prd/PRD-*.md —— 从模板创建第一个未来阶段的 PRD
+
+# 4. 验证 hooks 生效
+git commit -m "feat(X9): 测试"        # 应被拒绝（X9 不存在于 TODO.yaml）
+git push origin feature/x:develop     # 应被拒绝（全 PR 流）
+```
+
+## 落地步骤（存量项目，已有代码无 PRD/TODO）
+
+按 `AGENTS.md` §10 / `docs/PROCESS.md` §7 的**反推流程**：
+
+1. `git log` 梳理演进 → 2. 分阶段 → 3. 补 `docs/TODO.yaml` → 4. 补各阶段 PRD（状态按实际，无法核实的标"待复核"）→ 5. 启用 hooks → 6. 新需求从此走六步闭环。
+
+也可以用 `DEVELOPMENT_FLOW.md` §8.4 的**一键落地提示词**发给 AI 协作者，让它读完规范后自动完成反推与落地。
+
+## 裁剪指南
+
+| 场景 | 裁剪点 |
+|---|---|
+| 单人 / 微型项目 | 去掉 PRD 六步闭环；`check_commit_msg.py` 里 `PHASE_SCOPED_TYPES` 置空，scope 走模块名 |
+| 前端项目 | `AGENTS.md` §3 换前端工具链；`check_commit_msg.py` 顶部 `MODULE_SCOPES` 换组件/包名 |
+| 不用 PRD | 删 PRD 模板与示例；feat 带 PRD 校验自动跳过（无 PRD 文件） |
+| 单 main 分支 | 删 develop/feature 模型，`pre-push` 只留 main 保护 |
+| 无多平台需求 | `AGENTS.md` §9 矩阵减为单平台 |
+
+## 文件依赖关系
+
+```
+AGENTS.md（行为入口）
+  ├── docs/TODO.yaml            ← 阶段 id 事实源（hook 读取）
+  ├── docs/PROCESS.md           ← 六步闭环怎么走
+  └── docs/prd/PRD-*.md         ← 阶段契约（feat 提交必须同步变更记录）
+.githooks/commit-msg            ← 校验提交（读 TODO.yaml + PRD）
+.githooks/check_commit_msg.py   ← 校验逻辑（裁剪点在此）
+.githooks/pre-push              ← 保护 main/develop（全 PR 流）
+```
+
+## 完整规范文档
+
+- `../DEVELOPMENT_FLOW.md`——12 章完整规范（核心原则 / flowchart / 分支 / PR / 提交 / 六步闭环 / 存量反推 / 质量门槛 / hooks / 工作流 / 落地清单 / 常见错误）
+- Rondo 方法文章：https://quanming1.github.io/minimal-blog/posts/rondo-method/
