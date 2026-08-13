@@ -29,6 +29,9 @@
 | `docs/security.md` | 安全基线（威胁模型/加固项/维护约定——**改安全代码前先读**） | 安全改动 |
 | `docs/design-tokens.md` | Style Token 体系（三层架构/token 表/Tailwind 使用——**改样式前先读**） | 样式改动 |
 | `docs/seo.md` | SEO 架构（meta 清单/JSON-LD/hreflang 规则/sitemap/frontmatter 元数据约定——**改 SEO 代码前先读**） | SEO 改动 |
+| `docs/TODO.yaml` | 结构化任务清单（**开发的唯一执行依据**：阶段状态 done/in_progress/todo，每步含模块/验收标准；新阶段开工前先更新状态） | 工程治理 |
+| `docs/PROCESS.md` | 推进管理办法（PRD 驱动六步闭环：立项→评审→开发→验证→收尾→发布；PRD 是开发唯一依据） | 工程治理 |
+| `docs/prd/**` | PRD 文档（一阶段一 PRD：`PRD-<阶段>-<名称>.md`，从 `assets/rondo-method/PRD-TEMPLATE.md` 复制，状态 草稿→approved→开发中→已验收） | 工程治理 |
 | `src/lib/seo.ts` | SEO 纯函数（absoluteUrl/JSON-LD/alternateUrls/serializeJsonLd） | SEO 改动 |
 | `astro.config.mjs` | Astro + Tailwind(vite) + sitemap + markdown.processor 配置 | 构建配置 |
 | `bunfig.toml` | registry 显式声明（npmmirror，lockfile 来源） | 依赖配置 |
