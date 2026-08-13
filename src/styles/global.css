@@ -176,6 +176,14 @@ a:hover {
   line-height: 1.6;
 }
 
+/* 文章页加宽：正文 + 右侧目录（210px）+ 间距需要更宽的容器，
+   仅在 ≥1201px（目录右侧 sticky 侧栏）生效，窄屏目录折叠仍走 44em 单栏 */
+@media only screen and (min-width: 1201px) {
+  .site--wide {
+    width: 64em;
+  }
+}
+
 /* ============ Header：品牌 + 导航同行 ============ */
 .header {
   border-bottom: 1px solid var(--divider);

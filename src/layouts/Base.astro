@@ -30,6 +30,8 @@ interface Props {
   hasTranslation?: boolean
   /** 文章页启用阅读进度条与回到顶部 */
   reading?: boolean
+  /** 加宽容器（文章页：正文 + 右侧目录需要更宽，仅 ≥1201px 生效） */
+  wide?: boolean
   /** SEO：页面类型（og:type + JSON-LD 类型；website 默认 / article） */
   type?: 'website' | 'article'
   /** SEO：创建日期 YYYY-MM-DD（article 页传，JSON-LD datePublished + OG article:published_time） */
@@ -150,7 +152,7 @@ const isAbout = path === '/about/'
         </button>
       </>
     )}
-    <div class="site">
+    <div class={'site' + (Astro.props.wide ? ' site--wide' : '')}>
       <header class="header">
         <h1 class="site-title">
           <a href={lang === 'zh' ? href('') : href('en/')} transition:animate="fade" class="text-xl italic font-normal text-text border-b-0">{siteTitle}</a>
