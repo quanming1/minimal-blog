@@ -2,6 +2,7 @@
 import { defineConfig } from 'astro/config'
 import sitemap from '@astrojs/sitemap'
 import tailwindcss from '@tailwindcss/vite'
+import icon from 'astro-icon'
 import { unified } from '@astrojs/markdown-remark'
 import { remarkPlugins } from './src/markdown'
 
@@ -12,7 +13,15 @@ export default defineConfig({
   trailingSlash: 'always',
   // SEO：自动生成 sitemap-index.xml（site + base 拼绝对 URL，见 docs/seo.md §3）。
   // 不启用 i18n 配置（本站中英路由是手写 /en 前缀，非 Astro i18n 集成；hreflang 由 Base.astro 输出）
-  integrations: [sitemap()],
+  // Icon 系统（astro-icon + lucide 图标集，见 docs/design-tokens.md §7）：
+  //   构建期将图标内联为文档内 sprite（首实例 symbol + <use href="#ai:...">），零运行时 JS、零外部请求，
+  //   图标颜色随 currentColor 跟随主题；新增图标时在此 include 列表补名（lucide 图标名见 node_modules/@iconify-json/lucide）
+  integrations: [
+    sitemap(),
+    icon({
+      include: { lucide: ['search', 'moon', 'sun', 'arrow-up'] },
+    }),
+  ],
   vite: {
     // Tailwind v4（Style Token 系统，见 docs/design-tokens.md）：@theme 生成 CSS 变量 + utilities
     plugins: [tailwindcss()],

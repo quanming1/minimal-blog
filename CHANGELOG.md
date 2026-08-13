@@ -3,6 +3,23 @@
 > 版本变更记录。**约定：`src/content/posts/` 下的文章增删改（写作）不进入本文件**——那是内容维护，不是项目版本变更。
 > 仅记录工程层面（代码/结构/功能/构建/测试/部署）的变化。
 
+## [1.11.0] - 2026-08-13
+
+### 新增
+- **Icon 系统（astro-icon + lucide）**：导航搜索 / 主题切换（moon/sun）/ 文章页回顶（arrow-up）全部替换 emoji（🔍/🌙/☀️/↑）为 lucide 线性图标；astro-icon 构建期将图标渲染为**文档内联 sprite**（首实例 `<symbol>` + `<use href="#ai:...">`），零运行时 JS、零外部请求、`currentColor` 随亮暗主题变色；图标名白名单在 astro.config.mjs `icon({ include })`；主题图标由 `html[data-theme]` + CSS 显隐驱动（JS 不再改图标文本）；完整说明 docs/design-tokens.md §7
+- 新增 dependencies：astro-icon / @iconify-json/lucide
+
+### 变更
+- **CSP `script-src` 加 `data:`**（修复线上报错）：Astro ClientRouter 每次 VT 导航后在 `runScripts()` 注入空 `data:application/javascript,` module script 作 inline module scripts 等待栅栏（astro/dist/transitions/router.js 实证），被 `script-src` 拦截 → console CSP 违规；`'unsafe-inline'` 已存在（VT/防闪烁必需），`data:` 不增加实际攻击面（空脚本非执行向量）——docs/security.md §3.1 + 边界表同步
+- 删除 3 篇文章（hello-mingzhi / markdown-workflow / why-keep-blogging，zh+en 6 文件）：构建自动收敛——页面 32 → 14（含消失的 12 个标签页）、RSS/搜索索引剩 git-commit-convention 双语 2 条、首页列表剩 1 篇；无互链残留（grep 实证，源码引用仅注释示例与单测夹具虚构数据）
+- **自定义 404 页面**（src/pages/404.astro，隐性需求——删除文章后旧链接访问体验）：复用 Base 布局（导航/主题/搜索/SEO/favicon），语言按 /en/ 前缀自适应，canonical/hreflang 指首页防索引垃圾；新增 i18n 键 notFoundTitle/notFoundDesc；顺带消除根路径 favicon.ico 探测 404（head 提供 rel=icon）
+- global.css：主题图标显隐规则（.icon-moon/.icon-sun）+ astro-icon SVG 尺寸（1em，currentColor）+ `.back-to-top` 改 flex 居中 + .notfound-desc
+
+### 验证
+- 产物断言：四图标内联 SVG（symbol+use）在首页/文章页、grep 无 emoji 残留、CSP 含 `data:`、被删文章页面不生成、搜索索引 2 条、文章列表 1 篇、404.html 含 rel=icon
+- 测试 144 全绿、lint 0 errors、构建成功（15 页面：14 + 404）
+- 本地 preview + Playwright：VT 导航 console 0 errors（CSP 修复实证）、主题切换图标显隐正确、搜索/回顶回归正常、404 页完整布局（favicon.ico 探测消除）、四视口（375/768/1024/1280）无横向溢出
+
 ## [1.10.0] - 2026-08-13
 
 ### 新增

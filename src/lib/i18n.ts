@@ -30,6 +30,9 @@ const dictDef = {
   prevPost: { zh: '← 上一篇', en: '← Previous' },
   nextPost: { zh: '下一篇 →', en: 'Next →' },
   relatedPosts: { zh: '相关文章', en: 'Related posts' },
+  /** 404 页（src/pages/404.astro，路径不存在时按 /en/ 前缀猜语言） */
+  notFoundTitle: { zh: '页面不存在', en: 'Page Not Found' },
+  notFoundDesc: { zh: '你访问的页面不存在，或已被移除。', en: 'The page you are looking for does not exist or has been moved.' },
 } as const
 
 export type I18nKey = keyof typeof dictDef

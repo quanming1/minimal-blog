@@ -27,9 +27,10 @@
 ## 3. 已加固项
 
 ### 3.1 客户端安全（src/layouts/Base.astro head）
-- **meta CSP**：`default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; connect-src 'self'; frame-src 'none'; object-src 'none'; worker-src 'none'; base-uri 'self'; form-action 'self'`
+- **meta CSP**：`default-src 'self'; script-src 'self' 'unsafe-inline' data:; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; connect-src 'self'; frame-src 'none'; object-src 'none'; worker-src 'none'; base-uri 'self'; form-action 'self'`
   - 纵深防御：即使内容被注入脚本，**无法**加载外部脚本（script-src 'self'）、**无法** iframe/object/Worker 副载（frame-src/object-src/worker-src 'none'）、**无法** XHR 数据外传（connect-src 'self'）、**无法**改 base URI / 提交表单到外部
   - `font-src 'self' data:`：**data: 必需**——@fontsource/lato 被 Vite 构建为 data: URI 内联字体（线上实证 `font-src 'self'` 误伤 4 个字体加载）
+  - `script-src data:`（v1.11.0 新增）：Astro ClientRouter 每次 VT 导航后在 `runScripts()` 注入空 `data:application/javascript,` module script 作为 inline module scripts 的等待栅栏（astro/dist/transitions/router.js），被 `script-src` 拦则 console 报错。**不增加实际攻击面**：本站 `script-src` 已含 `'unsafe-inline'`（见下），注入者直接写内联 `<script>` 即可执行，`data:` 无增量；该空脚本本身无内容、非执行向量
   - `img-src 'self' data:` 已收紧（当前零外链图）；**引入外链图时按实际图床域加白名单**（如 `img-src 'self' data: https://img.example.com`），否则第三方图床可获访客 IP
   - `'unsafe-inline'` 必须保留：防闪烁脚本（首帧执行）+ Astro 内联小脚本（SearchDialog/VT）+ VT 内联 style（astro-xxxx 构建期随机）+ Shiki token 内联 style 属性
   - GitHub Pages 无法自定义 HTTP 头 → 用 `<meta http-equiv>`（浏览器支持除 frame-ancestors 外主要指令；Safari 15.4+ 支持 base-uri/form-action）
@@ -48,7 +49,7 @@
 - `bun.lock` 锁定全部依赖；`bun install --frozen-lockfile`（CI）
 - **`bunfig.toml` 显式声明 registry = registry.npmmirror.com**（lockfile 的 tarball URL 全部来自此镜像，显式化避免隐式依赖；完整性由 lockfile sha512 校验兜底）
 - **npm audit：0 vulnerabilities**（v1.4.0 验证，临时 lockfile 方式）
-- 依赖极简：astro / @fontsource/lato / @astrojs/markdown-remark(dev，构建期处理器) / unified+remark-parse+@types/mdast(dev，插件测试) / jsdom(dev) / typescript(dev) / @astrojs/check(dev)
+- 依赖极简：astro / @fontsource/lato / astro-icon + @iconify-json/lucide（构建期内联 SVG 图标，零运行时 JS，见 docs/design-tokens.md §7）/ @astrojs/markdown-remark(dev，构建期处理器) / unified+remark-parse+@types/mdast(dev，插件测试) / jsdom(dev) / typescript(dev) / @astrojs/check(dev)
 
 ### 3.4 隐私
 - **无任何跟踪脚本**（GA/统计均无，about 页有声明）
@@ -59,7 +60,7 @@
 
 | 边界 | 说明 | 缓解 |
 |---|---|---|
-| meta CSP 的 `'unsafe-inline'` | 内容被注入的内联 `<script>` 可执行（同源）；事件属性（`onclick`/`onerror`）与 `javascript:` 链接执行也不受 CSP 限制 | 威胁模型"内容可信"；CSP 已阻断外部资源/数据外传/iframe/object/Worker |
+| meta CSP 的 `'unsafe-inline'`（+ `data:`） | 内容被注入的内联 `<script>` 可执行（同源）；事件属性（`onclick`/`onerror`）与 `javascript:` 链接执行也不受 CSP 限制；`data:` 仅用于放行 Astro VT 的空等待脚本 | 威胁模型"内容可信"；CSP 已阻断外部资源/数据外传/iframe/object/Worker |
 | `img-src 'self' data:` 下的外传通道 | 注入 `<img src="https://任意域/?d=...">` 可携带少量数据出站（URL 长度受限） | 本站无 cookie/敏感数据，泄露面 ≈ 0；文档已记录 |
 | 无法设置 `X-Content-Type-Options` / `X-Frame-Options` | GitHub Pages 不发这两个头，meta 无法替代 | 现代浏览器对 text/html 有默认防护；本站无 iframe 内嵌价值（无敏感操作，点击劫持风险低） |
 | Markdown raw HTML / javascript: 链接 | 作者可写任意 HTML（含脚本与事件属性） | 内容可信假设（见 §1）；如引入不可信内容源必须加 sanitize |

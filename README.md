@@ -48,6 +48,7 @@ tags: [标签1, 标签2]        # 可选
 - **Bun**（包管理 / 测试运行器，workspace 单包）
 - **TypeScript 6**（astro check 类型检查）
 - **Tailwind CSS v4**（Style Token 系统：@theme 语义 token → 原子类，见 [docs/design-tokens.md](./docs/design-tokens.md)）
+- **astro-icon + lucide 图标集**（构建期内联 SVG sprite，零运行时 JS，见 [docs/design-tokens.md §7](./docs/design-tokens.md)）
 - **@fontsource/lato**（自托管 Lato 300/400/700/900，中文回退系统宋体）
 - **自研 mb-\* 组件库**（原生 Web Components，零依赖：mb-dialog 弹层 / mb-toast 通知）
 - **bun test**（纯函数单测 + jsdom 组件测试）
@@ -62,9 +63,10 @@ tags: [标签1, 标签2]        # 可选
 - **Markdown 拓展语法**：Callout 提示框（`> [!TIP]`，含 IMPORTANT）、`==高亮==`、定义列表（`Term` + `: 定义`）、上标/下标（`H_{2}O` / `E=mc^{2}`）、GFM 全量（表格/任务/删除线/自动链接/脚注）——语法清单与开发指南见 [docs/markdown-extensions.md](./docs/markdown-extensions.md)
 - 关于页
 - 语言切换（中/英）+ 亮暗主题（localStorage 记忆，默认亮色）
-- **站内搜索**（Cmd+K / Ctrl+K / 导航 🔍）：按标题/描述/标签实时过滤全部文章，键盘可达，双语
+- **站内搜索**（Cmd+K / Ctrl+K / 导航搜索图标）：按标题/描述/标签实时过滤全部文章，键盘可达，双语
 - **Toast 通知**：代码复制成功提示（mb-toast，aria-live）
 - **View Transitions**：站内导航平滑过渡，无整页刷新
+- **Icon 系统**：导航搜索 / 主题切换 / 回顶全部使用 lucide 线性图标（astro-icon 构建期内联 SVG，`currentColor` 随亮暗主题变色，替代 emoji）
 - **微交互**：导航下划线滑入、列表行 hover、链接底色反馈（克制的印刷感动效）
 - 可访问性：`focus-visible` 焦点环、`prefers-reduced-motion` 全站降级
 - **安全**：meta CSP 纵深防御 + no-referrer 隐私头 + CI actions SHA pin + 依赖审计 0 漏洞（详见 [docs/security.md](./docs/security.md) 安全基线）

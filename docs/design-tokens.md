@@ -113,3 +113,24 @@
 - v1.0.0-v1.8.0：仅 primitive 层（`--bg` 等 CSS 变量），模板用手写类名
 - v1.9.0：引入 Tailwind v4，新增 semantic + utility 层——模板可用语义化原子类，设计值单点维护
 - **刻意不做**：全量迁移现有 CSS 到 Tailwind（1200 行，风险大收益低）；token 化渐进——新样式/重构时用 token 类，旧规则保留在 @layer components
+
+## §7 Icon 系统（v1.11.0，astro-icon + lucide）
+
+**选型**：`astro-icon`（Astro 官方维护的 icon 集成，Iconify 驱动）+ `@iconify-json/lucide`（lucide 图标集，24×24 stroke 风格，与极简印刷风契合）。替代 v1.10.0 及以前的 emoji 图标（🔍/🌙/☀️/↑，用户反馈"太丑"）。
+
+**原理与约束**（保持零 JS / CSP 严格 / 隐私优先哲学）：
+- **构建期内联**：astro-icon 把图标渲染为**文档内联 sprite**——页面首个 `<Icon name="lucide:xxx">` 输出 `<svg><symbol id="ai:lucide:xxx">…</symbol><use href="#ai:lucide:xxx"></use></svg>`，同页后续实例只输出 `<use>`；零外部请求、零运行时 JS、零第三方 CDN
+- **图标名白名单在 astro.config.mjs**：`icon({ include: { lucide: ['search','moon','sun','arrow-up'] } })`——**新增图标 → 先在此补名**（图标名清单见 `node_modules/@iconify-json/lucide/icons.json` 或 https://lucide.dev）
+- **颜色随 currentColor**：lucide 是 stroke 图标（`stroke="currentColor"`），svg 在按钮内继承文字颜色，双主题自动适配；**不要硬编码 fill/stroke 色值**
+- **尺寸用 CSS 控制**（相对父级字号）：`.search-icon svg, .theme-icon svg { width: 1em; height: 1em }`、`.back-to-top-icon { 1.1em }`
+- **主题图标零 JS 切换**：亮色显示 moon、暗色显示 sun，由 `html[data-theme]` + CSS 显隐控制（global.css），JS 只管 `data-theme`——见 Base.astro applyTheme
+- **无障碍**：图标容器/按钮带 `aria-hidden="true"`（装饰性图标不进读屏），按钮语义靠 `aria-label`
+
+**当前图标清单**：
+
+| 位置 | 图标 | 说明 |
+|---|---|---|
+| 导航搜索按钮 | `lucide:search` | 打开站内搜索 |
+| 导航主题按钮 | `lucide:moon` / `lucide:sun` | 亮暗显隐切换 |
+| 文章页回顶 | `lucide:arrow-up` | 回到顶部 |
+| 首页年份锚点 `¶` | 无（保留印刷符号） | olivierlacan 风格，非图标 |

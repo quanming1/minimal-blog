@@ -83,5 +83,5 @@
 - 不提交 `dist` / `node_modules` / `.astro`（.gitignore 已排除，别 `git add -f`）
 - 不把文章内容写进 `CHANGELOG.md`（仅工程变更）
 - 不引入跟踪脚本/外链字体 CDN（字体已自托管，隐私优先；参考 about 页"无跟踪脚本"声明）
-- 改样式前先读 `docs/ui-analysis.md`（保持与设计规范一致，新偏差要记录到文档）+ `docs/design-tokens.md`（token 体系：新样式优先用 token 类；自定义规则必须放 `@layer components`，否则压不过 Tailwind utilities）
+- 改样式前先读 `docs/ui-analysis.md`（保持与设计规范一致，新偏差要记录到文档）+ `docs/design-tokens.md`（token 体系：新样式优先用 token 类；自定义规则必须放 `@layer components`，否则压不过 Tailwind utilities；图标用 astro-icon + lucide——**新增图标先在 astro.config.mjs `icon({ include })` 补名**，样式随 currentColor，见 §7）
 - 新增 token：`:root` 变量（双主题）→ `@theme` 语义引用 → 模板使用（未使用的 token 不生成，需实际引用）
