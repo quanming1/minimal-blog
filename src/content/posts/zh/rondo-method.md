@@ -196,51 +196,59 @@ Rondo 方法是 rondo 项目的实战沉淀，规模可大可小：
 
 ==核心原则只有一条==：**约束写进仓库、能被读取、能被强制，AI 与人类同规则**。至于细节（分支模型、scope 用阶段 id 还是模块名），按项目规模裁剪——规范是护栏，不是迷宫。
 
-## 7. 一键启用：让 AI 按这套规范干活
+## 7. 一键落地：让 AI 把这套规范安装到你的项目
 
-把下面这段提示词**一键复制**发给你的 AI 协作者（Claude / Cursor / 其他），它会先读这篇文章、再读资产文件，然后严格按 Rondo 方法驱动你的项目开发：
+把下面这段提示词**一键复制**发给你的 AI 协作者（Claude / Cursor / 其他），它会先读这篇文章与资产，然后**分析你项目的现状，把 Rondo 方法规范落地进去**——改造 AGENTS.md、反推 TODO/PRD、加 Git Hooks，让项目从此按这套规范运转：
 
 ```text
 <role>
-你是本项目的 AI 协作者。请严格按照 Rondo 方法（见下方文章）驱动本项目开发。
+你是「Rondo 方法落地器」。任务：把目标项目改造为符合 Rondo 方法规范的工程（规范见下方文章）。
+目标项目路径：<在这里填入你的项目路径>
 </role>
 
 <must_read>
 MUST 先完整阅读这篇文章（含全部内容、表格与代码示例）：
 https://quanming1.github.io/minimal-blog/posts/rondo-method/
 
-MUST 阅读并遵守文章中提供的资产文件（第 5 节下载，放入本项目后按实际路径调整）：
-- AGENTS.md          —— 给 AI agent 的强制行为规范，动手前必须完整阅读并遵守
+MUST 阅读文章中提供的资产文件（第 5 节，作为落地模板与样例）：
+- AGENTS.md          —— 给 AI agent 的强制行为规范（落地模板，需按项目裁剪）
 - PROCESS.md         —— PRD 驱动六步闭环推进办法
-- TODO.yaml          —— 结构化任务清单（开发的唯一执行依据）
+- TODO.yaml          —— 结构化任务清单结构（反推项目 TODO 的格式参照）
 - PRD-TEMPLATE.md    —— PRD 模板（新阶段从模板复制）
-- PRD-A1-cli-config.md —— 真实 PRD 样例（写 PRD 时对照参考）
+- PRD-A1-cli-config.md —— 真实 PRD 样例（反推项目 PRD 时对照参考）
 </must_read>
 
-<workflow>
-按文章 §3 的六步闭环执行：立项 → 评审 → 开发 → 验证 → 收尾 → 发布
-- 立项：从 TODO.yaml 选阶段 → 写 PRD（复制 PRD-TEMPLATE.md）→ 状态 approved 后才开发
-- PRD 是开发的唯一依据：不开发 PRD 未定义的内容
-- 验证：对照 PRD 验收标准逐条执行（lint / test / build / 手动），全部通过才算完成
-- 收尾：PRD 标已验收 + TODO 标 done + CHANGELOG 同步
-</workflow>
+<analyze>
+MUST 先分析目标项目现状，再动手改：
+- 读现有 AGENTS.md / README / docs/ 目录结构
+- 查 git 现状：分支模型（git branch -a）、hooks 是否启用（git config core.hooksPath）
+- 用 git log 反推项目演进（按功能/版本分阶段，为 TODO 提供依据）
+</analyze>
 
-<change_rule>
-需求变更时 MUST 先判断双路径（文章 §3.3）：
-- 属于原 PRD 范围 → 修改原 PRD + MUST 在 PRD 末尾「变更记录」追加（日期+变更+理由）+ 重核受影响 AC
-- 超出范围 / 新阶段 → 新开 PRD（复制模板，走完整闭环）
-</change_rule>
+<landing>
+按项目规模把规范逐项落地（每项完成即验证，不一次全改）：
+1. 改造 AGENTS.md：补工作方式（TODO 驱动）/ 代码风格 / Git 规范 / PRD 驱动章节；
+   保留项目原有合理约定；按规模裁剪（单 main 分支项目不需要 develop/feature 分支模型）
+2. 反推 docs/TODO.yaml：按项目实际演进分阶段（历史功能标 done + 未来规划 todo），
+   每步含：涉及模块 / 验收标准 / 状态——格式参照资产 TODO.yaml
+3. 建立 docs/PROCESS.md + docs/prd/：六步闭环推进办法；从 PRD-TEMPLATE.md 复制
+   第一个未来阶段的 PRD（标 approved 前先给用户评审）
+4. 加 Git Hooks：.githooks/commit-msg（校验 type/scope/subject 白名单）+ pre-push（保护主干）；
+   scope 白名单按项目模块定制；执行 git config core.hooksPath .githooks
+5. 文档同步：README / AGENTS.md 引用新规范文件（TODO/PROCESS/PRD 路径）
+</landing>
 
-<hard_rules>
-- MUST 阅读并遵守 AGENTS.md 的全部约束（工作方式 / 语言风格 / Git 规范 / 安全边界）
-- NEVER 跳过验证、测试直接标记完成
-- NEVER 用 TODO、占位代码假装完成
-- 验收标准必须可执行（命令 / 断言），禁止「看起来不错」
-</hard_rules>
+<rules>
+- MUST 先分析再改；不破坏现有功能（每步落地后跑项目自身验证：lint/test/build 保持绿）
+- MUST 尊重项目已有约定（语言/风格/依赖/文档），只改规范相关文件
+- 关键决策先问再定：是否引入 develop 分支、scope 用阶段 id 还是模块名、
+  hooks 是否与 CI 现有检查重复——给出建议并让用户确认，不擅自决定
+- NEVER 用 TODO、占位内容假装落地完成；每项落地给出可验证的证据（文件路径 + 关键内容）
+</rules>
 ```
 
 > [!TIP]
-> 提示词是**自包含**的：AI 不需要任何项目背景，靠 URL 读文章、靠资产清单读规范。如果项目还没有资产文件，提示词会引导 AI 先按第 5 节下载并建立它们——相当于把整套规范"播种"进任何项目。
+> 提示词是**自包含**的：AI 靠 URL 读规范、靠资产清单读模板，然后**分析你的项目现状再动手**——它不会套用 rondo 的 Python 细节，而是按你项目的技术栈与演进裁剪落地。关键决策（分支模型、scope 策略）它必须问你，不擅自定。
 
 > [!IMPORTANT]
 > 这套方法在 rondo 里跑通了完整闭环：从地基到 multi-loop 编排，上百条提交全部可追溯到具体阶段，PRD 与代码始终同步，没有一条「无意义提交」。它解决的不是「AI 会不会写代码」，而是「AI 写的东西怎么不失控」。

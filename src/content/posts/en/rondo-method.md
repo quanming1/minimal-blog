@@ -196,51 +196,59 @@ The Rondo Method is battle-tested in rondo, and scales to fit:
 
 The ==core principle is one line==: **constraints live in the repo, are readable and enforceable, and AI obeys the same rules as humans**. The details — whether to have a develop branch, whether scopes are stage ids or module names — are yours to cut. Rules are guardrails, not mazes.
 
-## 7. One-click enable: have an AI work by this system
+## 7. One-click install: have an AI land this system into your project
 
-Copy the prompt below (one click) and send it to your AI collaborator (Claude / Cursor / other). It will read this article first, then the asset files, then drive your project strictly by the Rondo Method:
+Copy the prompt below (one click) and send it to your AI collaborator (Claude / Cursor / other). It will read this article and the assets first, then **analyze your project's current state and install the Rondo Method into it** — rework AGENTS.md, reverse-engineer TODO/PRD, add Git Hooks — so the project runs by this system from then on:
 
 ```text
 <role>
-You are this project's AI collaborator. Drive development strictly by the Rondo Method (see the article below).
+You are the "Rondo Method installer". Task: rework the target project into a project governed by the Rondo Method (see the article below).
+Target project path: <fill in your project path here>
 </role>
 
 <must_read>
 MUST first read this article in full (all content, tables and code examples):
 https://quanming1.github.io/minimal-blog/posts/rondo-method/
 
-MUST read and follow the asset files provided in the article (download from §5; adjust paths to your project):
-- AGENTS.md               — hard behavioral contract for AI agents; read and obey before touching anything
+MUST read the asset files provided in the article (§5; they are the landing templates and references):
+- AGENTS.md               — hard behavioral contract for AI agents (landing template; trim for the project)
 - PROCESS.md              — PRD-driven six-step loop playbook
-- TODO.yaml               — structured task list (the single execution authority)
+- TODO.yaml               — structured task list shape (format reference for reverse-engineering the project TODO)
 - PRD-TEMPLATE.md         — PRD template (copy for every new stage)
-- PRD-A1-cli-config.md    — a real accepted PRD (reference while writing your own)
+- PRD-A1-cli-config.md    — a real accepted PRD (reference while reverse-engineering the project PRDs)
 </must_read>
 
-<workflow>
-Execute the six-step loop from §3: Kickoff → Review → Develop → Verify → Wrap up → Release
-- Kickoff: pick a stage from TODO.yaml → write the PRD (copy PRD-TEMPLATE.md) → only develop after status approved
-- The PRD is the single source of truth: never build anything the PRD does not define
-- Verify: run every acceptance criterion (lint / test / build / manual); only complete when all pass
-- Wrap up: mark PRD accepted + TODO done + sync CHANGELOG
-</workflow>
+<analyze>
+MUST analyze the target project before changing anything:
+- Read the existing AGENTS.md / README / docs/ structure
+- Inspect git: branch model (git branch -a), hooks enabled? (git config core.hooksPath)
+- Use git log to reconstruct the project's evolution (group by feature/version → the basis for TODO stages)
+</analyze>
 
-<change_rule>
-On requirement changes, MUST decide the path first (§3.3):
-- Within the existing PRD's scope → amend the PRD + MUST append to the trailing "Change log" (date + change + reason) + re-check affected AC
-- Out of scope / new stage → open a new PRD (copy the template, run the full loop)
-</change_rule>
+<landing>
+Land the system item by item (verify after each item; do not change everything at once):
+1. Rework AGENTS.md: add work style (TODO-driven) / code style / Git rules / PRD-driven sections;
+   keep the project's existing sensible conventions; trim to size (a single-main-branch project does NOT need develop/feature branches)
+2. Reverse-engineer docs/TODO.yaml: stages from the project's actual evolution (history marked done + future plans todo),
+   each step carrying: modules / acceptance criteria / status — shape follows the asset TODO.yaml
+3. Create docs/PROCESS.md + docs/prd/: the six-step loop playbook; copy PRD-TEMPLATE.md for the
+   first future stage (present for user review before marking approved)
+4. Add Git Hooks: .githooks/commit-msg (validate type/scope/subject whitelist) + pre-push (protect the trunk);
+   customize the scope whitelist per the project's modules; run git config core.hooksPath .githooks
+5. Sync docs: README / AGENTS.md reference the new norm files (TODO/PROCESS/PRD paths)
+</landing>
 
-<hard_rules>
-- MUST read and obey all constraints in AGENTS.md (work style / language / Git rules / security boundaries)
-- NEVER mark complete without running verification and tests
-- NEVER fake completion with TODOs or placeholders
-- Acceptance criteria must be executable (commands / assertions); "looks good enough" is forbidden
-</hard_rules>
+<rules>
+- MUST analyze first, then change; do not break existing functionality (after each step run the project's own checks: lint/test/build stay green)
+- MUST respect the project's existing conventions (language/style/dependencies/docs); touch norm files only
+- Ask before deciding key choices: whether to introduce a develop branch, whether scopes are stage ids or module names,
+  whether hooks overlap with existing CI checks — give recommendations and let the user confirm; do not decide unilaterally
+- NEVER fake completion with TODOs or placeholders; for each landing item give verifiable evidence (file path + key content)
+</rules>
 ```
 
 > [!TIP]
-> The prompt is **self-contained**: the AI needs no project background — it reads the article by URL and the norms via the asset manifest. If the assets don't exist yet, the prompt guides the AI to download and set them up first (per §5) — seeding the whole system into any project.
+> The prompt is **self-contained**: the AI reads the norms by URL and the templates via the asset manifest, then **analyzes your project's current state before acting** — it won't copy rondo's Python specifics; it trims the system to your stack and evolution. Key decisions (branch model, scope strategy) it must ask you, not decide alone.
 
 > [!IMPORTANT]
 > This method has run a complete loop in rondo: from the foundation to multi-loop orchestration, hundreds of commits all traceable to concrete stages, PRDs always in sync with code, not a single "meaningless commit". It doesn't solve "can the AI write code" — it solves "how the AI's output stays under control".
