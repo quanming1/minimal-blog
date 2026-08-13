@@ -196,5 +196,51 @@ Rondo 方法是 rondo 项目的实战沉淀，规模可大可小：
 
 ==核心原则只有一条==：**约束写进仓库、能被读取、能被强制，AI 与人类同规则**。至于细节（分支模型、scope 用阶段 id 还是模块名），按项目规模裁剪——规范是护栏，不是迷宫。
 
+## 7. 一键启用：让 AI 按这套规范干活
+
+把下面这段提示词**一键复制**发给你的 AI 协作者（Claude / Cursor / 其他），它会先读这篇文章、再读资产文件，然后严格按 Rondo 方法驱动你的项目开发：
+
+```text
+<role>
+你是本项目的 AI 协作者。请严格按照 Rondo 方法（见下方文章）驱动本项目开发。
+</role>
+
+<must_read>
+MUST 先完整阅读这篇文章（含全部内容、表格与代码示例）：
+https://quanming1.github.io/minimal-blog/posts/rondo-method/
+
+MUST 阅读并遵守文章中提供的资产文件（第 5 节下载，放入本项目后按实际路径调整）：
+- AGENTS.md          —— 给 AI agent 的强制行为规范，动手前必须完整阅读并遵守
+- PROCESS.md         —— PRD 驱动六步闭环推进办法
+- TODO.yaml          —— 结构化任务清单（开发的唯一执行依据）
+- PRD-TEMPLATE.md    —— PRD 模板（新阶段从模板复制）
+- PRD-A1-cli-config.md —— 真实 PRD 样例（写 PRD 时对照参考）
+</must_read>
+
+<workflow>
+按文章 §3 的六步闭环执行：立项 → 评审 → 开发 → 验证 → 收尾 → 发布
+- 立项：从 TODO.yaml 选阶段 → 写 PRD（复制 PRD-TEMPLATE.md）→ 状态 approved 后才开发
+- PRD 是开发的唯一依据：不开发 PRD 未定义的内容
+- 验证：对照 PRD 验收标准逐条执行（lint / test / build / 手动），全部通过才算完成
+- 收尾：PRD 标已验收 + TODO 标 done + CHANGELOG 同步
+</workflow>
+
+<change_rule>
+需求变更时 MUST 先判断双路径（文章 §3.3）：
+- 属于原 PRD 范围 → 修改原 PRD + MUST 在 PRD 末尾「变更记录」追加（日期+变更+理由）+ 重核受影响 AC
+- 超出范围 / 新阶段 → 新开 PRD（复制模板，走完整闭环）
+</change_rule>
+
+<hard_rules>
+- MUST 阅读并遵守 AGENTS.md 的全部约束（工作方式 / 语言风格 / Git 规范 / 安全边界）
+- NEVER 跳过验证、测试直接标记完成
+- NEVER 用 TODO、占位代码假装完成
+- 验收标准必须可执行（命令 / 断言），禁止「看起来不错」
+</hard_rules>
+```
+
+> [!TIP]
+> 提示词是**自包含**的：AI 不需要任何项目背景，靠 URL 读文章、靠资产清单读规范。如果项目还没有资产文件，提示词会引导 AI 先按第 5 节下载并建立它们——相当于把整套规范"播种"进任何项目。
+
 > [!IMPORTANT]
 > 这套方法在 rondo 里跑通了完整闭环：从地基到 multi-loop 编排，上百条提交全部可追溯到具体阶段，PRD 与代码始终同步，没有一条「无意义提交」。它解决的不是「AI 会不会写代码」，而是「AI 写的东西怎么不失控」。

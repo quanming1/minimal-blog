@@ -196,5 +196,51 @@ The Rondo Method is battle-tested in rondo, and scales to fit:
 
 The ==core principle is one line==: **constraints live in the repo, are readable and enforceable, and AI obeys the same rules as humans**. The details — whether to have a develop branch, whether scopes are stage ids or module names — are yours to cut. Rules are guardrails, not mazes.
 
+## 7. One-click enable: have an AI work by this system
+
+Copy the prompt below (one click) and send it to your AI collaborator (Claude / Cursor / other). It will read this article first, then the asset files, then drive your project strictly by the Rondo Method:
+
+```text
+<role>
+You are this project's AI collaborator. Drive development strictly by the Rondo Method (see the article below).
+</role>
+
+<must_read>
+MUST first read this article in full (all content, tables and code examples):
+https://quanming1.github.io/minimal-blog/posts/rondo-method/
+
+MUST read and follow the asset files provided in the article (download from §5; adjust paths to your project):
+- AGENTS.md               — hard behavioral contract for AI agents; read and obey before touching anything
+- PROCESS.md              — PRD-driven six-step loop playbook
+- TODO.yaml               — structured task list (the single execution authority)
+- PRD-TEMPLATE.md         — PRD template (copy for every new stage)
+- PRD-A1-cli-config.md    — a real accepted PRD (reference while writing your own)
+</must_read>
+
+<workflow>
+Execute the six-step loop from §3: Kickoff → Review → Develop → Verify → Wrap up → Release
+- Kickoff: pick a stage from TODO.yaml → write the PRD (copy PRD-TEMPLATE.md) → only develop after status approved
+- The PRD is the single source of truth: never build anything the PRD does not define
+- Verify: run every acceptance criterion (lint / test / build / manual); only complete when all pass
+- Wrap up: mark PRD accepted + TODO done + sync CHANGELOG
+</workflow>
+
+<change_rule>
+On requirement changes, MUST decide the path first (§3.3):
+- Within the existing PRD's scope → amend the PRD + MUST append to the trailing "Change log" (date + change + reason) + re-check affected AC
+- Out of scope / new stage → open a new PRD (copy the template, run the full loop)
+</change_rule>
+
+<hard_rules>
+- MUST read and obey all constraints in AGENTS.md (work style / language / Git rules / security boundaries)
+- NEVER mark complete without running verification and tests
+- NEVER fake completion with TODOs or placeholders
+- Acceptance criteria must be executable (commands / assertions); "looks good enough" is forbidden
+</hard_rules>
+```
+
+> [!TIP]
+> The prompt is **self-contained**: the AI needs no project background — it reads the article by URL and the norms via the asset manifest. If the assets don't exist yet, the prompt guides the AI to download and set them up first (per §5) — seeding the whole system into any project.
+
 > [!IMPORTANT]
 > This method has run a complete loop in rondo: from the foundation to multi-loop orchestration, hundreds of commits all traceable to concrete stages, PRDs always in sync with code, not a single "meaningless commit". It doesn't solve "can the AI write code" — it solves "how the AI's output stays under control".
