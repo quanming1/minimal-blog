@@ -111,8 +111,8 @@ SSG
 在文章中引用项目资源（图片/zip/任意文件），读者可**直接下载**或**跳转 GitHub 查看源文件**。语法：blockquote 首行 `> [!asset] <路径>`，后续行/段为描述：
 
 ```markdown
-> [!asset] git-commit-convention/commit-msg.example
-> 示例 commit-msg hook，配合文章中的提交规范使用。
+> [!asset] my-post/code.zip
+> 示例资源文件，配合文章使用。
 ```
 
 渲染 `<div class="asset-card" data-asset="<路径>">`：
@@ -127,7 +127,7 @@ SSG
 - 资产根目录 `public/assets/`——public/ 下的文件原样进 dist，`<base>/assets/<路径>` 直接可下载
 - **推荐按文章 slug 分子目录**：`public/assets/<slug>/<文件名>`（文章与资产一一对应，GitHub 目录跳转清晰）；通用资产可放顶层
 - 文件名小写短横线（`my-post/code.zip`），无空格、无 `<` `>`（后者会被 Markdown 解析打断）
-- 引用路径 = 相对 `public/assets/` 的路径（如 `git-commit-convention/commit-msg.example`）
+- 引用路径 = 相对 `public/assets/` 的路径（如 `my-post/code.zip`）
 - 路径含 `..` 拒绝转换（防目录穿越逃出 assets/）；路径含 `<` `>` 被 inline 拆包时安全退化保持普通引用
 
 **实现**：插件工厂 `remarkAsset({ base, repo })`——`base`（下载/预览链接前缀，默认 `/`）与 `repo`（GitHub 仓库 URL，空则不输出 GitHub 链接）由 astro.config.mjs 传入（`createRemarkPlugins`，base 与 astro.config 的 `base` 配置同源单一事实源）。markdown 层无语言上下文，下载链接文案为中文（`↓ 下载` + title/aria-label），GitHub 为品牌名通用。

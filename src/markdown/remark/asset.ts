@@ -1,8 +1,8 @@
 /** remarkAsset：资产引用（Markdown 语法拓展，见 docs/markdown-extensions.md §3.5）
  *
  * 语法：blockquote 首行 `[!asset] <路径>`（大小写不敏感）+ 后续行/段为描述：
- *   > [!asset] git-commit-convention/commit-msg.example
- *   > 示例 commit-msg hook，配合提交规范使用。
+ *   > [!asset] my-post/code.zip
+ *   > 示例资源文件，配合文章使用。
  *
  * 资产路径约定：相对 `public/assets/` 的路径（如 `my-post/code.zip`、`images/hero.png`）——
  *   资产文件放 `public/assets/` 下（public/ 被原样复制到 dist，文件即 URL 可直接下载）；
