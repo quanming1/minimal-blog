@@ -24,7 +24,7 @@ export default defineConfig({
   integrations: [
     sitemap(),
     icon({
-      include: { lucide: ['search', 'moon', 'sun', 'arrow-up'] },
+      include: { lucide: ['search', 'moon', 'sun', 'arrow-up', 'arrow-left', 'arrow-right'] },
     }),
   ],
   vite: {

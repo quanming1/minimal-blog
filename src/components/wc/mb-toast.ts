@@ -3,7 +3,13 @@
  * - aria-live=polite + role=status（读屏友好）
  * - 多条垂直堆叠，自动消失 + 点击手动关闭
  * - 主题：CSS 变量继承；移动端避让底部导航（bottom 5.2em）
+ * - 图标：check 内联 SVG path（自包含零依赖——shadow DOM 内 <use href="#ai:..."> 引用文档 sprite
+ *   不可行：astro-icon 只在渲染 <Icon> 组件的页面生成 symbol，wc 组件须自带图标定义）
  */
+
+/** lucide check（stroke=currentColor 随主题/accent；尺寸走 CSS 1em） */
+const CHECK_ICON =
+  '<svg class="toast-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>'
 
 const STYLE = `
   :host {
@@ -19,6 +25,9 @@ const STYLE = `
   }
   .item {
     pointer-events: auto;
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
     background: var(--bg, #fff);
     color: var(--text, #333);
     border: 1px solid var(--divider, rgba(0,0,0,.3));
@@ -31,6 +40,12 @@ const STYLE = `
     transform: translateY(6px);
     transition: opacity 0.2s ease, transform 0.2s ease;
     cursor: pointer;
+  }
+  .toast-icon {
+    width: 1em;
+    height: 1em;
+    flex-shrink: 0;
+    color: var(--accent, #3c5011); /* 成功对勾随 accent，与左侧 2px 边一致 */
   }
   .item.visible {
     opacity: 1;
@@ -69,12 +84,14 @@ export class MbToast extends HTMLElement {
 
   private _viewport: HTMLElement
 
-  /** 显示一条通知；返回该条目的关闭函数（duration 下限 500ms 防误用） */
+  /** 显示一条通知（含成功对勾图标）；返回该条目的关闭函数（duration 下限 500ms 防误用） */
   show(message: string, opts: { duration?: number } = {}): () => void {
     const duration = typeof opts.duration === 'number' ? Math.max(500, opts.duration) : 2500
     const item = document.createElement('div')
     item.className = 'item'
-    item.textContent = message
+    // 内联 check 图标 + 文本（textContent 设文本，SVG 无文本节点不影响播报）
+    item.innerHTML = `${CHECK_ICON}<span class="toast-text"></span>`
+    ;(item.querySelector('.toast-text') as HTMLElement).textContent = message
     item.addEventListener('click', () => close())
     this._viewport.appendChild(item)
     requestAnimationFrame(() => item.classList.add('visible'))

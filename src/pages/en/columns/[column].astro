@@ -1,6 +1,7 @@
 ---
 /** 专栏文章列表页（en）：/en/columns/<column>/ 下该专栏的系列文章（columnOrder 升序，缺省按日期倒序） */
 import Base from '../../../layouts/Base.astro'
+import { Icon } from 'astro-icon/components'
 import { getCollection } from 'astro:content'
 import { sortColumnPosts } from '../../../lib/posts'
 import { formatMonthDay, langOfId, parseDateString, postHref } from '../../../lib/utils'
@@ -51,5 +52,7 @@ const sorted = sortColumnPosts(
     </tbody>
   </table>
 
-  <a class="post-back" href={`${base}en/columns/`}>{t('en', 'allColumns')}</a>
+  <a class="post-back" href={`${base}en/columns/`}>
+    <Icon name="lucide:arrow-left" aria-hidden="true" /> {t('en', 'allColumns')}
+  </a>
 </Base>

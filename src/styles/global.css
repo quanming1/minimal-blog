@@ -637,9 +637,19 @@ a:hover {
 }
 
 .post-back {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35em;
   margin-top: 2.5em;
   font-size: 0.95em;
+}
+
+/* 返回/导航链接内的 lucide 箭头图标：1em 随字号，stroke 继承 currentColor */
+.post-back svg,
+.post-nav-label svg {
+  width: 1em;
+  height: 1em;
+  flex-shrink: 0;
 }
 
 /* 404 页（src/pages/404.astro）：标题复用 .post-title，描述 muted 印刷风 */
@@ -716,6 +726,9 @@ a:hover {
 }
 
 .post-nav-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35em;
   font-size: 0.8em;
   color: var(--muted);
   text-transform: uppercase;

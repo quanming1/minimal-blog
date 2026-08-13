@@ -1,6 +1,7 @@
 ---
 /** 标签筛选页（zh）：/tags/<tag>/ 下该标签的全部文章（日期倒序，极简表格同首页风格） */
 import Base from '../../layouts/Base.astro'
+import { Icon } from 'astro-icon/components'
 import { getCollection } from 'astro:content'
 import { sortPostsByDate } from '../../lib/posts'
 import { formatMonthDay, langOfId, parseDateString, postHref } from '../../lib/utils'
@@ -52,5 +53,7 @@ const sorted = sortPostsByDate(
     </tbody>
   </table>
 
-  <a class="post-back" href={`${base}tags/`}>{t('zh', 'allTags')}</a>
+  <a class="post-back" href={`${base}tags/`}>
+    <Icon name="lucide:arrow-left" aria-hidden="true" /> {t('zh', 'allTags')}
+  </a>
 </Base>

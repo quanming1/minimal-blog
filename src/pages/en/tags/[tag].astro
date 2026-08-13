@@ -1,6 +1,7 @@
 ---
 /** 标签筛选页（en）：/en/tags/<tag>/ */
 import Base from '../../../layouts/Base.astro'
+import { Icon } from 'astro-icon/components'
 import { getCollection } from 'astro:content'
 import { sortPostsByDate } from '../../../lib/posts'
 import { formatMonthDay, langOfId, parseDateString, postHref } from '../../../lib/utils'
@@ -52,5 +53,7 @@ const sorted = sortPostsByDate(
     </tbody>
   </table>
 
-  <a class="post-back" href={`${base}en/tags/`}>{t('en', 'allTags')}</a>
+  <a class="post-back" href={`${base}en/tags/`}>
+    <Icon name="lucide:arrow-left" aria-hidden="true" /> {t('en', 'allTags')}
+  </a>
 </Base>

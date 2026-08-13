@@ -25,6 +25,21 @@ describe('mb-toast', () => {
     document.body.removeChild(el)
   })
 
+  test('条目含自包含 check 图标（svg 内联，不依赖文档 sprite）', () => {
+    const el = document.createElement('mb-toast') as MbToast
+    document.body.appendChild(el)
+    el.show('已复制')
+    const item = el.shadowRoot?.querySelector('.item')
+    const icon = item?.querySelector('svg.toast-icon')
+    expect(icon).not.toBeNull()
+    // 图标内联在 shadow DOM（组件自包含），路径为 lucide check 的 path
+    expect(item?.querySelector('use')).toBeNull() // 不用 <use> 引用外部 sprite
+    expect(icon?.getAttribute('aria-hidden')).toBe('true') // 装饰性图标不进读屏
+    // textContent 不含 SVG path 文本（播报/断言不受影响）
+    expect(item?.textContent).toBe('已复制')
+    document.body.removeChild(el)
+  })
+
   test('多条 show 垂直堆叠', () => {
     const el = document.createElement('mb-toast') as MbToast
     document.body.appendChild(el)

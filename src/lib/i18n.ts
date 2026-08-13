@@ -15,7 +15,7 @@ const dictDef = {
   /** 文章 meta 行：作者 · 初写于 日期 */
   authorMeta: { zh: '{author} · 初写于 {date}', en: '{author} · First written on {date}' },
   minRead: { zh: '约 {n} 分钟', en: '{n} min. read' },
-  backHome: { zh: '← 回首页', en: '← home' },
+  backHome: { zh: '回首页', en: 'home' },
   footerNote: { zh: '写，是因为想明白了一些事，想把它留下来。', en: 'I write because I figured something out and want to keep it.' },
   navAria: { zh: '主导航', en: 'Primary navigation' },
   searchAria: { zh: '打开搜索', en: 'Open search' },
@@ -26,15 +26,15 @@ const dictDef = {
   /** 标签页 */
   tagsTitle: { zh: '标签', en: 'Tags' },
   tagPostsTitle: { zh: '标签「{tag}」', en: 'Posts tagged "{tag}"' },
-  allTags: { zh: '← 所有标签', en: '← all tags' },
+  allTags: { zh: '所有标签', en: 'all tags' },
   /** 专栏页 */
   columnsTitle: { zh: '专栏', en: 'Columns' },
   columnPostsTitle: { zh: '专栏「{column}」', en: 'Column "{column}"' },
-  allColumns: { zh: '← 所有专栏', en: '← all columns' },
+  allColumns: { zh: '所有专栏', en: 'all columns' },
   inColumn: { zh: '专栏：{column}', en: 'Column: {column}' },
   /** 详情页导航 */
-  prevPost: { zh: '← 上一篇', en: '← Previous' },
-  nextPost: { zh: '下一篇 →', en: 'Next →' },
+  prevPost: { zh: '上一篇', en: 'Previous' },
+  nextPost: { zh: '下一篇', en: 'Next' },
   relatedPosts: { zh: '相关文章', en: 'Related posts' },
   /** 404 页（src/pages/404.astro，路径不存在时按 /en/ 前缀猜语言） */
   notFoundTitle: { zh: '页面不存在', en: 'Page Not Found' },

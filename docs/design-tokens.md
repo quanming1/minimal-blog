@@ -120,9 +120,10 @@
 
 **原理与约束**（保持零 JS / CSP 严格 / 隐私优先哲学）：
 - **构建期内联**：astro-icon 把图标渲染为**文档内联 sprite**——页面首个 `<Icon name="lucide:xxx">` 输出 `<svg><symbol id="ai:lucide:xxx">…</symbol><use href="#ai:lucide:xxx"></use></svg>`，同页后续实例只输出 `<use>`；零外部请求、零运行时 JS、零第三方 CDN
-- **图标名白名单在 astro.config.mjs**：`icon({ include: { lucide: ['search','moon','sun','arrow-up'] } })`——**新增图标 → 先在此补名**（图标名清单见 `node_modules/@iconify-json/lucide/icons.json` 或 https://lucide.dev）
+- **图标名白名单在 astro.config.mjs**：`icon({ include: { lucide: ['search','moon','sun','arrow-up','arrow-left','arrow-right'] } })`——**新增图标 → 先在此补名**（图标名清单见 `node_modules/@iconify-json/lucide/icons.json` 或 https://lucide.dev）
 - **颜色随 currentColor**：lucide 是 stroke 图标（`stroke="currentColor"`），svg 在按钮内继承文字颜色，双主题自动适配；**不要硬编码 fill/stroke 色值**
-- **尺寸用 CSS 控制**（相对父级字号）：`.search-icon svg, .theme-icon svg { width: 1em; height: 1em }`、`.back-to-top-icon { 1.1em }`
+- **尺寸用 CSS 控制**（相对父级字号）：`.search-icon svg, .theme-icon svg { width: 1em; height: 1em }`、`.back-to-top-icon { 1.1em }`、`.post-back svg, .post-nav-label svg { 1em }`
+- **wc 组件图标自包含**（v1.12.0 起）：mb-toast 的 check 图标是**内联 SVG path**（shadow 模板内定义），不引用文档 sprite——astro-icon 只在渲染 `<Icon>` 组件的页面生成 symbol，wc 在 shadow DOM 里 `use(#ai:...)` 会引用到不存在的 symbol；组件保持零依赖自包含
 - **主题图标零 JS 切换**：亮色显示 moon、暗色显示 sun，由 `html[data-theme]` + CSS 显隐控制（global.css），JS 只管 `data-theme`——见 Base.astro applyTheme
 - **无障碍**：图标容器/按钮带 `aria-hidden="true"`（装饰性图标不进读屏），按钮语义靠 `aria-label`
 
@@ -133,4 +134,7 @@
 | 导航搜索按钮 | `lucide:search` | 打开站内搜索 |
 | 导航主题按钮 | `lucide:moon` / `lucide:sun` | 亮暗显隐切换 |
 | 文章页回顶 | `lucide:arrow-up` | 回到顶部 |
+| 返回/回退链接 | `lucide:arrow-left` | post-back / allTags / allColumns / 上一篇（v1.12.0 起替代文本箭头 ←） |
+| 下一篇导航 | `lucide:arrow-right` | post-nav next（v1.12.0 起替代文本箭头 →） |
+| mb-toast 成功提示 | check（**内联 SVG path**，非 lucide 白名单） | 通知条目对勾（v1.12.0 起，wc 自包含） |
 | 首页年份锚点 `¶` | 无（保留印刷符号） | olivierlacan 风格，非图标 |
