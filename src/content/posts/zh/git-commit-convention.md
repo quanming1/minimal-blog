@@ -141,6 +141,18 @@ git push origin develop
 
 合并用 `--no-ff` 保留合并提交，历史里能清楚看到「哪批提交组成了一个功能」；`develop` 只接受 merge 合入，杜绝直接 commit 绕过 review 语义。
 
+## develop 与 main 之间走 PR
+
+保护分支之间不能直接合并——`develop` 和 `main` 的合入一律走 GitHub PR/MR（Code Review），本地不直接 `git merge`：
+
+- `develop → main`：release 分支合入时提 PR（`release/* → main`）
+- `main → develop`：hotfix 回灌同样提 PR（`main → develop`）
+
+对应的 pre-push hook 强制：本地 main 领先远程的新增提交若含本地 merge 提交（带两个父提交），直接拒绝 push——因为 PR 的合并发生在 GitHub 服务器端，本地 main 只 `pull` 同步，不该产生本地 merge。
+
+> [!IMPORTANT]
+> 这条约束的前提是**有多个协作分支**。单人项目或单 `main` 分支的站点（比如这个博客）没有 develop/main 之分，就不需要走 PR——但提交信息规范仍然适用。
+
 ## 常见错误速查
 
 | 错误写法 | 问题 | 正确写法 |
@@ -160,6 +172,8 @@ git push origin develop
 一套提交规范要真正活下来，三件事缺一不可：**格式简单**（type/scope/subject 一行）、**规则可机器校验**（hook 强制而非自觉）、**与开发流程绑定**（阶段 id 关联清单、feat 绑定 PRD、分支交叉校验）。
 
 这套体系在我们的 rondo 项目（YAML 驱动的 LLM 工作流编排工具）里落地并运行良好——上百条提交全部可追溯到具体阶段，CHANGELOG 可自动生成，历史里没有一条「无意义提交」。
+
+这个博客（minimal-blog）也采用同一套提交信息规范（Conventional Commits 的 type + scope），只是 scope 用模块名而非阶段 id、且单 main 分支不涉及 develop↔main 走 PR——规范是同一套，落地按项目规模裁剪。
 
 > [!WARNING]
 > 规范是手段不是目的。如果某个规则让你频繁绕路或「忘了为什么」，说明它值得重新审视——好的规范应该像护栏，而不是迷宫。

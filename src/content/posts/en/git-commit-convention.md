@@ -141,6 +141,18 @@ git push origin develop
 
 `--no-ff` keeps merge commits so history clearly shows "which batch of commits made up a feature"; `develop` is merge-only, so direct commits can never bypass the review semantics.
 
+## PRs between develop and main
+
+Protected branches cannot be merged directly — any integration between `develop` and `main` goes through a GitHub PR/MR (Code Review); no local `git merge`:
+
+- `develop → main`: open a PR when merging a release branch (`release/* → main`)
+- `main → develop`: hotfix back-port also goes through a PR (`main → develop`)
+
+The pre-push hook enforces this: if local `main` has commits ahead of the remote that contain a local merge commit (two parents), the push is rejected — because PR merges happen on GitHub's servers; local `main` only `pull`s to sync and should never produce a local merge.
+
+> [!IMPORTANT]
+> This constraint assumes **multiple collaborating branches**. A single-person project or a single-`main`-branch site (like this blog) has no develop/main split, so it doesn't need PRs — but the commit-message convention still applies.
+
 ## Common mistakes
 
 | wrong | problem | right |
@@ -160,6 +172,8 @@ git push origin develop
 For a commit convention to actually survive, three things must be in place: **a simple format** (one line of type/scope/subject), **machine-verifiable rules** (hooks, not willpower), and **integration with the dev workflow** (phase ids tied to the backlog, feat bound to PRDs, branch cross-checks).
 
 We run this system on our rondo project (a YAML-driven LLM workflow orchestration tool) and it works — hundreds of commits, every one traceable to a concrete phase, CHANGELOG auto-generatable, zero meaningless commits in history.
+
+This blog (minimal-blog) follows the same commit-message convention (Conventional Commits type + scope), except the scope uses module names instead of phase ids, and the single-`main` branch means the develop↔main PR rule doesn't apply — same convention, adapted to project scale.
 
 > [!WARNING]
 > A convention is a means, not an end. If a rule makes you constantly detour or you forget why it exists, it deserves re-examination — good rules should act like guardrails, not mazes.
