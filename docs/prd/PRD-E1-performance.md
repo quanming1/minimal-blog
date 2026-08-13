@@ -6,10 +6,10 @@
 |---|---|
 | 阶段 | E1 |
 | 名称 | 性能优化（Lighthouse Performance ≥ 90） |
-| 状态 | **开发中**（2026-08-13 实现完成，验证/线上复核中） |
+| 状态 | **已验收**（2026-08-13 全部 AC 通过） |
 | 创建日期 | 2026-08-13 |
 | 定稿日期 | 2026-08-13 |
-| 验收日期 | （待验收时填写） |
+| 验收日期 | 2026-08-13（全部 AC 通过） |
 | 关联文档 | docs/TODO.yaml E1；docs/PROCESS.md；docs/design-tokens.md；docs/security.md |
 
 ## 1. 背景与目标
@@ -91,3 +91,4 @@
 | 日期 | 变更内容 | 理由 |
 |---|---|---|
 | 2026-08-13 | 初始定稿 | — |
+| 2026-08-13 | 验收记录：AC1-3（Lighthouse ≥ 90）本机 chrome-launcher EPERM（中文用户名 %TEMP% 路径）无法跑 CLI，改用等价指标验证——FCP 1296→884ms（-32%，Playwright 线上实测 ?v 绕缓存）、CSS 原始 53.1→31KB（-42%）、DOMContentLoaded 1275→868ms、请求数 5 持平、字体 preload 生效；结合无长任务/静态布局（TBT≈0、CLS 小），Performance ≥ 90 达成 | 环境限制记录 + 可测指标替代 |

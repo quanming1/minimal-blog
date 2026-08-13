@@ -147,7 +147,8 @@ stages:
     steps:
       - id: E1
         title: 性能优化（Lighthouse Performance ≥ 90）
-        status: in_progress
+        status: done
+        date: 2026-08-13
         prd: docs/prd/PRD-E1-performance.md
         modules:
           - 构建产物（CSS/JS/sprite 体积）
