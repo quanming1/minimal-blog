@@ -27,7 +27,7 @@ src/content/posts/
 touch src/content/posts/zh/<slug>.md
 ```
 
-slug 用**小写短横线**（kebab-case），如 `git-commit-convention`、`why-keep-blogging`。
+slug 用**小写短横线**（kebab-case）。中文主题取英文翻译转 kebab-case：如「用 Markdown 维护一个博客的快乐」→ `markdown-workflow`、「我的第一杯手冲咖啡」→ `my-first-pour-over-coffee`；已有英文名（如 git-commit-convention）直接用。
 
 frontmatter（必读，`date` 必须带引号）：
 
@@ -43,7 +43,8 @@ tags: [标签, 标签2]        # 可选
 
 ### 2. 写正文
 
-- 标准 Markdown，代码块自动高亮（shiki，CSS 变量主题跟随明暗）
+- 标准 Markdown，结构清晰（H2/H3 分节，章节有标题），篇幅适度（博客短文，不必冗长）
+- 代码块自动高亮（shiki，CSS 变量主题跟随明暗）
 - 可用博客拓展语法（完整清单见 [docs/markdown-extensions.md](https://github.com/quanming1/minimal-blog/blob/main/docs/markdown-extensions.md)）：
   - 提示框：`> [!NOTE]` / `> [!TIP]` / `> [!IMPORTANT]` / `> [!WARNING]` / `> [!CAUTION]`
   - 高亮：`==重点==` → `<mark>`
@@ -61,10 +62,12 @@ bun run lint && bun run test && bun run build
 ```
 
 - lint = `astro check`（0 errors；预存在的 execCommand 弃用 hint 可忽略）
-- test = `bun test`（144 个用例，须 0 fail）
+- test = `bun test`（须 0 fail；用例数随博客功能变化，以 0 fail 为准）
 - build = 静态构建（须成功，文章生成对应路由）
 
 ### 5. 提交（Conventional Commits）
+
+提交前自查：确认当前分支是 `main`、`git status` 只包含本次文章文件（无 dist/node_modules 等杂项）。
 
 ```bash
 git add src/content/posts/zh/<slug>.md [src/content/posts/en/<slug>.md]
@@ -87,6 +90,8 @@ push main 自动触发 GitHub Actions：`lint → test → build + smoke → dep
 curl -s -o NUL -w "%{http_code}\n" "https://quanming1.github.io/minimal-blog/posts/<slug>/"
 # 期望 200；en 版同理 /en/posts/<slug>/
 ```
+
+若页面非 200：先看 GitHub Actions 状态页（https://github.com/quanming1/minimal-blog/actions）区分「CI 失败」与「仍在部署中」——CI 失败按报错修复后重新 push；仍在部署中则等待后再验证。
 
 ## 检查清单（提交前过一遍）
 
