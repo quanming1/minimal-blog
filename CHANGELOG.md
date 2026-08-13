@@ -3,6 +3,23 @@
 > 版本变更记录。**约定：`src/content/posts/` 下的文章增删改（写作）不进入本文件**——那是内容维护，不是项目版本变更。
 > 仅记录工程层面（代码/结构/功能/构建/测试/部署）的变化。
 
+## [1.12.0] - 2026-08-13
+
+### 新增
+- **Markdown 资产引用（`> [!asset]`）**：blockquote 引用 `public/assets/` 下文件 → `asset-card` 卡片（↓ 下载 + GitHub 跳转 + 图片预览），插件工厂 `remarkAsset({ base, repo })`（astro.config 单一事实源）；目录穿越防护（`..` 拒绝）、`<` 拆包安全退化；16 单测（docs/markdown-extensions.md §3.5）
+- **专栏功能（frontmatter `column` / `columnOrder`）**：/columns/ 总览 + /columns/[column]/ 系列列表（zh/en 双语），详情页专栏链接、导航入口、搜索命中专栏名、RSS `<category>` 输出；数据层 getAllColumns / sortColumnPosts（13 单测）
+- **Rondo 方法治理（D4）**：docs/TODO.yaml（5 阶段 20 步路线图，开发的唯一执行依据）+ docs/PROCESS.md（PRD 驱动六步闭环）+ docs/prd/PRD-E1-performance.md（首个 PRD 驱动阶段）；AGENTS.md 结构表同步
+
+### 优化
+- **E1 性能优化**：@fontsource/lato 改用 latin 子集文件（移除无用 latin-ext 声明 + woff base64 内联），Base.css 原始 53.1KB → 31KB（-42%）；首屏字体 preload（400/700 woff2，基线传输 46KB/78KB 为最大资源）；基线 FCP 1296ms（线上实测）
+- **Icon 系统丰富**：导航文本箭头（←/→）升级 lucide arrow-left/arrow-right 图标（7 模板 + i18n 文案），mb-toast 加自包含 check 图标（shadow DOM 内联 path，不依赖文档 sprite）
+
+### 变更
+- 页脚移除标语「写，是因为想明白了一些事，想把它留下来。」；邮箱 quanming1@gmail.com → 2991537373@qq.com（页脚 + about，zh/en）
+
+### 验证
+- 测试 172 全绿、lint 0 errors、构建成功（27 页面）；线上页面 200、图标渲染确认、性能指标复测
+
 ## [1.11.0] - 2026-08-13
 
 ### 新增

@@ -1,8 +1,12 @@
 ---
-import '@fontsource/lato/300.css'
-import '@fontsource/lato/400.css'
-import '@fontsource/lato/700.css'
-import '@fontsource/lato/900.css'
+import '@fontsource/lato/latin-300.css'
+import '@fontsource/lato/latin-400.css'
+import '@fontsource/lato/latin-700.css'
+import '@fontsource/lato/latin-900.css'
+// 首屏字体 preload（LCP 优化，E1 性能优化）：400/700 是实际使用的字重，提前并行下载
+// ?url 拿到 Vite 构建后的 hash URL；字体必须 crossorigin（CORS 字体请求）
+import lato400Url from '@fontsource/lato/files/lato-latin-400-normal.woff2?url'
+import lato700Url from '@fontsource/lato/files/lato-latin-700-normal.woff2?url'
 import '../styles/global.css'
 import { ClientRouter } from 'astro:transitions'
 import { t } from '../lib/i18n'
@@ -129,6 +133,10 @@ const isAbout = path === '/about/'
     />
     <meta name="referrer" content="no-referrer" />
     <link rel="icon" type="image/svg+xml" href={`${base}favicon.svg`} />
+    <!-- 首屏字体 preload（E1 性能优化）：400/700 woff2 是最大传输资源（基线 ~46KB/78KB），
+         提前并行下载减少 LCP；crossorigin 必须（字体请求走 CORS 语义） -->
+    <link rel="preload" href={lato400Url} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={lato700Url} as="font" type="font/woff2" crossorigin />
     <ClientRouter />
     <script is:inline>
       // 首帧主题：仅 localStorage 显式 'dark' 时用暗色；默认亮色（防闪烁脚本先于渲染）
