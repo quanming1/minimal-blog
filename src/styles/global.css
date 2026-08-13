@@ -423,6 +423,82 @@ a:hover {
   margin-bottom: 0;
 }
 
+/* 资产引用卡片：> [!asset] 路径（public/assets/ 下文件，可下载/跳转 GitHub，见 docs/markdown-extensions.md §3.5）
+   结构：图片预览（仅图片扩展名）+ asset-head（文件名 + 下载/GitHub 链接）+ 描述（.asset-card > p） */
+.post-body .asset-card {
+  margin: 1.2em 0;
+  padding: 0.9em 1.1em;
+  border: 1px solid var(--divider);
+  border-radius: 4px;
+  background: var(--code-bg);
+  font-size: 0.95em;
+  line-height: 1.6;
+  overflow-wrap: break-word; /* 长文件名/URL 窄屏不溢出 */
+}
+
+.post-body .asset-img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 0 0 0.8em;
+  border: 1px solid var(--divider);
+  border-radius: 4px;
+}
+
+.post-body .asset-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.8em;
+  flex-wrap: wrap;
+}
+
+.post-body .asset-name {
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+  font-weight: 700;
+  color: var(--text);
+  overflow-wrap: anywhere; /* 超长文件名断行（防溢出） */
+}
+
+.post-body .asset-links {
+  display: flex;
+  gap: 0.6em;
+  flex-shrink: 0;
+}
+
+.post-body .asset-download,
+.post-body .asset-github {
+  font-size: 0.85em;
+  padding: 0.2em 0.6em;
+  border: 1px solid var(--divider);
+  border-radius: 3px;
+  color: var(--accent);
+  text-decoration: none;
+  line-height: 1.5;
+}
+
+.post-body .asset-download:hover,
+.post-body .asset-github:hover {
+  border-color: var(--accent);
+  background: var(--bg);
+}
+
+/* 描述（保留原段落，rehype 统一转义） */
+.post-body .asset-card > p {
+  margin: 0.6em 0 0;
+  color: var(--muted);
+  font-size: 0.92em;
+}
+
+.post-body .asset-card > :first-child {
+  margin-top: 0;
+}
+
+.post-body .asset-card > :last-child {
+  margin-bottom: 0;
+}
+
 /* ==高亮== → <mark>：底色 accent 透明层（极简，非实心高亮笔） */
 .post-body mark {
   background: var(--accent-line);

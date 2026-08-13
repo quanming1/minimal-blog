@@ -39,6 +39,7 @@ src/markdown/
 | **定义列表** | `Term` 下一行 `: Definition` | `<dl><dt><dd>` | remark/deflist.ts |
 | **下标** | `H_{2}O` | `<sub>` | remark/supsub.ts |
 | **上标** | `E=mc^{2}` | `<sup>` | remark/supsub.ts |
+| **资产引用** | `> [!asset] <路径>` blockquote | `<div class="asset-card">`（下载 + GitHub + 图片预览） | remark/asset.ts |
 
 ## 3. 语法详解
 
@@ -105,11 +106,37 @@ SSG
 - 内容 `<`/`&`/`"` 由 escapeHtml 转义（html 节点原样输出的安全约束，见 §4）
 - inline code（`` `H_{2}O` ``）不处理；raw HTML 标签（`<code>`）原样，标签间文本按 CommonMark 语义仍处理
 
+### 3.5 资产引用 Asset（remark/asset.ts）
+
+在文章中引用项目资源（图片/zip/任意文件），读者可**直接下载**或**跳转 GitHub 查看源文件**。语法：blockquote 首行 `> [!asset] <路径>`，后续行/段为描述：
+
+```markdown
+> [!asset] git-commit-convention/commit-msg.example
+> 示例 commit-msg hook，配合文章中的提交规范使用。
+```
+
+渲染 `<div class="asset-card" data-asset="<路径>">`：
+
+- **下载链接**（`↓ 下载`）：指向 `<base>/assets/<路径>`（public/ 原样复制到 dist，文件即 URL，可下载）；带 `download` 属性强制下载
+- **GitHub 链接**（`GitHub`）：指向 `<repo>/tree/main/public/assets/<路径>`（GitHub 查看源文件/所在目录）；`repo` 选项为空时不输出
+- **图片预览**：路径以图片扩展名结尾（png/jpg/jpeg/gif/svg/webp/avif/ico/bmp）时，卡片顶部输出 `<img class="asset-img" loading="lazy">` 预览
+- 描述保留原段落（`.asset-card > p`，rehype 统一转义）
+
+**资产目录规范**（`public/assets/` 下）：
+
+- 资产根目录 `public/assets/`——public/ 下的文件原样进 dist，`<base>/assets/<路径>` 直接可下载
+- **推荐按文章 slug 分子目录**：`public/assets/<slug>/<文件名>`（文章与资产一一对应，GitHub 目录跳转清晰）；通用资产可放顶层
+- 文件名小写短横线（`my-post/code.zip`），无空格、无 `<` `>`（后者会被 Markdown 解析打断）
+- 引用路径 = 相对 `public/assets/` 的路径（如 `git-commit-convention/commit-msg.example`）
+- 路径含 `..` 拒绝转换（防目录穿越逃出 assets/）；路径含 `<` `>` 被 inline 拆包时安全退化保持普通引用
+
+**实现**：插件工厂 `remarkAsset({ base, repo })`——`base`（下载/预览链接前缀，默认 `/`）与 `repo`（GitHub 仓库 URL，空则不输出 GitHub 链接）由 astro.config.mjs 传入（`createRemarkPlugins`，base 与 astro.config 的 `base` 配置同源单一事实源）。markdown 层无语言上下文，下载链接文案为中文（`↓ 下载` + title/aria-label），GitHub 为品牌名通用。
+
 ## 4. 技术约束（XSS 与顺序）
 
 - **优先用 `node.data.hName` 方案**（见 callout.ts / deflist.ts）：给自定义节点挂 `data: { hName, hProperties }`，mdast-util-to-hast 内建支持（`data-*` 属性也可正常传递，如 `'data-callout'`），子树由 rehype 统一转 HTML（text 自动转义）——**text 内容零 XSS 面**（注意：内容里的 raw HTML 仍按 CommonMark 透传，作者自担，同正文）
 - **必须用 html 节点时手动 escapeHtml**（见 highlight.ts / supsub.ts）：mdast 的 html 节点原样输出不转义！
-- **插件顺序敏感**（src/markdown/index.ts）：结构级插件（callout / deflist）在前，文本级插件（highlight / supsub）在后；文本级插件递归处理 deflist 内部 children
+- **插件顺序敏感**（src/markdown/index.ts）：结构级插件（asset / callout / deflist）在前，文本级插件（highlight / supsub）在后；文本级插件递归处理 deflist 内部 children
 - **smartypants: false**（astro.config.mjs）：关闭智能引号——中英混排保持引号原样（刻意决策，勿当作遗漏改回）
 - 新增插件前先跑 `bun test src/markdown` 确认现有用例不回归
 
@@ -154,17 +181,26 @@ function walk(node: unknown, parent: { children: unknown[] } | null, index: numb
 ### 步骤 2：注册 `src/markdown/index.ts`
 
 ```ts
+import type { Plugin } from 'unified'
+import type { Root } from 'mdast'
 import { remarkContainer } from './remark/container'
-
 // 已有插件（无需改动，仅示意上下文）：
+// import { remarkAsset, type RemarkAssetOptions } from './remark/asset'
 // import { remarkCallout } from './remark/callout'
-// import { remarkHighlight } from './remark/highlight'
 
-export const remarkPlugins = [
-  remarkCallout,
-  remarkHighlight,
-  remarkContainer, // ← 追加一行（注意顺序：结构级在前）
-]
+// 插件工厂：资产插件（remarkAsset）需要 base/repo 由 astro.config.mjs 传入（createRemarkPlugins(opts)），
+// 无参调用（单测/无 base 上下文）走默认值。新增插件在数组里追加一行（注意顺序：结构级在前，文本级在后）
+export function createRemarkPlugins(opts: RemarkAssetOptions = {}): Plugin<[], Root>[] {
+  return [
+    // remarkAsset(opts), // 结构级：资产引用
+    // remarkCallout,     // 结构级：提示框
+    remarkContainer, // ← 追加一行（结构级：示例自定义容器）
+    // remarkHighlight,   // 文本级：==高亮==（文本级在后）
+  ]
+}
+
+// 兼容默认导出（无 base/repo 上下文，如纯 remark 单测基线）
+export const remarkPlugins = createRemarkPlugins()
 ```
 
 ### 步骤 3：写单测 `src/markdown/remark/container.test.ts`
@@ -237,9 +273,11 @@ bun run lint && bun test --parallel=1 && bun run build
 | GFM 语法需在 parse 阶段 | 删除线/表格等是 micromark 扩展，`use(gfm)` 只在 parse 生效 | 测试 `parse(md)` 时挂 gfm：`unified().use(remarkParse).use(remarkGfm).parse(md)` |
 | CJK 文本 `_汉字_` 不是强调 | CommonMark intraword emphasis：`_` 在字母/汉字间不开启 | 测试 emphasis 用英文 `_emphasis_` |
 | **md 文件带 BOM → 正文渲染为空** | Astro 对 UTF-8 BOM 的 md 处理异常：frontmatter 正常但正文空（线上/产物 post-body 空，v1.7.0 实证） | **文章 md 必须 UTF-8 无 BOM**（编辑器/脚本保存时去 BOM；用 `UTF8Encoding($false)` 写） |
+| `[!asset]` 后换行被 `\s+` 吞 | remark 段落合并使 `> [!asset] \n> 内容` 的 text 是 `'[!asset]\n内容'` 单节点，`\s+` 匹配换行把下一行当路径 | asset 正则用 `[ \t]+`（不含换行）限定路径同行（见 asset.ts） |
+| 路径含 `<` 被 inline 拆包 | `> [!asset] a<b>.zip` 的 `<b>` 被 remark 解析为 html 节点，text 拆成 `'[!asset] a'` + html + text，捕获残缺路径 | 类型行 text 后存在非 text 节点 → 安全退化保持普通引用（见 asset.ts） |
 
 ## 7. 测试基线
 
-- `bun test src/markdown`：插件单测（40+ 用例：callout 8 + deflist 10 + highlight 10 + supsub 13）
-- 全量：`bun run lint && bun test --parallel=1 && bun run build`（120 测试）
+- `bun test src/markdown`：插件单测（58 用例：callout 8 + deflist 11 + highlight 10 + supsub 13 + asset 16）
+- 全量：`bun run lint && bun test --parallel=1 && bun run build`（160 测试）
 - 线上验证：markdown-workflow 文章含 callout/highlight/定义列表/上标下标演示，构建产物与浏览器双重确认
