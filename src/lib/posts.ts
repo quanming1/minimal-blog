@@ -54,3 +54,25 @@ export function getAllTags(posts: { tags: string[] }[]): { tag: string; count: n
     .map(([tag, count]) => ({ tag, count }))
     .sort((a, b) => b.count - a.count || a.tag.localeCompare(b.tag, 'zh'))
 }
+
+/** 全部专栏：去重 + 计数，按计数倒序（相同按专栏名升序）；无专栏的文章不计入。 */
+export function getAllColumns(posts: { column?: string }[]): { column: string; count: number }[] {
+  const counts = new Map<string, number>()
+  for (const p of posts) {
+    if (!p.column) continue
+    counts.set(p.column, (counts.get(p.column) ?? 0) + 1)
+  }
+  return Array.from(counts.entries())
+    .map(([column, count]) => ({ column, count }))
+    .sort((a, b) => b.count - a.count || a.column.localeCompare(b.column, 'zh'))
+}
+
+/** 专栏内排序（阅读顺序）：columnOrder 升序（小在前）；无 columnOrder 的按日期倒序排最后。
+ * 返回新数组不修改入参。 */
+export function sortColumnPosts<T extends { columnOrder?: number; date: Date }>(posts: T[]): T[] {
+  return [...posts].sort((a, b) => {
+    const ao = a.columnOrder ?? Number.MAX_SAFE_INTEGER
+    const bo = b.columnOrder ?? Number.MAX_SAFE_INTEGER
+    return ao - bo || b.date.valueOf() - a.date.valueOf()
+  })
+}

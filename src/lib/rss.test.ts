@@ -58,6 +58,24 @@ describe('buildRss', () => {
     expect(xml).toContain('<language>en</language>')
   })
 
+  test('categories 输出 <category>（每个一行，XML 转义）', () => {
+    const xml = buildRss({
+      ...baseOpts,
+      posts: [
+        { title: 'A', link: 'https://x/', date: '2026-08-12', categories: ['Rondo 方法', '博客 & 开发'] },
+        { title: 'B', link: 'https://y/', date: '2026-08-11' },
+      ],
+    })
+    expect(xml).toContain('<category>Rondo 方法</category>')
+    expect(xml).toContain('<category>博客 &amp; 开发</category>')
+    expect((xml.match(/<category>/g) || []).length).toBe(2)
+  })
+
+  test('无 categories 不输出空 <category> 标签', () => {
+    const xml = buildRss(baseOpts)
+    expect(xml).not.toContain('<category>')
+  })
+
   test('空 posts 也输出合法 RSS（channel 无 item）', () => {
     const xml = buildRss({ ...baseOpts, posts: [] })
     expect(xml).toContain('<channel>')

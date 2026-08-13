@@ -23,6 +23,11 @@ const posts = defineCollection({
     author: z.string().optional(),
     /** 标签（可选，详情页展示） */
     tags: z.array(z.string()).default([]),
+    /** 专栏（可选）：系列文章分类。语言相关的原始字符串（zh 写中文名 / en 写英文名，与 tag 同机制）；
+     * 专栏页 /columns/<column>/ 按语言聚合，中英专栏页相互独立 */
+    column: z.string().optional(),
+    /** 专栏内排序（可选）：数值升序（小在前）；缺省按日期倒序。仅 column 存在时有意义 */
+    columnOrder: z.number().int().optional(),
   }),
 })
 

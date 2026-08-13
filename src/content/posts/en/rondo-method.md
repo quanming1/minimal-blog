@@ -2,6 +2,7 @@
 title: 'The Rondo Method: PRD-Driven Development with Hard Agent Constraints'
 date: '2026-08-13'
 description: A practical recipe for AI pair development distilled from the rondo project — PRD-driven development, hard AGENTS.md constraints, and TODO-list governance that keep humans and AI agents working under the same rules.
+column: Rondo Method
 tags: [Engineering, AI Agent, Dev Process]
 ---
 

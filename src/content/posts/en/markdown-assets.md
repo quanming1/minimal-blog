@@ -2,6 +2,7 @@
 title: 'Attachments in Posts: Markdown Asset Reference'
 date: '2026-08-13'
 description: 'A new "asset reference" syntax lets posts include downloadable files with image previews — one click to download or view the source on GitHub.'
+column: Blog Development
 tags: [Markdown, Blog, Engineering]
 ---
 

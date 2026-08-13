@@ -74,12 +74,14 @@ const jsonLd =
 /** 语言切换目标：默认切换当前路径，无翻译时切到目标语言首页 */
 const switchTarget = switchHref(base, lang, path, Astro.props.hasTranslation ?? true)
 
-// 导航：文章（首页）、关于
-const navLinks: { key: 'navPosts' | 'navAbout'; url: string }[] = [
+// 导航：文章（首页）、专栏、关于
+const navLinks: { key: 'navPosts' | 'navColumns' | 'navAbout'; url: string }[] = [
   { key: 'navPosts', url: lang === 'zh' ? href('') : href('en/') },
+  { key: 'navColumns', url: lang === 'zh' ? href('columns/') : href('en/columns/') },
   { key: 'navAbout', url: lang === 'zh' ? href('about/') : href('en/about/') },
 ]
 const isHome = path === '/'
+const isColumns = path === '/columns/'
 const isAbout = path === '/about/'
 ---
 
@@ -166,7 +168,13 @@ const isAbout = path === '/about/'
               <li>
                 <a
                   href={l.url}
-                  aria-current={(l.key === 'navPosts' && isHome) || (l.key === 'navAbout' && isAbout) ? 'page' : undefined}
+                  aria-current={
+                    (l.key === 'navPosts' && isHome) ||
+                    (l.key === 'navColumns' && isColumns) ||
+                    (l.key === 'navAbout' && isAbout)
+                      ? 'page'
+                      : undefined
+                  }
                 >
                   {t(lang, l.key)}
                 </a>

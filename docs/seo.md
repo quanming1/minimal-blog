@@ -80,6 +80,8 @@ frontmatter 字段（schema 见 src/content.config.ts）：
 | `description` | ✗ | - | 摘要：meta description + JSON-LD description |
 | `author` | ✗ | 按语言 hardcode | **作者**。缺省时按文章语言取 i18n `authorName`（zh → 蒋全明、en → Quanming Jiang，hardcode 本人）；frontmatter 写了 `author` 则两语言均显示写死的值 |
 | `tags` | ✗ | `[]` | 标签 |
+| `column` | ✗ | - | **专栏**（系列文章分类）。语言相关的原始字符串（zh 写中文名 / en 写英文名，与 tag 同机制）；专栏页 /columns/<column>/（en /en/columns/）按语言聚合；中英专栏页相互独立 |
+| `columnOrder` | ✗ | - | **专栏内排序**（阅读顺序）：整数升序（小在前）；缺省按日期倒序。仅 column 存在时有意义 |
 
 作者渲染（按文章语言，i18n `authorName` 键）：zh → 蒋全明、en → Quanming Jiang；frontmatter 写了 `author` 则优先显示写死的值（两语言均显示该值）。文章页 meta 行格式：`作者 · 初写于 日期`（i18n `authorMeta` 键）。
 

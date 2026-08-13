@@ -9,6 +9,8 @@ export interface RssPost {
   description?: string
   /** YYYY-MM-DD（frontmatter 原字符串，勿转 Date 避免时区偏移） */
   date: string
+  /** 分类（可选，对应 frontmatter column；输出 RSS <category>） */
+  categories?: string[]
 }
 
 export interface RssOptions {
@@ -45,7 +47,7 @@ export function buildRss(opts: RssOptions): string {
       <title>${escapeXml(p.title)}</title>
       <link>${escapeXml(p.link)}</link>
       <guid isPermaLink="false">${escapeXml(p.link)}</guid>
-      <pubDate>${toRfc822(p.date)}</pubDate>${p.description ? `\n      <description>${escapeXml(p.description)}</description>` : ''}
+      <pubDate>${toRfc822(p.date)}</pubDate>${p.categories?.length ? `\n${p.categories.map((c) => `      <category>${escapeXml(c)}</category>`).join('\n')}` : ''}${p.description ? `\n      <description>${escapeXml(p.description)}</description>` : ''}
     </item>`,
     )
     .join('\n')

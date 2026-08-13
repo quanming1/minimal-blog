@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'bun:test'
-import { getAllTags, getAdjacentPosts, getRelatedPosts, sortPostsByDate } from './posts'
+import { getAllColumns, getAllTags, getAdjacentPosts, getRelatedPosts, sortColumnPosts, sortPostsByDate } from './posts'
 
 // 辅助：构造条目（date 用本地时区，与页面 parseDateString 一致）
 const d = (s: string) => new Date(s)
@@ -99,5 +99,59 @@ describe('getAllTags', () => {
 
   test('空输入返回空', () => {
     expect(getAllTags([])).toEqual([])
+  })
+})
+
+describe('getAllColumns', () => {
+  test('去重 + 计数，按计数倒序', () => {
+    const columns = getAllColumns([
+      { column: 'Rondo 方法' },
+      { column: '博客开发' },
+      { column: 'Rondo 方法' },
+      {},
+    ])
+    expect(columns).toEqual([
+      { column: 'Rondo 方法', count: 2 },
+      { column: '博客开发', count: 1 },
+    ])
+  })
+
+  test('无 column 的文章跳过（不计入也不报错）', () => {
+    expect(getAllColumns([{}, { column: 'x' }])).toEqual([{ column: 'x', count: 1 }])
+  })
+
+  test('计数相同按专栏名升序（中文 localeCompare）', () => {
+    const columns = getAllColumns([{ column: '乙' }, { column: '甲' }])
+    expect(columns.map((c) => c.column)).toEqual(['甲', '乙'])
+  })
+
+  test('空输入返回空', () => {
+    expect(getAllColumns([])).toEqual([])
+  })
+})
+
+describe('sortColumnPosts', () => {
+  const d = (s: string) => new Date(s)
+  const mk = (id: string, date: string, columnOrder?: number) => ({ id, date: d(date), columnOrder })
+
+  test('columnOrder 升序（小在前，阅读顺序）', () => {
+    const posts = [mk('c', '2026-08-10', 3), mk('a', '2026-08-12', 1), mk('b', '2026-08-11', 2)]
+    expect(sortColumnPosts(posts).map((p) => p.id)).toEqual(['a', 'b', 'c'])
+  })
+
+  test('无 columnOrder 的按日期倒序（新 → 旧）', () => {
+    const posts = [mk('old', '2026-08-10'), mk('new', '2026-08-12')]
+    expect(sortColumnPosts(posts).map((p) => p.id)).toEqual(['new', 'old'])
+  })
+
+  test('混合：有 columnOrder 在前（按序），无的排最后（按日期）', () => {
+    const posts = [mk('no', '2026-08-12'), mk('b', '2026-08-10', 2), mk('a', '2026-08-11', 1)]
+    expect(sortColumnPosts(posts).map((p) => p.id)).toEqual(['a', 'b', 'no'])
+  })
+
+  test('原数组不被修改（纯函数）', () => {
+    const posts = [mk('b', '2026-08-10', 2), mk('a', '2026-08-11', 1)]
+    sortColumnPosts(posts)
+    expect(posts.map((p) => p.id)).toEqual(['b', 'a'])
   })
 })

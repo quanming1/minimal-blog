@@ -5,6 +5,7 @@ const dictDef = {
   siteName: { zh: '明志', en: 'Mingzhi' },
   tagline: { zh: '非淡泊无以明志，非宁静无以致远', en: 'Without indifference there is no clear aspiration.' },
   navPosts: { zh: '文章', en: 'Posts' },
+  navColumns: { zh: '专栏', en: 'Columns' },
   navAbout: { zh: '关于', en: 'About' },
   switchLang: { zh: 'EN', en: '中文' },
   postsTitle: { zh: '文章', en: 'Posts' },
@@ -26,6 +27,11 @@ const dictDef = {
   tagsTitle: { zh: '标签', en: 'Tags' },
   tagPostsTitle: { zh: '标签「{tag}」', en: 'Posts tagged "{tag}"' },
   allTags: { zh: '← 所有标签', en: '← all tags' },
+  /** 专栏页 */
+  columnsTitle: { zh: '专栏', en: 'Columns' },
+  columnPostsTitle: { zh: '专栏「{column}」', en: 'Column "{column}"' },
+  allColumns: { zh: '← 所有专栏', en: '← all columns' },
+  inColumn: { zh: '专栏：{column}', en: 'Column: {column}' },
   /** 详情页导航 */
   prevPost: { zh: '← 上一篇', en: '← Previous' },
   nextPost: { zh: '下一篇 →', en: 'Next →' },

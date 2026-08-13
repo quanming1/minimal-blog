@@ -65,6 +65,14 @@ const base = import.meta.env.BASE_URL
         <Content />
       </div>
 
+      {post.data.column && (
+        <div class="post-tags">
+          <a class="tag" href={`${base}columns/${encodeURIComponent(post.data.column)}/`}>
+            {t('zh', 'inColumn', { column: post.data.column })}
+          </a>
+        </div>
+      )}
+
       {tags.length > 0 && (
         <div class="post-tags">
           {tags.map((tag) => (

@@ -52,6 +52,16 @@ describe('filterPosts', () => {
     expect(filterPosts(index, 'intro').map((e) => e.id)).toEqual(['en/hello-mingzhi'])
   })
 
+  test('按专栏匹配（大小写不敏感，中文名直接命中）', () => {
+    const withCol = buildSearchIndex([
+      { id: 'zh/a', title: '系列第一篇', description: '', tags: [], column: 'Rondo 方法', href: '#', date: '2026-08-12' },
+      { id: 'zh/b', title: '系列第二篇', description: '', tags: [], column: '博客开发', href: '#', date: '2026-08-12' },
+    ])
+    expect(filterPosts(withCol, 'Rondo').map((e) => e.id)).toEqual(['zh/a'])
+    expect(filterPosts(withCol, 'rondo').map((e) => e.id)).toEqual(['zh/a']) // 大小写不敏感
+    expect(filterPosts(withCol, '博客开发').map((e) => e.id)).toEqual(['zh/b'])
+  })
+
   test('无匹配返回空数组', () => {
     expect(filterPosts(index, '不存在的关键词xyz')).toEqual([])
   })

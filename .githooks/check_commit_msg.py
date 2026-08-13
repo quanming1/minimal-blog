@@ -22,7 +22,7 @@ TYPE_WHITELIST = (
 # scope 模块名白名单（与 AGENTS.md 仓库结构与职责表同步维护）
 SCOPE_WHITELIST = (
     "posts", "theme", "layout", "lib", "components", "styles", "markdown",
-    "seo", "rss", "tags", "search", "ci", "docs", "skills", "release",
+    "seo", "rss", "tags", "columns", "search", "ci", "docs", "skills", "release",
 )
 # 系统提交前缀（跳过校验）
 SKIP_PREFIXES = ("merge:", "Merge", "revert:", "Revert")

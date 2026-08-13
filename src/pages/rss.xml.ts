@@ -18,6 +18,7 @@ const items = order.map((s) => {
     link: `${SITE_URL}${postHref(base, langOfId(p.id), p.id)}`,
     description: p.data.description,
     date: p.data.date,
+    categories: p.data.column ? [p.data.column] : undefined,
   }
 })
 

@@ -18,9 +18,10 @@
 | `src/markdown/**` | Markdown 语法拓展（index.ts 注册表 + remark/ 插件 + 单测） | 语法拓展 |
 | `docs/markdown-extensions.md` | 语法清单 + 新增拓展开发指南（**新增语法前先读**） | 语法拓展 |
 | `src/lib/search.ts` | 搜索索引构建 / 过滤纯函数 | 功能改动 |
-| `src/lib/posts.ts` | 文章数据层纯函数（排序/相邻/相关/标签收集） | 功能改动 |
+| `src/lib/posts.ts` | 文章数据层纯函数（排序/相邻/相关/标签收集/专栏收集） | 功能改动 |
 | `src/lib/rss.ts` | RSS 2.0 生成器（escapeXml/toRfc822/buildRss） | 功能改动 |
 | `src/pages/tags/**` | 标签页路由（/tags/ 云 + /tags/[tag]/ 筛选，zh/en 双语） | 页面改动 |
+| `src/pages/columns/**` | 专栏页路由（/columns/ 总览 + /columns/[column]/ 系列列表，zh/en 双语） | 页面改动 |
 | `src/test/setup-dom.ts` | jsdom 测试基座（组件测试注入全局） | 测试基建 |
 | `src/pages/**` | 页面路由（zh 无前缀 / en 前缀） | 页面改动 |
 | `src/styles/global.css` | 全部样式（olivierlacan 风格 + 双主题 + 响应式断点体系 §10） | 样式改动 |
@@ -66,7 +67,7 @@
  - 提交信息（Conventional Commits）：`<type>(<scope>): <subject>`，subject 中文
    - **机器强制**：`.githooks/` commit-msg hook 校验 type 白名单 / scope 白名单 / subject 含中文（merge/revert 跳过），pre-push 保护 main（禁删、禁非 main 直推、禁本地 merge）；clone 后执行一次 `git config core.hooksPath .githooks`（见 README 开发节）。违反会被当场拒绝，**不要绕过**
    - type 白名单：`post`（文章）/ `feat`（功能）/ `fix`（修复）/ `docs`（文档）/ `style`（样式）/ `refactor`（重构）/ `chore`（杂项）/ `ci`（CI 与部署）/ `test`（测试）/ `perf`（优化）
-   - scope 用模块名（见上方路径表，**与 `.githooks/check_commit_msg.py` 的 `SCOPE_WHITELIST` 同步维护**）：`posts` / `theme` / `layout` / `lib` / `components` / `styles` / `markdown` / `seo` / `rss` / `tags` / `search` / `ci` / `docs` / `skills` / `release`（版本发布，如 `feat(release): v1.12.0 - 摘要`）
+   - scope 用模块名（见上方路径表，**与 `.githooks/check_commit_msg.py` 的 `SCOPE_WHITELIST` 同步维护**）：`posts` / `theme` / `layout` / `lib` / `components` / `styles` / `markdown` / `seo` / `rss` / `tags` / `columns` / `search` / `ci` / `docs` / `skills` / `release`（版本发布，如 `feat(release): v1.12.0 - 摘要`）
    - 例：`post(posts): 新增 git 提交规范文章`、`fix(styles): 加宽文章正文`、`ci(deploy): smoke 测试动态页数`
    - 单 main 分支 + GitHub Pages 部署，无 develop/main 之分，故不适用 develop↔main 走 PR 约束
 

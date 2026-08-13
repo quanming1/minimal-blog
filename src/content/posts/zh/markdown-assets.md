@@ -2,6 +2,7 @@
 title: 在文章里放附件：Markdown 资产引用语法
 date: '2026-08-13'
 description: 博客新增「资产引用」语法，文章里可以挂可下载文件与图片预览，读者一键下载或跳转 GitHub 查看源码。
+column: 博客开发
 tags: [Markdown, 博客, 工程实践]
 ---
 
