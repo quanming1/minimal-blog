@@ -16,7 +16,6 @@ const dictDef = {
   authorMeta: { zh: '{author} · 初写于 {date}', en: '{author} · First written on {date}' },
   minRead: { zh: '约 {n} 分钟', en: '{n} min. read' },
   backHome: { zh: '回首页', en: 'home' },
-  footerNote: { zh: '写，是因为想明白了一些事，想把它留下来。', en: 'I write because I figured something out and want to keep it.' },
   navAria: { zh: '主导航', en: 'Primary navigation' },
   searchAria: { zh: '打开搜索', en: 'Open search' },
   searchTitle: { zh: '站内搜索', en: 'Search' },
