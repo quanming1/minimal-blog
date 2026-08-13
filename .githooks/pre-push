@@ -1,0 +1,55 @@
+#!/bin/sh
+# pre-push hook —— main 保护（minimal-blog 单 main 分支 + GitHub Pages 自动部署，从 rondo 迁移适配）。
+#
+# 规则：
+#   - git push origin main             允许（本地 main 直接推送 = 发布流程）
+#   - git push origin feature/x:main   拒绝（禁止其他分支直接上 main）
+#   - git push origin :main            拒绝（禁止删除远程 main）
+#   - main -> main 时本地新增提交不得含本地 merge 提交
+#     —— 单 main 仓库不应产生本地 merge（如需 Code Review，合入一律走 GitHub PR）
+#
+# clone 后需执行一次（README 开发节）：
+#   git config core.hooksPath .githooks
+
+protected=refs/heads/main
+zeros=0000000000000000000000000000000000000000
+
+while IFS= read -r line; do
+  # 删除 main 检测：git 删除远端 ref 时 stdin = " <0{40}> <remote-ref> <remote-oid>"（local ref 为空串）。
+  # ⚠️ 不能用 read 字段判断——shell read 折叠空白使字段错位（local_ref 拿到全 0 oid、remote_ref 拿到
+  # remote-oid），remote_ref 永远不等于 refs/heads/main（rondo 原版此洞已修）。必须整行匹配原始行。
+  if printf '%s\n' "$line" | grep -Eq "^[[:space:]]*${zeros}[[:space:]]+refs/heads/main([[:space:]]+|$)"; then
+    echo "[拒绝] main 保护：禁止删除远程 main"
+    exit 1
+  fi
+
+  read local_ref local_oid remote_ref remote_oid <<EOF
+$line
+EOF
+
+  # main 保护：非 main 分支禁止直接 push 到 main
+  if [ "$remote_ref" = "$protected" ] && [ "$local_ref" != "$protected" ]; then
+    echo "[拒绝] main 保护：禁止直接 push 到 main"
+    echo "        当前尝试：$local_ref -> $remote_ref"
+    exit 1
+  fi
+
+  # main 保护：main -> main 时，本地领先的新增提交不得含本地 merge 提交
+  # （单 main 仓库不应本地 merge；如需 review，合入走 GitHub PR 在服务器端完成）
+  if [ "$local_ref" = "$protected" ] && [ "$remote_ref" = "$protected" ]; then
+    # 远端全 0 = 首次推送 main（仓库初始化），放行
+    if [ "$remote_oid" != "$zeros" ]; then
+      for commit in $(git log --first-parent --format=%H "$remote_oid".."$local_oid"); do
+        # merge commit 有 >=2 个父提交：rev-list --parents 输出至少 3 个字段
+        set -- $(git rev-list --parents -n 1 "$commit")
+        if [ $# -ge 3 ]; then
+          echo "[拒绝] main 保护：禁止本地直接 merge（必须走 GitHub PR/MR）"
+          echo "        本地 main 不应产生 merge 提交：$(git log -1 --format=%s "$commit")"
+          exit 1
+        fi
+      done
+    fi
+  fi
+done
+
+exit 0

@@ -64,8 +64,9 @@
 - 新增 Markdown 语法拓展 → 先读 `docs/markdown-extensions.md`（6 步流程：插件放 `src/markdown/remark/` + index.ts 注册 + 单测 + CSS + 文档 + 验证）；遵守 XSS 约束（优先 data.hName，html 节点必须 escapeHtml）与插件顺序（结构级在前）
 - 改 SEO 相关代码（Base.astro head / src/lib/seo.ts / astro.config.mjs / robots.txt）→ 先读 `docs/seo.md`；JSON-LD 必须 `is:inline set:html` + `serializeJsonLd`（Astro 对非 JS script 透传不求值）；datePublished 用 frontmatter 原字符串不转 Date；hreflang 遵循 `alternateUrls` 规则（hasTranslation 才输出互译）
  - 提交信息（Conventional Commits）：`<type>(<scope>): <subject>`，subject 中文
+   - **机器强制**：`.githooks/` commit-msg hook 校验 type 白名单 / scope 白名单 / subject 含中文（merge/revert 跳过），pre-push 保护 main（禁删、禁非 main 直推、禁本地 merge）；clone 后执行一次 `git config core.hooksPath .githooks`（见 README 开发节）。违反会被当场拒绝，**不要绕过**
    - type 白名单：`post`（文章）/ `feat`（功能）/ `fix`（修复）/ `docs`（文档）/ `style`（样式）/ `refactor`（重构）/ `chore`（杂项）/ `ci`（CI 与部署）/ `test`（测试）/ `perf`（优化）
-   - scope 用模块名（见上方路径表）：`posts` / `theme` / `layout` / `lib` / `components` / `styles` / `markdown` / `seo` / `rss` / `tags` / `search` / `ci` / `docs` / `skills`
+   - scope 用模块名（见上方路径表，**与 `.githooks/check_commit_msg.py` 的 `SCOPE_WHITELIST` 同步维护**）：`posts` / `theme` / `layout` / `lib` / `components` / `styles` / `markdown` / `seo` / `rss` / `tags` / `search` / `ci` / `docs` / `skills` / `release`（版本发布，如 `feat(release): v1.12.0 - 摘要`）
    - 例：`post(posts): 新增 git 提交规范文章`、`fix(styles): 加宽文章正文`、`ci(deploy): smoke 测试动态页数`
    - 单 main 分支 + GitHub Pages 部署，无 develop/main 之分，故不适用 develop↔main 走 PR 约束
 

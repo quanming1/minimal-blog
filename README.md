@@ -76,6 +76,7 @@ tags: [标签1, 标签2]        # 可选
 ## 开发
 
 ```bash
+git config core.hooksPath .githooks   # clone 后执行一次：激活提交规范 hooks（commit-msg 强制 type/scope/subject 中文，pre-push 保护 main，见 AGENTS.md 提交规范节）
 bun install          # 安装依赖
 bun run dev          # 本地开发 http://localhost:4321
 bun run build        # 构建静态站点（产物 dist/）
@@ -83,6 +84,8 @@ bun run preview      # 预览构建产物
 bun run lint         # astro check（类型检查）
 bun run test         # 单元测试（bun test）
 ```
+
+提交信息由 `.githooks/` 强制校验（从 rondo 的提交规范 hooks 迁移适配）：`<type>(<scope>): <subject>`（type/scope 白名单、subject 中文），merge/revert 跳过；pre-push 保护 main（禁删、禁非 main 直推、禁本地 merge 提交）。规则与 AGENTS.md 同步维护，新增 scope 需同时更新 `.githooks/check_commit_msg.py` 的 `SCOPE_WHITELIST`。
 
 ## 项目结构
 
