@@ -61,7 +61,11 @@
 - 改安全相关代码（CSP/头/CI 权限/依赖/注入点）→ 先读 `docs/security.md`（威胁模型与维护约定），改完跑 `npm audit`（临时 lockfile 方式）并同步文档
 - 新增 Markdown 语法拓展 → 先读 `docs/markdown-extensions.md`（6 步流程：插件放 `src/markdown/remark/` + index.ts 注册 + 单测 + CSS + 文档 + 验证）；遵守 XSS 约束（优先 data.hName，html 节点必须 escapeHtml）与插件顺序（结构级在前）
 - 改 SEO 相关代码（Base.astro head / src/lib/seo.ts / astro.config.mjs / robots.txt）→ 先读 `docs/seo.md`；JSON-LD 必须 `is:inline set:html` + `serializeJsonLd`（Astro 对非 JS script 透传不求值）；datePublished 用 frontmatter 原字符串不转 Date；hreflang 遵循 `alternateUrls` 规则（hasTranslation 才输出互译）
-- 提交信息：写作 `post: 标题`；工程 `feat/fix/ci:` 前缀
+ - 提交信息（Conventional Commits）：`<type>(<scope>): <subject>`，subject 中文
+   - type 白名单：`post`（文章）/ `feat`（功能）/ `fix`（修复）/ `docs`（文档）/ `style`（样式）/ `refactor`（重构）/ `chore`（杂项）/ `ci`（CI 与部署）/ `test`（测试）/ `perf`（优化）
+   - scope 用模块名（见上方路径表）：`posts` / `theme` / `layout` / `lib` / `components` / `styles` / `markdown` / `seo` / `rss` / `tags` / `search` / `ci` / `docs`
+   - 例：`post(posts): 新增 git 提交规范文章`、`fix(styles): 加宽文章正文`、`ci(deploy): smoke 测试动态页数`
+   - 单 main 分支 + GitHub Pages 部署，无 develop/main 之分，故不适用 develop↔main 走 PR 约束
 
 ## 构建与部署
 
