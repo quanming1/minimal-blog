@@ -119,3 +119,42 @@ Loader 只挂载一次组合，等待每一行的普通注入，再基于其已�
 - bundle 的 manifest 声明哪个键，回答什么问题？
 - profile 位于哪个目录，它的 manifest 回答什么问题？
 - 为什么 hello-plugin 的 cordis.patch.yml 里用包名而不是相对源码路径？
+
+---
+
+> **编者补充（2026-08-18，非原文内容）**：本章概念抽象，初读常卡在三个问题上。以下辨析经实机验证（dsh 0.1.0-rc.6），供参考。
+
+## 补充一：manifest 到底是什么
+
+manifest = 清单 = 一个包的"自我说明书"文件（海运集装箱货运单的软件版）：**不是代码，是"关于代码的信息"**，由工具链读取并决定如何处理这个包。package.json 就是 npm 包的 manifest；dsh 只是在它的 `dsh` 键下定义了两种子清单——`dsh.bundle`（我是组合包）与 `dsh.profile`（我是配方）。所谓"两种 manifest"不是说两个文件，而是同一份 package.json 在 `dsh` 键下声明的身份不同。
+
+## 补充二：plugin、bundle、profile 不是并列的三种东西
+
+三者是"内容 → 包装 → 订单"的层次关系：
+
+| 概念 | 本质 | 比喻 |
+|---|---|---|
+| plugin | 一段有 `apply(ctx, config)` 的代码 | 歌手（货物） |
+| bundle | 装着 plugin（可多个）的 npm 包 | 专辑（包装盒） |
+| profile | 用户机器上的启动配方（`~/.dsh/profiles/<name>/`） | 播放列表（订单） |
+
+一个 plugin 可以裸奔（开发期 `--patch` 指源码路径），也可以躺进 bundle 分发——**bundle 只是 plugin 的标准出厂包装**。plugin 自身没有独立 manifest：它的身份要么写在 bundle 的 package.json（`dsh.bundle`），要么记录在 profile 的 package.json（`dsh.profile.bundles`）。
+
+## 补充三：bundle 与 plugin 是多对多
+
+- 一个 bundle 可装多个 plugin：`@deepseek-ai/dsh-base` 一行 bundles 就挂载了 LLM 对接、会话管理、工具执行等几十个 plugin
+- 一个 plugin 可进多个 bundle（patch 行按包名解析，不独占绑定）
+- 硬约束在加载期而非打包期：同一 profile 插件树内**一个 id 只能一行**，同 id 后层覆盖前层（这正是"覆盖配置"的实现机制）；同一份代码以不同 id 挂载 = 两个独立插件实例
+
+## 对照实例（stats-lab profile，三种形态齐活）
+
+```text
+~/.dsh/profiles/stats-lab/
+├── package.json                   # profile manifest（dsh.profile.bundles）
+├── cordis.patch.yml               # insert 行：按包名挂 session-stats（不经 bundles）
+└── plugins/
+    ├── octo-sdk-server/           # 1:1 最简 bundle（package.json 带 dsh.bundle）
+    └── dsh-plugin-session-stats/  # 同是 bundle，但靠 insert 行挂载
+```
+
+两种挂载路径都合法：小插件用 insert 省事；要分发给别人 `npm install` 就打成 bundle。
