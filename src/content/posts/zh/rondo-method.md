@@ -1,7 +1,7 @@
 ---
 title: Rondo 方法：PRD 驱动 × Agent 约束的 AI 结对开发（全 PR 流版）
 date: '2026-08-13'
-description: 秒级发布测试-1787029886
+description: 从 rondo 项目的实战约束中提炼的一套 AI 结对开发规范——先 PRD 后开发、AGENTS.md 硬约束、TODO 清单驱动、全 PR 流合并，附带可复制落地的完整资产包（hooks + 模板 + 示例），让 AI 与人类在同一套规则下协作。
 column: Rondo 方法
 tags: [工程实践, AI Agent, 开发流程]
 ---

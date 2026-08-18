@@ -3,6 +3,16 @@
 > 版本变更记录。**约定：`src/content/posts/` 下的文章增删改（写作）不进入本文件**——那是内容维护，不是项目版本变更。
 > 仅记录工程层面（代码/结构/功能/构建/测试/部署）的变化。
 
+## [1.14.0] - 2026-08-13
+
+### 变更
+- **秒级发布（F2）**：部署从「Actions 全链路」改为「gh-pages 产物分支」——`mb publish` 本地 build 后直接把 dist 推到 gh-pages 分支（worktree + force push + `.nojekyll`），Pages 源切为 `legacy`（gh-pages 分支）直接 serve 静态产物，**无 CI 构建，线上秒级可见**（实测改 description → publish → <20s 命中）
+- CI 改角色：`.github/workflows/deploy.yml` 由「lint→test→build→deploy」改为纯验证「lint+test」（main push 触发，非阻塞部署）
+- 全局 shim 动态定位：`mb-bootstrap.mjs` 从 cwd 向上找 minimal-blog 仓库并**直接 import CLI 入口**（消除 shell 转义导致的参数截断 bug），任意仓库内目录可用
+
+### 验证
+- 秒级发布实证：meta 改 description → mb publish → 线上 <20s 命中；gh-pages 含 .nojekyll；Pages 源 legacy/gh-pages 确认；回退预案记录于 docs/prd/PRD-F2-fast-publish.md（gh api 切回 workflow）
+
 ## [1.13.0] - 2026-08-13
 
 ### 新增

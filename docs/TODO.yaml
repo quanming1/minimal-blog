@@ -189,11 +189,16 @@ stages:
           - src/pages/en/** 下线 + Base 语言切换移除（CLI 时代只发中文）
         acceptance: mb 全命令可用、行号编辑 hash 并发安全、publish 竞态防护验证、dist 无 en 页面
       - id: F2
-        title: 自动化增强（草稿工作流/定时发布）
-        status: todo
+        title: 秒级发布（gh-pages 产物分支 + Pages legacy 部署）
+        status: done
+        date: 2026-08-13
+        prd: docs/prd/PRD-F2-fast-publish.md
         modules:
-          - mb draft / schedule 子命令
-        acceptance: 草稿不构建、定时发布可用
+          - scripts/mb/publish.ts（gh-pages worktree + force push）
+          - .github/workflows/deploy.yml（改纯 lint+test 验证）
+          - Pages 源 legacy/gh-pages（gh api 切换）
+          - mb-bootstrap.mjs（shim 动态定位）
+        acceptance: mb publish 秒级可见、gh-pages 含 .nojekyll、CI 仍 lint+test 绿、shim 动态定位
       - id: E5
         title: 国际化扩展
         status: todo

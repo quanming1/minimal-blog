@@ -6,10 +6,10 @@
 |---|---|
 | 阶段 | F2 |
 | 名称 | 秒级发布（本地 build 推 gh-pages 分支） |
-| 状态 | **approved**（2026-08-13 定稿） |
+| 状态 | **已验收**（2026-08-13 全部 AC 通过） |
 | 创建日期 | 2026-08-13 |
 | 定稿日期 | 2026-08-13 |
-| 验收日期 | （待验收） |
+| 验收日期 | 2026-08-13（全部 AC 通过） |
 | 关联文档 | docs/TODO.yaml F2；docs/security.md；docs/PROCESS.md；PRD-F1-blog-cli.md |
 
 ## 1. 背景与目标
@@ -68,3 +68,4 @@
 | 日期 | 变更内容 | 理由 |
 |---|---|---|
 | 2026-08-13 | 初始定稿 | — |
+| 2026-08-13 | 验收记录：AC1-5 全过——mb publish 走新快速通道（build→commit main→push main→推 gh-pages→秒级可见），gh-pages 分支产物含 .nojekyll，Pages 源已切 legacy/gh-pages（gh api JSON body），CI 改纯 lint+test，shim 动态定位（bootstrap 直接 import 入口，无 shell 转义）。实测：改 description → publish → 线上 <20s 命中新值（?v 绕缓存）。回退命令：gh api -X PUT .../pages --input body（build_type=workflow） | 实测证据 |
