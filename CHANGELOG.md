@@ -3,6 +3,17 @@
 > 版本变更记录。**约定：`src/content/posts/` 下的文章增删改（写作）不进入本文件**——那是内容维护，不是项目版本变更。
 > 仅记录工程层面（代码/结构/功能/构建/测试/部署）的变化。
 
+## [1.15.0] - 2026-08-18
+
+### 新增
+- **mb publish-file（F3）**：整篇导入发布——`mb publish-file <路径>` 读本地 `.md`/`.txt` 文件直接发布为博客文章，告别行号逐行编辑（长文章首选）。自动检测编码（UTF-8 BOM / UTF-8 / GBK，Windows 记事本 `.txt` 不乱码）；文件自带 YAML frontmatter 优先、命令行参数只补缺；slug 默认取文件名转 kebab-case（中文名需 `--slug`）
+
+### 修复
+- **publish commit msg 对新文章失效**：原 `git diff --name-only HEAD` 不含 untracked 新文件，导致新文章发布时 commit 误为 `chore(release)`；改为先 `git add -A` 再 `git diff --cached` 取 staged 文件名，新文章正确生成 `post(posts): 文章更新（slug）`
+
+### 验证
+- 单测 203 pass（新增 slugFromFilename/readFileAutoEncoding/buildFrontmatter 共 10 例）、lint 0 errors、build 23 页；端到端实测见 docs/prd/PRD-F3-publish-file.md
+
 ## [1.14.0] - 2026-08-13
 
 ### 变更

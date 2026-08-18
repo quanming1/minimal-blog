@@ -199,6 +199,17 @@ stages:
           - Pages 源 legacy/gh-pages（gh api 切换）
           - mb-bootstrap.mjs（shim 动态定位）
         acceptance: mb publish 秒级可见、gh-pages 含 .nojekyll、CI 仍 lint+test 绿、shim 动态定位
+      - id: F3
+        title: 整篇导入发布（mb publish-file：本地 md/txt → 文章 → 秒级发布）
+        status: in_progress
+        date: 2026-08-18
+        prd: docs/prd/PRD-F3-publish-file.md
+        modules:
+          - scripts/mb/lib.ts（slugFromFilename / readFileAutoEncoding / buildFrontmatter）
+          - scripts/mb/index.ts（cmdPublishFile）
+          - scripts/mb/publish.ts（新文章 commit msg 修复）
+          - .ftre/skills/blog-cli/SKILL.md
+        acceptance: mb publish-file 导入带 frontmatter 的 md 与无 frontmatter 的 GBK txt 均正确发布；编码自动检测；单测全绿
       - id: E5
         title: 国际化扩展
         status: todo

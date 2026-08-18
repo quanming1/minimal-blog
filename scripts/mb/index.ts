@@ -2,11 +2,11 @@
  * 用法见 .ftre/skills/blog-cli/SKILL.md；设计 docs/prd/PRD-F1-blog-cli.md
  * 退出码：0 成功 / 1 用户错误 / 2 hash 冲突 / 3 锁或系统错误
  */
-import { existsSync, readdirSync, rmSync } from 'node:fs'
-import { join } from 'node:path'
+import { existsSync, readdirSync, rmSync, statSync } from 'node:fs'
+import { basename, extname, join, resolve } from 'node:path'
 import {
-  EXIT, acquireLock, applyEdit, atomicWrite, contentHash, ensureDir,
-  fmStructureOk, newPostText, parsePost, parseRange, postPath, postsDir, readPost, requireRoot, serializePost, validSlug,
+  EXIT, acquireLock, applyEdit, atomicWrite, buildFrontmatter, contentHash, ensureDir,
+  fmStructureOk, newPostText, parsePost, parseRange, postPath, postsDir, readFileAutoEncoding, readPost, requireRoot, serializePost, slugFromFilename, validSlug,
 } from './lib'
 import { publish } from './publish'
 
@@ -40,7 +40,9 @@ function help(): void {
   mb edit <slug> append --text s                         文末追加（无需 hash）
   mb meta <slug> get <field> | set <field> <value>       frontmatter 字段读写
   mb rm <slug> [--yes]                                   删除文章
-  mb publish [--skip-verify] [--no-wait-ci] [--msg m]    发布全流程（验证→commit→push→CI→线上抽查）
+  mb publish [--skip-verify] [--msg m]                   发布（验证→commit main→推 gh-pages→秒级上线）
+  mb publish-file <路径> [--slug s] [--title t] [--tags a,b] [--column c] [--date d] [--no-publish] [--msg m] [--skip-verify]
+                                                          整篇导入本地 .md/.txt 文件并发布（文件 frontmatter 优先，命令行补缺）
   mb --help
 
 退出码：0 成功 · 1 用户错误 · 2 hash 冲突（重新 mb lines）· 3 锁被占/系统错误
@@ -195,6 +197,56 @@ function cmdRm(args: string[]): void {
   console.log(`deleted: ${path}（资产目录请自查 public/assets/${slug}/）`)
 }
 
+function cmdPublishFile(args: string[]): void {
+  const pathArg = args[0]
+  if (!pathArg) err('用法: mb publish-file <路径> [--slug s] [--title t] [--tags a,b] [--column c] [--date d] [--no-publish] [--msg m] [--skip-verify]')
+  const root = requireRoot()
+
+  const abs = resolve(pathArg)
+  if (!existsSync(abs) || !statSync(abs).isFile()) err(`文件不存在或不是文件: ${pathArg}`)
+  const ext = extname(abs).toLowerCase()
+  if (ext !== '.md' && ext !== '.txt') err(`仅支持 .md/.txt 文件: ${pathArg}`)
+
+  const slug = argVal(args, 'slug') ?? slugFromFilename(basename(abs))
+  if (!validSlug(slug)) err(`slug 非法: "${slug}"（中文/空文件名请用 --slug 指定小写短横线）`)
+  const target = postPath(root, slug)
+  if (existsSync(target)) err(`文章已存在: ${slug}（先 mb rm 或换 --slug）`)
+
+  const content = readFileAutoEncoding(abs)
+  const { fm, bodyLines } = parsePost(content)
+
+  let merged: Record<string, string>
+  try {
+    merged = buildFrontmatter(fm, {
+      title: argVal(args, 'title'),
+      date: argVal(args, 'date'),
+      tags: argVal(args, 'tags'),
+      column: argVal(args, 'column'),
+    })
+  } catch (e) {
+    err((e as Error).message)
+  }
+
+  {
+    const release = acquireLock(root, `publish-file ${slug}`)
+    ensureDir(postsDir(root))
+    atomicWrite(target, serializePost(merged, bodyLines.join('\n')))
+    release()
+  }
+  console.log(`导入: ${target}`)
+
+  if (hasFlag(args, 'no-publish')) {
+    console.log('已跳过发布（--no-publish）。手动发布: mb publish')
+    return
+  }
+
+  const pubArgs: string[] = []
+  const msg = argVal(args, 'msg')
+  if (msg) pubArgs.push('--msg', msg)
+  if (hasFlag(args, 'skip-verify')) pubArgs.push('--skip-verify')
+  publish(pubArgs, { requireRoot, acquireLock })
+}
+
 // ── 入口 ──
 const [cmd, ...rest] = process.argv.slice(2)
 switch (cmd) {
@@ -209,5 +261,6 @@ switch (cmd) {
   case 'meta': cmdMeta(rest); break
   case 'rm': cmdRm(rest); break
   case 'publish': publish(rest, { requireRoot, acquireLock }); break
+  case 'publish-file': cmdPublishFile(rest); break
   default: err(`未知命令: ${cmd}（mb --help 查看）`)
 }

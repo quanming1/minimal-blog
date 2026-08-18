@@ -104,7 +104,10 @@ export function publish(args: string[], deps: Deps): void {
     }
 
     // 2. commit main 源码（历史可追溯；hook 校验）
-    const diff = run('git', ['diff', '--name-only', 'HEAD'], { cwd: root })
+    // 先 add 再取 staged 文件名——git diff --name-only HEAD 不含 untracked 新文件（新文章会漏）
+    const add = run('git', ['add', '-A'], { cwd: root })
+    if (add.code !== 0) fail(`git add 失败: ${add.out}`, 3)
+    const diff = run('git', ['diff', '--cached', '--name-only', 'HEAD'], { cwd: root })
     const posts = diff.out.split('\n').filter((l) => l.includes('src/content/posts/'))
     let msg = userMsg
     if (!msg) {
@@ -112,8 +115,6 @@ export function publish(args: string[], deps: Deps): void {
       msg = posts.length > 0 ? `post(posts): 文章更新（${slugs.join(', ')}）` : 'chore(release): 工程变更发布'
     }
     console.log(`[2/4] 提交 main 源码: ${msg}`)
-    const add = run('git', ['add', '-A'], { cwd: root })
-    if (add.code !== 0) fail(`git add 失败: ${add.out}`, 3)
     const cm = run('git', ['commit', '-m', msg], { cwd: root })
     if (cm.code !== 0) fail(`commit 失败（hook 拒绝或无变更）: ${cm.out}`, 1)
 

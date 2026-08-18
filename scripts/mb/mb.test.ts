@@ -1,7 +1,10 @@
 /** mb CLI 纯函数单测（行区间/frontmatter/hash/编辑/模板），见 PRD-F1 §6 */
-import { describe, expect, test } from 'bun:test'
+import { afterAll, describe, expect, test } from 'bun:test'
+import { mkdtempSync, rmSync, writeFileSync } from 'node:fs'
+import { tmpdir } from 'node:os'
+import { join } from 'node:path'
 import {
-  applyEdit, contentHash, fmStructureOk, newPostText, parsePost, parseRange, serializePost, validSlug,
+  applyEdit, buildFrontmatter, contentHash, fmStructureOk, newPostText, parsePost, parseRange, readFileAutoEncoding, serializePost, slugFromFilename, validSlug,
 } from './lib'
 
 describe('validSlug', () => {
@@ -81,5 +84,66 @@ describe('newPostText（模板防呆）', () => {
     expect(t).toContain("title: '标题: 带冒号'")
     expect(t).toContain('column: 专栏')
     expect(t).toContain('tags: [a]')
+  })
+})
+
+describe('slugFromFilename（F3 文件名 → slug）', () => {
+  test('英文文件名直接转', () => {
+    expect(slugFromFilename('my-post.md')).toBe('my-post')
+    expect(slugFromFilename('my-post.txt')).toBe('my-post')
+  })
+  test('空格/下划线/点/大写归一化', () => {
+    expect(slugFromFilename('My Post_v2.md')).toBe('my-post-v2')
+    expect(slugFromFilename('a.b.md')).toBe('a-b')
+  })
+  test('中文文件名被清空（需 --slug）', () => {
+    expect(slugFromFilename('我的文章.md')).toBe('')
+  })
+})
+
+describe('readFileAutoEncoding（F3 编码自动检测）', () => {
+  const dir = mkdtempSync(join(tmpdir(), 'mb-enc-'))
+  afterAll(() => rmSync(dir, { recursive: true, force: true }))
+
+  test('UTF-8 中文', () => {
+    const p = join(dir, 'utf8.md')
+    writeFileSync(p, '你好世界')
+    expect(readFileAutoEncoding(p)).toBe('你好世界')
+  })
+  test('GBK 中文（Windows 记事本默认）', () => {
+    const p = join(dir, 'gbk.txt')
+    writeFileSync(p, Buffer.from([0xd6, 0xd0, 0xce, 0xc4])) // GBK "中文"
+    expect(readFileAutoEncoding(p)).toBe('中文')
+  })
+  test('UTF-8 BOM 剥离', () => {
+    const p = join(dir, 'bom.md')
+    writeFileSync(p, Buffer.concat([Buffer.from([0xef, 0xbb, 0xbf]), Buffer.from('正文')]))
+    expect(readFileAutoEncoding(p)).toBe('正文')
+  })
+})
+
+describe('buildFrontmatter（F3 文件优先 + 命令行补缺）', () => {
+  test('文件 frontmatter 优先', () => {
+    const fm = { title: '文件标题', date: "'2026-01-01'", tags: '[x, y]', column: '专栏' }
+    const out = buildFrontmatter(fm, { title: '命令行标题', tags: 'a,b', column: '其他' })
+    expect(out.title).toBe('文件标题')
+    expect(out.date).toBe("'2026-01-01'")
+    expect(out.tags).toBe('[x, y]')
+    expect(out.column).toBe('专栏')
+  })
+  test('命令行补缺（文件无 frontmatter）', () => {
+    const out = buildFrontmatter({}, { title: '新标题', tags: 'a,b', column: 'C' })
+    expect(out.title).toBe('新标题')
+    expect(out.tags).toBe('[a, b]')
+    expect(out.column).toBe('C')
+    expect(out.date).toMatch(/^'\d{4}-\d{2}-\d{2}'$/)
+  })
+  test('缺 title 报错', () => {
+    expect(() => buildFrontmatter({}, {})).toThrow(/标题/)
+  })
+  test('归一化：date 裸日期补引号、title 含冒号补引号', () => {
+    const out = buildFrontmatter({ title: '标题: 子标题', date: '2026-08-18' }, {})
+    expect(out.title).toBe("'标题: 子标题'")
+    expect(out.date).toBe("'2026-08-18'")
   })
 })

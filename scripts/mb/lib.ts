@@ -188,3 +188,70 @@ export function readPost(path: string): string {
 export function ensureDir(dir: string): void {
   if (!existsSync(dir)) mkdirSync(dir, { recursive: true })
 }
+
+// ── 整篇导入（F3）：slug 转换 / 编码自动检测 / frontmatter 合并 ──
+
+/** 文件名 → slug：去扩展名 → 小写 → 非 [a-z0-9] 字符 → 短横线 → 合并 → 去首尾
+ *  中文等非 ASCII 字符会被清空（结果为空），由调用方用 validSlug 校验后提示 --slug */
+export function slugFromFilename(name: string): string {
+  return name
+    .replace(/\.[^.]+$/, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/-+/g, '-')
+    .replace(/^-+|-+$/g, '')
+}
+
+/** 读文件，自动检测编码：UTF-8 BOM / UTF-16 LE·BE BOM → UTF-8（fatal）→ GBK（Windows 记事本默认） */
+export function readFileAutoEncoding(path: string): string {
+  const buf = readFileSync(path)
+  if (buf.length >= 3 && buf[0] === 0xef && buf[1] === 0xbb && buf[2] === 0xbf) {
+    return new TextDecoder('utf-8').decode(buf.subarray(3))
+  }
+  if (buf.length >= 2 && buf[0] === 0xff && buf[1] === 0xfe) {
+    return new TextDecoder('utf-16le').decode(buf.subarray(2))
+  }
+  if (buf.length >= 2 && buf[0] === 0xfe && buf[1] === 0xff) {
+    return new TextDecoder('utf-16be').decode(buf.subarray(2))
+  }
+  try {
+    return new TextDecoder('utf-8', { fatal: true }).decode(buf)
+  } catch {
+    return new TextDecoder('gbk').decode(buf)
+  }
+}
+
+/** publish-file 的命令行补缺参数 */
+export interface PublishFileOptions {
+  title?: string
+  date?: string
+  tags?: string // 逗号分隔
+  column?: string
+}
+
+/** frontmatter 合并：文件优先，命令行只补缺；title 必填；归一化 date/title/tags */
+export function buildFrontmatter(fm: Record<string, string>, opts: PublishFileOptions): Record<string, string> {
+  const merged: Record<string, string> = {}
+
+  const title = fm.title ?? opts.title
+  if (!title) throw new Error('缺少标题：文件无 frontmatter 时需 --title 指定')
+  merged.title = /:\s/.test(title) && !/^'.*'$/.test(title) ? `'${title}'` : title
+
+  let date = fm.date ?? opts.date ?? today()
+  if (!/^'.*'$/.test(date)) date = `'${date}'`
+  merged.date = date
+
+  if (fm.description) merged.description = fm.description
+
+  const column = fm.column ?? opts.column
+  if (column) merged.column = column
+
+  if (fm.tags) {
+    merged.tags = fm.tags
+  } else if (opts.tags) {
+    const items = opts.tags.split(',').map((s) => s.trim()).filter(Boolean)
+    if (items.length) merged.tags = `[${items.join(', ')}]`
+  }
+
+  return merged
+}
