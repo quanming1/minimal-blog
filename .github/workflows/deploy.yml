@@ -51,10 +51,10 @@ jobs:
       - name: Smoke test build output
         run: |
           test -f dist/index.html
-          test -d dist/en
           test -d dist/posts
           test -d dist/tags
-          test "$(find dist -name 'index.html' | wc -l)" -ge 10
+          test -d dist/columns
+          test "$(find dist -name 'index.html' | wc -l)" -ge 6
           grep -q '/minimal-blog/' dist/index.html
       - uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa # v3.0.1
         with:

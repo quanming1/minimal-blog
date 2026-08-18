@@ -85,20 +85,28 @@ export function publish(args: string[], deps: Deps): void {
       ps = run('git', ['push', 'origin', 'main'], { cwd: root })
       if (ps.code !== 0) fail(`重试 push 仍失败: ${ps.out}`, 3)
     }
+    // push 后本地 HEAD 即远端最新（rebase 后可能变）——CI 等待按此 sha 定位，防止拿到旧 run
+    const headSha = run('git', ['rev-parse', 'HEAD'], { cwd: root }).out.trim()
 
-    // 4. CI 等待
+    // 4. CI 等待（按 commit sha 轮询定位本次 push 的 run——竞态：push 后新 run 需数秒才出现）
     if (noWaitCi) {
       console.log('[4/5] 跳过 CI 等待（--no-wait-ci）')
     } else {
-      console.log('[4/5] 等待 GitHub Actions 部署 ...')
-      const list = run('gh', ['run', 'list', '--limit', '1', '--json', 'databaseId,status', '--jq', '.[0]'], { cwd: root })
-      const m = list.out.match(/"databaseId":\s*(\d+)/)
-      if (list.code !== 0 || !m) {
-        console.log(`  无法获取 run id（gh 未登录？），跳过等待：${list.out.slice(0, 120)}`)
+      console.log(`[4/5] 等待 GitHub Actions 部署（commit ${headSha.slice(0, 7)}）...`)
+      let runId = ''
+      for (let i = 0; i < 10 && !runId; i++) {
+        const list = run('gh', ['run', 'list', '--limit', '5', '--json', 'databaseId,headSha'], { cwd: root })
+        const m = list.out.match(new RegExp(`\\{"databaseId":(\\d+),"headSha":"${headSha}"`))
+          ?? list.out.match(new RegExp(`"headSha":"${headSha}","databaseId":(\\d+)`))
+        if (m) runId = m[1]
+        else Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 5000)
+      }
+      if (!runId) {
+        console.log('  未能定位本次 push 的 run（gh 未登录或延迟过大），跳过等待')
       } else {
-        const w = run('gh', ['run', 'watch', m[1], '--exit-status'], { cwd: root, timeoutMs: 15 * 60 * 1000 })
-        if (w.code !== 0) fail(`CI 失败（run ${m[1]}）——GitHub Actions 页面查看日志`, 1)
-        console.log(`  CI 全绿（run ${m[1]}）`)
+        const w = run('gh', ['run', 'watch', runId, '--exit-status'], { cwd: root, timeoutMs: 15 * 60 * 1000 })
+        if (w.code !== 0) fail(`CI 失败（run ${runId}）——GitHub Actions 页面查看日志`, 1)
+        console.log(`  CI 全绿（run ${runId}）`)
       }
     }
 
