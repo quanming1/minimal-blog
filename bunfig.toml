@@ -1,6 +1,0 @@
-# bun 配置（显式声明，消除隐式依赖——lockfile 的 tarball URL 来自此 registry）
-# 说明：本机/CI 一直使用淘宝镜像源（bun.lock 全部 tarball 为 registry.npmmirror.com），
-# 显式声明避免新环境默认走官方源导致 lockfile 与解析不一致。
-# 完整性由 lockfile 自带 sha512 校验兜底；若需迁移官方源：bun install --registry=https://registry.npmjs.org 重新生成 lockfile。
-[install]
-registry = "https://registry.npmmirror.com"

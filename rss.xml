@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>明志 · Mingzhi Notes</title>
+    <link>https://quanming1.github.io/minimal-blog/</link>
+    <description>技术笔记、阅读与思考。</description>
+    <atom:link href="https://quanming1.github.io/minimal-blog/rss.xml" rel="self" type="application/rss+xml"/>
+    <language>zh-cn</language>
+    <item>
+      <title>一篇演示文章：验证 mb 秒级发布</title>
+      <link>https://quanming1.github.io/minimal-blog/posts/demo-post/</link>
+      <guid isPermaLink="false">https://quanming1.github.io/minimal-blog/posts/demo-post/</guid>
+      <pubDate>Tue, 18 Aug 2026 00:00:00 GMT</pubDate>
+      <category>博客开发</category>
+    </item>
+    <item>
+      <title>dsh 插件开发流程：从零到跑通的全指南</title>
+      <link>https://quanming1.github.io/minimal-blog/posts/dsh-plugin-guide/</link>
+      <guid isPermaLink="false">https://quanming1.github.io/minimal-blog/posts/dsh-plugin-guide/</guid>
+      <pubDate>Tue, 18 Aug 2026 00:00:00 GMT</pubDate>
+      <description>八步流程、15 个坑、三个文档没写的硬契约、静默挂死排查手册——写给第一次写 dsh 插件的人</description>
+    </item>
+    <item>
+      <title>写一个 dsh 插件只要 20 分钟，跑起来花了 6 小时</title>
+      <link>https://quanming1.github.io/minimal-blog/posts/dsh-plugin-six-hours/</link>
+      <guid isPermaLink="false">https://quanming1.github.io/minimal-blog/posts/dsh-plugin-six-hours/</guid>
+      <pubDate>Tue, 18 Aug 2026 00:00:00 GMT</pubDate>
+      <description>从零写一个 dsh 插件：代码 20 分钟，跑起来花了 6 小时——三个文档没写的契约，一份静默挂死排查表</description>
+    </item>
+    <item>
+      <title>dsh 的通信地基：stdio 管道 IPC 与 octo-sdk-server</title>
+      <link>https://quanming1.github.io/minimal-blog/posts/dsh-stdio-ipc/</link>
+      <guid isPermaLink="false">https://quanming1.github.io/minimal-blog/posts/dsh-stdio-ipc/</guid>
+      <pubDate>Tue, 18 Aug 2026 00:00:00 GMT</pubDate>
+      <description>SDK client 怎么&quot;遥控&quot;一个 dsh 进程？答案全在两根管道和一个插件上——进程间通信最朴素也最容易被误解的一课</description>
+    </item>
+    <item>
+      <title>DeepSeek Harness 简介</title>
+      <link>https://quanming1.github.io/minimal-blog/posts/dsh-tut-01/</link>
+      <guid isPermaLink="false">https://quanming1.github.io/minimal-blog/posts/dsh-tut-01/</guid>
+      <pubDate>Tue, 18 Aug 2026 00:00:00 GMT</pubDate>
+      <category>DeepSeek Harness 教程</category>
+      <description>DeepSeek Harness 简介——DeepSeek Harness 教程专栏（转载）</description>
+    </item>
+    <item>
+      <title>DeepSeek Harness 安装</title>
+      <link>https://quanming1.github.io/minimal-blog/posts/dsh-tut-02/</link>
+      <guid isPermaLink="false">https://quanming1.github.io/minimal-blog/posts/dsh-tut-02/</guid>
+      <pubDate>Tue, 18 Aug 2026 00:00:00 GMT</pubDate>
+      <category>DeepSeek Harness 教程</category>
+      <description>DeepSeek Harness 安装——DeepSeek Harness 教程专栏（转载）</description>
+    </item>
+    <item>
+      <title>DeepSeek Harness 使用</title>
+      <link>https://quanming1.github.io/minimal-blog/posts/dsh-tut-03/</link>
+      <guid isPermaLink="false">https://quanming1.github.io/minimal-blog/posts/dsh-tut-03/</guid>
+      <pubDate>Tue, 18 Aug 2026 00:00:00 GMT</pubDate>
+      <category>DeepSeek Harness 教程</category>
+      <description>DeepSeek Harness 使用——DeepSeek Harness 教程专栏（转载）</description>
+    </item>
+    <item>
+      <title>DeepSeek Harness 模型配置</title>
+      <link>https://quanming1.github.io/minimal-blog/posts/dsh-tut-04/</link>
+      <guid isPermaLink="false">https://quanming1.github.io/minimal-blog/posts/dsh-tut-04/</guid>
+      <pubDate>Tue, 18 Aug 2026 00:00:00 GMT</pubDate>
+      <category>DeepSeek Harness 教程</category>
+      <description>DeepSeek Harness 模型配置——DeepSeek Harness 教程专栏（转载）</description>
+    </item>
+    <item>
+      <title>DeepSeek Harness Python</title>
+      <link>https://quanming1.github.io/minimal-blog/posts/dsh-tut-05/</link>
+      <guid isPermaLink="false">https://quanming1.github.io/minimal-blog/posts/dsh-tut-05/</guid>
+      <pubDate>Tue, 18 Aug 2026 00:00:00 GMT</pubDate>
+      <category>DeepSeek Harness 教程</category>
+      <description>DeepSeek Harness Python——DeepSeek Harness 教程专栏（转载）</description>
+    </item>
+    <item>
+      <title>DeepSeek Harness 插件</title>
+      <link>https://quanming1.github.io/minimal-blog/posts/dsh-tut-06/</link>
+      <guid isPermaLink="false">https://quanming1.github.io/minimal-blog/posts/dsh-tut-06/</guid>
+      <pubDate>Tue, 18 Aug 2026 00:00:00 GMT</pubDate>
+      <category>DeepSeek Harness 教程</category>
+      <description>DeepSeek Harness 插件——DeepSeek Harness 教程专栏（转载）</description>
+    </item>
+    <item>
+      <title>DeepSeek Harness 加载插件</title>
+      <link>https://quanming1.github.io/minimal-blog/posts/dsh-tut-07/</link>
+      <guid isPermaLink="false">https://quanming1.github.io/minimal-blog/posts/dsh-tut-07/</guid>
+      <pubDate>Tue, 18 Aug 2026 00:00:00 GMT</pubDate>
+      <category>DeepSeek Harness 教程</category>
+      <description>DeepSeek Harness 加载插件——DeepSeek Harness 教程专栏（转载）</description>
+    </item>
+    <item>
+      <title>DeepSeek Harness 自动清理</title>
+      <link>https://quanming1.github.io/minimal-blog/posts/dsh-tut-08/</link>
+      <guid isPermaLink="false">https://quanming1.github.io/minimal-blog/posts/dsh-tut-08/</guid>
+      <pubDate>Tue, 18 Aug 2026 00:00:00 GMT</pubDate>
+      <category>DeepSeek Harness 教程</category>
+      <description>DeepSeek Harness 自动清理——DeepSeek Harness 教程专栏（转载）</description>
+    </item>
+    <item>
+      <title>DeepSeek Harness 声明依赖</title>
+      <link>https://quanming1.github.io/minimal-blog/posts/dsh-tut-09/</link>
+      <guid isPermaLink="false">https://quanming1.github.io/minimal-blog/posts/dsh-tut-09/</guid>
+      <pubDate>Tue, 18 Aug 2026 00:00:00 GMT</pubDate>
+      <category>DeepSeek Harness 教程</category>
+      <description>DeepSeek Harness 声明依赖——DeepSeek Harness 教程专栏（转载）</description>
+    </item>
+    <item>
+      <title>DeepSeek Harness 第一个工具</title>
+      <link>https://quanming1.github.io/minimal-blog/posts/dsh-tut-10/</link>
+      <guid isPermaLink="false">https://quanming1.github.io/minimal-blog/posts/dsh-tut-10/</guid>
+      <pubDate>Tue, 18 Aug 2026 00:00:00 GMT</pubDate>
+      <category>DeepSeek Harness 教程</category>
+      <description>DeepSeek Harness 第一个工具——DeepSeek Harness 教程专栏（转载）</description>
+    </item>
+    <item>
+      <title>DeepSeek Harness 插件配置</title>
+      <link>https://quanming1.github.io/minimal-blog/posts/dsh-tut-11/</link>
+      <guid isPermaLink="false">https://quanming1.github.io/minimal-blog/posts/dsh-tut-11/</guid>
+      <pubDate>Tue, 18 Aug 2026 00:00:00 GMT</pubDate>
+      <category>DeepSeek Harness 教程</category>
+      <description>DeepSeek Harness 插件配置——DeepSeek Harness 教程专栏（转载）</description>
+    </item>
+    <item>
+      <title>DeepSeek Harness 插件生命周期</title>
+      <link>https://quanming1.github.io/minimal-blog/posts/dsh-tut-12/</link>
+      <guid isPermaLink="false">https://quanming1.github.io/minimal-blog/posts/dsh-tut-12/</guid>
+      <pubDate>Tue, 18 Aug 2026 00:00:00 GMT</pubDate>
+      <category>DeepSeek Harness 教程</category>
+      <description>DeepSeek Harness 插件生命周期——DeepSeek Harness 教程专栏（转载）</description>
+    </item>
+    <item>
+      <title>DeepSeek Harness 依赖驱动</title>
+      <link>https://quanming1.github.io/minimal-blog/posts/dsh-tut-13/</link>
+      <guid isPermaLink="false">https://quanming1.github.io/minimal-blog/posts/dsh-tut-13/</guid>
+      <pubDate>Tue, 18 Aug 2026 00:00:00 GMT</pubDate>
+      <category>DeepSeek Harness 教程</category>
+      <description>DeepSeek Harness 依赖驱动——DeepSeek Harness 教程专栏（转载）</description>
+    </item>
+    <item>
+      <title>DeepSeek Harness 服务与依赖</title>
+      <link>https://quanming1.github.io/minimal-blog/posts/dsh-tut-14/</link>
+      <guid isPermaLink="false">https://quanming1.github.io/minimal-blog/posts/dsh-tut-14/</guid>
+      <pubDate>Tue, 18 Aug 2026 00:00:00 GMT</pubDate>
+      <category>DeepSeek Harness 教程</category>
+      <description>DeepSeek Harness 服务与依赖——DeepSeek Harness 教程专栏（转载）</description>
+    </item>
+    <item>
+      <title>DeepSeek Harness 服务隔离</title>
+      <link>https://quanming1.github.io/minimal-blog/posts/dsh-tut-15/</link>
+      <guid isPermaLink="false">https://quanming1.github.io/minimal-blog/posts/dsh-tut-15/</guid>
+      <pubDate>Tue, 18 Aug 2026 00:00:00 GMT</pubDate>
+      <category>DeepSeek Harness 教程</category>
+      <description>DeepSeek Harness 服务隔离——DeepSeek Harness 教程专栏（转载）</description>
+    </item>
+    <item>
+      <title>DeepSeek Harness 事件系统</title>
+      <link>https://quanming1.github.io/minimal-blog/posts/dsh-tut-16/</link>
+      <guid isPermaLink="false">https://quanming1.github.io/minimal-blog/posts/dsh-tut-16/</guid>
+      <pubDate>Tue, 18 Aug 2026 00:00:00 GMT</pubDate>
+      <category>DeepSeek Harness 教程</category>
+      <description>DeepSeek Harness 事件系统——DeepSeek Harness 教程专栏（转载）</description>
+    </item>
+    <item>
+      <title>DeepSeek Harness 能力三角色</title>
+      <link>https://quanming1.github.io/minimal-blog/posts/dsh-tut-17/</link>
+      <guid isPermaLink="false">https://quanming1.github.io/minimal-blog/posts/dsh-tut-17/</guid>
+      <pubDate>Tue, 18 Aug 2026 00:00:00 GMT</pubDate>
+      <category>DeepSeek Harness 教程</category>
+      <description>DeepSeek Harness 能力三角色——DeepSeek Harness 教程专栏（转载）</description>
+    </item>
+    <item>
+      <title>DeepSeek Harness 实战</title>
+      <link>https://quanming1.github.io/minimal-blog/posts/dsh-tut-18/</link>
+      <guid isPermaLink="false">https://quanming1.github.io/minimal-blog/posts/dsh-tut-18/</guid>
+      <pubDate>Tue, 18 Aug 2026 00:00:00 GMT</pubDate>
+      <category>DeepSeek Harness 教程</category>
+      <description>DeepSeek Harness 实战——DeepSeek Harness 教程专栏（转载）</description>
+    </item>
+    <item>
+      <title>DeepSeek Harness LLM 适配器</title>
+      <link>https://quanming1.github.io/minimal-blog/posts/dsh-tut-19/</link>
+      <guid isPermaLink="false">https://quanming1.github.io/minimal-blog/posts/dsh-tut-19/</guid>
+      <pubDate>Tue, 18 Aug 2026 00:00:00 GMT</pubDate>
+      <category>DeepSeek Harness 教程</category>
+      <description>DeepSeek Harness LLM 适配器——DeepSeek Harness 教程专栏（转载）</description>
+    </item>
+    <item>
+      <title>DeepSeek Harness 错误处理</title>
+      <link>https://quanming1.github.io/minimal-blog/posts/dsh-tut-20/</link>
+      <guid isPermaLink="false">https://quanming1.github.io/minimal-blog/posts/dsh-tut-20/</guid>
+      <pubDate>Tue, 18 Aug 2026 00:00:00 GMT</pubDate>
+      <category>DeepSeek Harness 教程</category>
+      <description>DeepSeek Harness 错误处理——DeepSeek Harness 教程专栏（转载）</description>
+    </item>
+    <item>
+      <title>DeepSeek Harness 组合包</title>
+      <link>https://quanming1.github.io/minimal-blog/posts/dsh-tut-21/</link>
+      <guid isPermaLink="false">https://quanming1.github.io/minimal-blog/posts/dsh-tut-21/</guid>
+      <pubDate>Tue, 18 Aug 2026 00:00:00 GMT</pubDate>
+      <category>DeepSeek Harness 教程</category>
+      <description>DeepSeek Harness 组合包——DeepSeek Harness 教程专栏（转载）</description>
+    </item>
+    <item>
+      <title>DeepSeek Harness 安装插件</title>
+      <link>https://quanming1.github.io/minimal-blog/posts/dsh-tut-22/</link>
+      <guid isPermaLink="false">https://quanming1.github.io/minimal-blog/posts/dsh-tut-22/</guid>
+      <pubDate>Tue, 18 Aug 2026 00:00:00 GMT</pubDate>
+      <category>DeepSeek Harness 教程</category>
+      <description>DeepSeek Harness 安装插件——DeepSeek Harness 教程专栏（转载）</description>
+    </item>
+    <item>
+      <title>DeepSeek Harness 发布插件</title>
+      <link>https://quanming1.github.io/minimal-blog/posts/dsh-tut-23/</link>
+      <guid isPermaLink="false">https://quanming1.github.io/minimal-blog/posts/dsh-tut-23/</guid>
+      <pubDate>Tue, 18 Aug 2026 00:00:00 GMT</pubDate>
+      <category>DeepSeek Harness 教程</category>
+      <description>DeepSeek Harness 发布插件——DeepSeek Harness 教程专栏（转载）</description>
+    </item>
+    <item>
+      <title>DeepSeek Harness 工具执行</title>
+      <link>https://quanming1.github.io/minimal-blog/posts/dsh-tut-24/</link>
+      <guid isPermaLink="false">https://quanming1.github.io/minimal-blog/posts/dsh-tut-24/</guid>
+      <pubDate>Tue, 18 Aug 2026 00:00:00 GMT</pubDate>
+      <category>DeepSeek Harness 教程</category>
+      <description>DeepSeek Harness 工具执行——DeepSeek Harness 教程专栏（转载）</description>
+    </item>
+    <item>
+      <title>DeepSeek Harness 沙箱与审批</title>
+      <link>https://quanming1.github.io/minimal-blog/posts/dsh-tut-25/</link>
+      <guid isPermaLink="false">https://quanming1.github.io/minimal-blog/posts/dsh-tut-25/</guid>
+      <pubDate>Tue, 18 Aug 2026 00:00:00 GMT</pubDate>
+      <category>DeepSeek Harness 教程</category>
+      <description>DeepSeek Harness 沙箱与审批——DeepSeek Harness 教程专栏（转载）</description>
+    </item>
+    <item>
+      <title>DeepSeek Harness 会话日志</title>
+      <link>https://quanming1.github.io/minimal-blog/posts/dsh-tut-26/</link>
+      <guid isPermaLink="false">https://quanming1.github.io/minimal-blog/posts/dsh-tut-26/</guid>
+      <pubDate>Tue, 18 Aug 2026 00:00:00 GMT</pubDate>
+      <category>DeepSeek Harness 教程</category>
+      <description>DeepSeek Harness 会话日志——DeepSeek Harness 教程专栏（转载）</description>
+    </item>
+    <item>
+      <title>DeepSeek Harness 防御性编程</title>
+      <link>https://quanming1.github.io/minimal-blog/posts/dsh-tut-27/</link>
+      <guid isPermaLink="false">https://quanming1.github.io/minimal-blog/posts/dsh-tut-27/</guid>
+      <pubDate>Tue, 18 Aug 2026 00:00:00 GMT</pubDate>
+      <category>DeepSeek Harness 教程</category>
+      <description>DeepSeek Harness 防御性编程——DeepSeek Harness 教程专栏（转载）</description>
+    </item>
+    <item>
+      <title>DeepSeek Harness 事故复盘</title>
+      <link>https://quanming1.github.io/minimal-blog/posts/dsh-tut-28/</link>
+      <guid isPermaLink="false">https://quanming1.github.io/minimal-blog/posts/dsh-tut-28/</guid>
+      <pubDate>Tue, 18 Aug 2026 00:00:00 GMT</pubDate>
+      <category>DeepSeek Harness 教程</category>
+      <description>DeepSeek Harness 事故复盘——DeepSeek Harness 教程专栏（转载）</description>
+    </item>
+    <item>
+      <title>在文章里放附件：Markdown 资产引用语法</title>
+      <link>https://quanming1.github.io/minimal-blog/posts/markdown-assets/</link>
+      <guid isPermaLink="false">https://quanming1.github.io/minimal-blog/posts/markdown-assets/</guid>
+      <pubDate>Thu, 13 Aug 2026 00:00:00 GMT</pubDate>
+      <category>博客开发</category>
+      <description>博客新增「资产引用」语法，文章里可以挂可下载文件与图片预览，读者一键下载或跳转 GitHub 查看源码。</description>
+    </item>
+    <item>
+      <title>Rondo 方法：PRD 驱动 × Agent 约束的 AI 结对开发（全 PR 流版）</title>
+      <link>https://quanming1.github.io/minimal-blog/posts/rondo-method/</link>
+      <guid isPermaLink="false">https://quanming1.github.io/minimal-blog/posts/rondo-method/</guid>
+      <pubDate>Thu, 13 Aug 2026 00:00:00 GMT</pubDate>
+      <category>Rondo 方法</category>
+      <description>从 rondo 项目的实战约束中提炼的一套 AI 结对开发规范——先 PRD 后开发、AGENTS.md 硬约束、TODO 清单驱动、全 PR 流合并，附带可复制落地的完整资产包（hooks + 模板 + 示例），让 AI 与人类在同一套规则下协作。</description>
+    </item>
+  </channel>
+</rss>
