@@ -6,7 +6,7 @@
 |---|---|
 | 阶段 | F3 |
 | 名称 | 整篇导入发布（本地 md/txt 文件 → 文章 → 秒级发布） |
-| 状态 | **开发中** |
+| 状态 | **已验收**（2026-08-18 全部 AC 通过） |
 | 创建日期 | 2026-08-18 |
 | 定稿日期 | 2026-08-18 |
 | 关联文档 | docs/TODO.yaml F3；docs/PROCESS.md；PRD-F1-blog-cli.md；PRD-F2-fast-publish.md |
@@ -68,3 +68,4 @@ mb publish-file <path> [--slug s] [--title t] [--tags a,b] [--column c] [--date 
 | 日期 | 变更内容 | 理由 |
 |---|---|---|
 | 2026-08-18 | 初始定稿 | — |
+| 2026-08-18 | 验收记录：单测 203 pass（新增 slugFromFilename/readFileAutoEncoding/buildFrontmatter 共 10 例）、lint 0 errors、build 23 页；实测 publish-file 发布 f3-import-md（UTF-8 带 frontmatter）与 f3-import-txt（GBK 无 frontmatter）均成功，commit msg 正确为 post(posts)（验证 publish msg 修复），线上秒级可见；测试文章已清理 | 实测证据 |

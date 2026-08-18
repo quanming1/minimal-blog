@@ -201,7 +201,7 @@ stages:
         acceptance: mb publish 秒级可见、gh-pages 含 .nojekyll、CI 仍 lint+test 绿、shim 动态定位
       - id: F3
         title: 整篇导入发布（mb publish-file：本地 md/txt → 文章 → 秒级发布）
-        status: in_progress
+        status: done
         date: 2026-08-18
         prd: docs/prd/PRD-F3-publish-file.md
         modules:

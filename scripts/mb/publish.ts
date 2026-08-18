@@ -62,7 +62,12 @@ function pushGhPages(root: string): void {
 
   const c1 = run('git', ['add', '-A'], { cwd: wt })
   if (c1.code !== 0) fail(`gh-pages git add 失败: ${c1.out}`, 3)
-  const c2 = run('git', ['commit', '--allow-empty', '-m', `publish: ${Date.now()}`], { cwd: wt })
+  let c2 = run('git', ['commit', '--allow-empty', '-m', `publish: ${Date.now()}`], { cwd: wt })
+  if (c2.code !== 0 && /new_index/i.test(c2.out)) {
+    // Windows 文件句柄释放竞态：清理 worktree 后立即重建，index 写入瞬时失败——等待后重试一次
+    Bun.sleepSync(1000)
+    c2 = run('git', ['commit', '--allow-empty', '-m', `publish: ${Date.now()}`], { cwd: wt })
+  }
   if (c2.code !== 0) fail(`gh-pages commit 失败: ${c2.out}`, 3)
   const p1 = run('git', ['push', '--force', 'origin', 'gh-pages'], { cwd: wt })
   if (p1.code !== 0) fail(`gh-pages push 失败: ${p1.out}`, 3)
