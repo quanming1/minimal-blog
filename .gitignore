@@ -26,4 +26,6 @@ pnpm-debug.log*
 .ftre/mcp.json
 # mb CLI 写操作互斥锁（运行时产物，永不入库）
 .mb-lock
+# mb publish 的 gh-pages worktree 临时目录
+.ghpages-worktree/
 .ftre/
