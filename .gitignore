@@ -28,3 +28,4 @@ pnpm-debug.log*
 .mb-lock
 # mb publish 的 gh-pages worktree 临时目录
 .ghpages-worktree/
+.ftre/
