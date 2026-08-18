@@ -12,7 +12,7 @@ tags: [DeepSeek Harness, dsh, 教程, 转载]
 三者对构建产物的要求完全不同，选错会在用户侧踩坑。
 ## 三种分发方式对比
 官方文档给出三种分发方式，核心区别在于是否分发预构建产物。
-![](https://www.runoob.com/wp-content/uploads/2026/08/23-publish-options.svg)
+![](/minimal-blog/assets/dsh-tut/23-publish-options.svg)
 | 方式 | 用户安装命令 | 安装到的是什么 | 是否需要构建授权 |
 | --- | --- | --- | --- |
 | **npm 发布** | `dsh plugin add your-package` | 预构建的 `lib/` 代码 | 不需要 |

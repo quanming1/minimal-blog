@@ -14,10 +14,10 @@ DeepSeek Harness 可以使用 DeepSeek 官方的配置，也可以使用第三�
 | **目录提供方** | 已安装目录里的提供方，如 Anthropic、OpenAI | 各家 API 密钥；原生认证的需各自凭据 | 接入已收录的主流厂商 |
 | **自定义提供方** | 自建端点，如公司网关、自建服务器 | Provider ID、baseURL、协议、凭据、模型 | 目录里没有的端点 |
 打开 http://127.0.0.1:3080/，整个界面如下，我们可以先点击设置配置 API key：
-![](https://www.runoob.com/wp-content/uploads/2026/08/dsh-4.webp)
+![](/minimal-blog/assets/dsh-tut/dsh-4.webp)
 如果你还没有 API 可以，可以去 [https://platform.deepseek.com/api_keys](https://platform.deepseek.com/api_keys) 申请。
 接着打开设置 → 模型，DeepSeek 卡片上有一个 API 密钥输入框，填完保存即可。
-![](https://www.runoob.com/wp-content/uploads/2026/08/dsh-5.webp)
+![](/minimal-blog/assets/dsh-tut/dsh-5.webp)
 ## 添加目录提供方
 目录提供方由 dsh 的已安装目录提供端点、协议和模型列表。
 选择添加提供方，选取 Anthropic 或 OpenAI 等提供方，输入其 API 密钥并保存。
@@ -32,7 +32,7 @@ DeepSeek Harness 可以使用 DeepSeek 官方的配置，也可以使用第三�
 ## 添加自定义提供方
 公司网关、自建服务器等目录中不存在的端点，用自定义提供方接入。
 选择添加自定义提供方，填写下列字段。
-![](https://www.runoob.com/wp-content/uploads/2026/08/providers-custom-form.zh_.png)
+![](/minimal-blog/assets/dsh-tut/providers-custom-form.zh_.png)
 | 字段 | 说明 | 是否必填 |
 | --- | --- | --- |
 | **Provider ID** | 小写，永久标识 | 必填 |

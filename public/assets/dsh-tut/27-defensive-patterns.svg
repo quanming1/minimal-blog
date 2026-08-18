@@ -1,0 +1,55 @@
+<svg viewBox="0 0 940 500" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Hiragino Sans GB','Microsoft YaHei',sans-serif;">
+  <rect width="940" height="500" rx="12" fill="#fafbff"/>
+
+  <text x="470" y="26" text-anchor="middle" font-size="14" font-weight="bold" fill="#334155">防御性编程：坏 / 好示例对照</text>
+
+  <!-- 列头 -->
+  <rect x="30" y="42" width="420" height="30" rx="8" fill="#fee2e2" stroke="#dc2626" stroke-width="1.5"/>
+  <text x="240" y="61" text-anchor="middle" font-size="12" font-weight="bold" fill="#991b1b">坏示例：真实发布过的缺陷</text>
+  <rect x="470" y="42" width="440" height="30" rx="8" fill="#dcfce7" stroke="#16a34a" stroke-width="1.5"/>
+  <text x="690" y="61" text-anchor="middle" font-size="12" font-weight="bold" fill="#166534">好示例：防复发规则</text>
+
+  <!-- 第 1 行：结果报告 -->
+  <text x="30" y="102" font-size="12" font-weight="bold" fill="#334155">结果报告</text>
+  <rect x="30" y="110" width="420" height="62" rx="8" fill="#fff7ed" stroke="#ea580c" stroke-width="1.5"/>
+  <text x="48" y="132" font-size="10" fill="#9a3412">if (exitCode === 0) { reportSuccess() }</text>
+  <text x="48" y="150" font-size="10" fill="#9a3412">else { reportTimeout() }</text>
+  <text x="48" y="166" font-size="10" fill="#9a3412">超时却退出码 0 → 被误判为正常成功</text>
+  <rect x="470" y="110" width="440" height="62" rx="8" fill="#f0fdf4" stroke="#16a34a" stroke-width="1.5"/>
+  <text x="488" y="132" font-size="10" fill="#166534">timedOut / signal / exitCode 各自独立上报</text>
+  <text x="488" y="150" font-size="10" fill="#166534">进程可同时超时且退出码 0（它捕获了信号）</text>
+  <text x="488" y="166" font-size="10" fill="#166534">每个独立事实单独一个标志，绝不嵌套</text>
+
+  <!-- 第 2 行：dispose -->
+  <text x="30" y="202" font-size="12" font-weight="bold" fill="#334155">dispose 清理</text>
+  <rect x="30" y="210" width="420" height="62" rx="8" fill="#fff7ed" stroke="#ea580c" stroke-width="1.5"/>
+  <text x="48" y="232" font-size="10" fill="#9a3412">proc.kill('SIGTERM'); return</text>
+  <text x="48" y="250" font-size="10" fill="#9a3412">只发信号就返回 → 留下孤儿进程</text>
+  <text x="48" y="266" font-size="10" fill="#9a3412">迟到的事件在 teardown 后仍会回调</text>
+  <rect x="470" y="210" width="440" height="62" rx="8" fill="#f0fdf4" stroke="#16a34a" stroke-width="1.5"/>
+  <text x="488" y="232" font-size="10" fill="#166534">发信号后 await done，等待子进程完全退出</text>
+  <text x="488" y="250" font-size="10" fill="#166534">终止前先关闭监听器与通知注册表</text>
+  <text x="488" y="266" font-size="10" fill="#166534">迟到事件保持静默，清理达到完全停稳</text>
+
+  <!-- 第 3 行：凭据 -->
+  <text x="30" y="302" font-size="12" font-weight="bold" fill="#334155">凭据擦除</text>
+  <rect x="30" y="310" width="420" height="62" rx="8" fill="#fff7ed" stroke="#ea580c" stroke-width="1.5"/>
+  <text x="48" y="332" font-size="10" fill="#9a3412">spawn(cmd, { env: process.env })</text>
+  <text x="48" y="350" font-size="10" fill="#9a3412">DEEPSEEK_API_KEY 经命令输出 / env / spill 泄漏</text>
+  <text x="48" y="366" font-size="10" fill="#9a3412">可预测路径 + 全局可读 → 符号链接竞态</text>
+  <rect x="470" y="310" width="440" height="62" rx="8" fill="#f0fdf4" stroke="#16a34a" stroke-width="1.5"/>
+  <text x="488" y="332" font-size="10" fill="#166534">移除名称匹配 *KEY* *SECRET* *TOKEN* *PASSWORD* 的项</text>
+  <text x="488" y="350" font-size="10" fill="#166534">临时文件放 0700 私有目录，随机名，独占打开</text>
+  <text x="488" y="366" font-size="10" fill="#166534">不可信输出绝不携带 harness 凭证</text>
+
+  <!-- 第 4 行：链接 -->
+  <text x="30" y="402" font-size="12" font-weight="bold" fill="#334155">符号链接删除</text>
+  <rect x="30" y="410" width="420" height="62" rx="8" fill="#fff7ed" stroke="#ea580c" stroke-width="1.5"/>
+  <text x="48" y="432" font-size="10" fill="#9a3412">rmSync(path, { recursive: true })</text>
+  <text x="48" y="450" font-size="10" fill="#9a3412">递归删除会穿过 junction / 符号链接进入目标</text>
+  <text x="48" y="466" font-size="10" fill="#9a3412">Windows junction 上还抛 ERR_FS_EISDIR</text>
+  <rect x="470" y="410" width="440" height="62" rx="8" fill="#f0fdf4" stroke="#16a34a" stroke-width="1.5"/>
+  <text x="488" y="432" font-size="10" fill="#166534">lstatSync().isSymbolicLink() 判断</text>
+  <text x="488" y="450" font-size="10" fill="#166534">链接形态用 unlinkSync：只删链接本身，拒绝真实目录</text>
+  <text x="488" y="466" font-size="10" fill="#166534">真实目录才用带 recursive 的 rmSync</text>
+</svg>

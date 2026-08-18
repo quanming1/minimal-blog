@@ -13,7 +13,7 @@ tags: [DeepSeek Harness, dsh, 教程, 转载]
 一句话：这些模式防止「一个简单的边界情况把整个 Agent 搞挂」。
 ## 先看对照图
 下面的图把坏示例与好示例并排对比，每条都来自真实的缺陷类别。
-![](https://www.runoob.com/wp-content/uploads/2026/08/27-defensive-patterns.svg)
+![](/minimal-blog/assets/dsh-tut/27-defensive-patterns.svg)
 官方把这些模式称作「在编写生命周期、并发、子进程或清理代码之前请先阅读本文」的规则。
 ## 正交结果独立上报
 一个结果可以同时具有多种性质：进程可能已经超时，却仍以退出码 0 结束，因为它捕获了终止信号。

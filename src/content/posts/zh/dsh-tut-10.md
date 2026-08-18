@@ -65,7 +65,7 @@ inject 让 Cordis 等待工具注册表就绪。
 defineTool 根据 parameters 推导并校验 args。
 execute 返回 output.schema 声明的规范值。
 output.render 再把规范值转换为面向模型的内容。
-![](https://www.runoob.com/wp-content/uploads/2026/08/runoob_1786761995720-1.png)
+![](/minimal-blog/assets/dsh-tut/runoob_1786761995720-1.png)
 ## 运行并调用
 如果开发命令没在运行，重新启动：
 ```
@@ -77,9 +77,9 @@ pnpm dsh web --patch ./scratch-plugin/cordis.yml
 
 Use the greet tool to greet RUNOOB.
 ```
-![](https://www.runoob.com/wp-content/uploads/2026/08/runoob_1786761995720.png)
+![](/minimal-blog/assets/dsh-tut/runoob_1786761995720.png)
 模型可以调用 greet，并收到 Hello, RUNOOB! 这一工具结果。
-![](https://www.runoob.com/wp-content/uploads/2026/08/10-tool-pipeline.svg)
+![](/minimal-blog/assets/dsh-tut/10-tool-pipeline.svg)
 ## 关键点：schema 自动流入提示词
 工具的 name、description、parameters、output 会自动组装进模型提示词。
 模型"知道"有这样一个工具，就会在合适的时候调用。

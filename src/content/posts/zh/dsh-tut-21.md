@@ -12,7 +12,7 @@ tags: [DeepSeek Harness, dsh, 教程, 转载]
 ## 两个概念，两种 manifest
 安装机制建立在两个概念之上，二者都由一份 package.json 描述。
 它们在 dsh 键下携带的 manifest 种类不同，回答的问题也不同。
-![](https://www.runoob.com/wp-content/uploads/2026/08/21-bundle-profile.svg)
+![](/minimal-blog/assets/dsh-tut/21-bundle-profile.svg)
 组合包是附带一个配置层的 npm 包。
 它的 manifest 声明 dsh.bundle，回答的是"这个包贡献什么"：一个插入或覆盖插件行的 patch 文件。
 profile 是位于 $DSH_HOME/profiles/&lt;name&gt; 下、描述一份可启动组合的目录。

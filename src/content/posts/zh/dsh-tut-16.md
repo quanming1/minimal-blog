@@ -24,7 +24,7 @@ ctx.emit('event-name', payload)
 通过 ctx.on 注册的监听器，会在插件卸载时自动移除。
 ## 五种分发模式
 Cordis 提供多种分发模式，适用于不同的交互契约。
-![](https://www.runoob.com/wp-content/uploads/2026/08/16-dispatch-modes.svg)
+![](/minimal-blog/assets/dsh-tut/16-dispatch-modes.svg)
 | 模式 | 分发方法 | 是否 await | 顺序 | 是否有返回值 | 典型场景 |
 | --- | --- | --- | --- | --- | --- |
 | **emit** 广播 | ctx.emit | 否 | 按注册顺序 | 否 | 通知类：所有监听者观察 |

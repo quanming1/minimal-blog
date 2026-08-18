@@ -18,7 +18,7 @@ Fiber 可以理解成插件实例的执行单元，它承载插件从声明、�
 它记录该插件的生命周期状态，也是卸载时清理注册的依据。
 ## Fiber 状态机
 Fiber 的状态按下面的顺序迁移，描述一个插件从加载到卸载的完整一生。
-![](https://www.runoob.com/wp-content/uploads/2026/08/12-fiber-state.svg)
+![](/minimal-blog/assets/dsh-tut/12-fiber-state.svg)
 主路径是 PENDING &rarr; LOADING &rarr; ACTIVE &rarr; UNLOADING &rarr; DISPOSED。
 在 LOADING 阶段如果 apply 抛出异常，则进入 FAILED。
 | 状态 | 含义 | 发生时机 |

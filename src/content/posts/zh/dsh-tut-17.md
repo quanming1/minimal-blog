@@ -24,7 +24,7 @@ Consumer 面向模型，把能力包装成工具 schema，让模型能够调用�
 判断标准只有一个：这些角色是否需要独立演进或替换。
 ## 一张图看懂 seam 三角色
 三个角色都依赖 Definition，而 Provider 与 Consumer 互不依赖。
-![](https://www.runoob.com/wp-content/uploads/2026/08/17-seam-three-roles.svg)
+![](/minimal-blog/assets/dsh-tut/17-seam-three-roles.svg)
 图中的虚线框就是完整能力，也就是 seam。
 Definition 在中间，Provider 与 Consumer 都只依赖它。
 Provider 继承实现 Definition，Consumer 通过 inject: ['shell'] 依赖它。

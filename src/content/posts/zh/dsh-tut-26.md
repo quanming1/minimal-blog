@@ -50,7 +50,7 @@ Session 是一份由类型化 SessionEvent 组成的仅追加日志。
 一个轮次（turn）包含零个或多个步骤：它在领取首条输入之前打开，在不再欠下任何工作时关闭。
 注意：轮次包围一次模型循环执行，而不是整个会话日志。
 官方时序图把完整流程画成：`turn/start → agent/pre-step → step/start → llm/stream → 工具 → step/end → turn/end`。
-![](https://www.runoob.com/wp-content/uploads/2026/08/26-session-turn.svg)
+![](/minimal-blog/assets/dsh-tut/26-session-turn.svg)
 输入通过同一个 inbox 到达驱动器。
 有些消息会立即唤醒驱动器；注入的上下文会留在 inbox 中，直到另一条消息将其唤醒。
 `agent/pre-step` 决定模型看到什么：监听器可以改写已领取的消息，也可以直接拒绝它们。

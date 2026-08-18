@@ -23,7 +23,7 @@ tags: [DeepSeek Harness, dsh, 教程, 转载]
 | ctx.tools.register(tool) | 工具注册自动撤销 |
 | ctx.llm.registerAdapter(names, adapter) | LLM 适配器注册自动撤销 |
 | ctx.effect(() =&gt; cleanup) | 执行返回的 disposer 清理函数 |
-![](https://www.runoob.com/wp-content/uploads/2026/08/08-effect-cleanup.svg)
+![](/minimal-blog/assets/dsh-tut/08-effect-cleanup.svg)
 ## ctx.effect()：手动资源交给框架
 有些资源不在上面的列表里，比如一个网络连接。
 用 ctx.effect() 告诉框架怎么清理它。
@@ -53,7 +53,7 @@ export function apply(ctx: Context) {
 ```
 如果卸载时什么都不用做，disposer 可以不写。
 但一旦创建了定时器、连接这类资源，就一定要返回对应的清理函数。
-![](https://www.runoob.com/wp-content/uploads/2026/08/runoob_1786761376783.png)
+![](/minimal-blog/assets/dsh-tut/runoob_1786761376783.png)
 ## 执行顺序的细节
 插件卸载时，处置器按注册顺序的逆序开始调用。
 多个异步处置器会并发执行，不保证逐个完成。

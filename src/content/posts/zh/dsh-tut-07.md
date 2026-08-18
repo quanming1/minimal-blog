@@ -32,7 +32,7 @@ scratch-plugin/
       name: '/absolute/path/to/deepseek-harness/scratch-plugin/src/my-plugin.ts'
 ```
 把 /absolute/path/to/deepseek-harness 替换成 pwd 打印的真实路径。
-![](https://www.runoob.com/wp-content/uploads/2026/08/runoob_1786710667242.png)
+![](/minimal-blog/assets/dsh-tut/runoob_1786710667242.png)
 插件路径必须是绝对路径。
 patch 文件只贡献配置，不会改变 loader 解析模块路径时使用的 profile 目录。
 ## 用 --patch 启动
@@ -42,10 +42,10 @@ patch 文件只贡献配置，不会改变 loader 解析模块路径时使用的
 pnpm dsh web --patch ./scratch-plugin/cordis.yml
 ```
 启动期间，终端会打印 [hello-plugin] plugin loaded!。
-![](https://www.runoob.com/wp-content/uploads/2026/08/runoob_1786710734619.png)
+![](/minimal-blog/assets/dsh-tut/runoob_1786710734619.png)
 打开 http://127.0.0.1:3080，在设置插件列表中搜索 hello，可以看到我们安装的插件。
-![](https://www.runoob.com/wp-content/uploads/2026/08/runoob_178671091647.png)
-![](https://www.runoob.com/wp-content/uploads/2026/08/07-patch-load.svg)
+![](/minimal-blog/assets/dsh-tut/runoob_178671091647.png)
+![](/minimal-blog/assets/dsh-tut/07-patch-load.svg)
 ## 工作原理
 dsh 把多个配置来源按顺序叠加成一个最终配置。
 --patch 传入的 cordis.yml 是一个覆盖层，在启动时叠加进 profile。

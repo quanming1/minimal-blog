@@ -12,7 +12,7 @@ tags: [DeepSeek Harness, dsh, 教程, 转载]
 一句话：沙箱管「命令跑在什么边界里」，审批管「这个具体操作是否被允许」，两者都默认失败关闭。
 ## 先看整体：沙箱决策 + 审批流程
 下面的图把两个服务放在一起看：左边是沙箱如何包装 argv，右边是审批如何做出一次性决策。
-![](https://www.runoob.com/wp-content/uploads/2026/08/25-sandbox-approval.svg)
+![](/minimal-blog/assets/dsh-tut/25-sandbox-approval.svg)
 它们共同回答了同一个问题：Agent 想做一件有风险的事，怎么把它约束住。
 沙箱把「进程能碰哪些文件」圈起来，审批把「是否放行这一次操作」交给应答者决定。
 ## ctx.sandbox：按策略包装 argv

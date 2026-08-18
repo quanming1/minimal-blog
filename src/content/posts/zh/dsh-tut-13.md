@@ -24,7 +24,7 @@ export function apply(ctx: Context) {
 ```
 如果依赖的服务消失（例如提供方被替换时），插件会被自动卸载，从 ACTIVE 直接走向 DISPOSED。
 当服务恢复后，插件会被重新加载，重新走一遍 PENDING &rarr; LOADING &rarr; ACTIVE。
-![](https://www.runoob.com/wp-content/uploads/2026/08/13-unload-reload.svg)
+![](/minimal-blog/assets/dsh-tut/13-unload-reload.svg)
 官方文档的原话：如果依赖的服务消失（例如提供方被替换时），插件会被自动卸载（ACTIVE &rarr; DISPOSED），待服务恢复后重新加载。
 ## 自动重载的保障
 自动重载之所以安全，是因为通过 ctx 做的所有注册都会在卸载时被撤销。

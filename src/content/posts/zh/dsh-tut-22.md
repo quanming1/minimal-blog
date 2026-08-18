@@ -13,7 +13,7 @@ tags: [DeepSeek Harness, dsh, 教程, 转载]
 这由生效配置的加载顺序决定。
 ## 加载顺序：生效配置的分层
 生效配置在空根之上按固定顺序逐层组合，后应用的层按行胜出。
-![](https://www.runoob.com/wp-content/uploads/2026/08/22-config-load-order.svg)
+![](/minimal-blog/assets/dsh-tut/22-config-load-order.svg)
 完整顺序如下。
 | 顺序 | 层 | 说明 |
 | --- | --- | --- |

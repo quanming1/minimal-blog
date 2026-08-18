@@ -8,7 +8,7 @@ tags: [DeepSeek Harness, dsh, 教程, 转载]
 > 本文转载自[菜鸟教程 DeepSeek Harness 专栏](https://www.runoob.com/deepseek-harness/deepseek-harness-intro.html)，仅作学习备份，版权归原作者所有。
 # DeepSeek Harness 简介
 AI 模型已经能独立完成复杂的编码任务。真正的挑战不再是让模型更聪明，而是**怎么把它的能力稳定、可靠、可观测地组织成一个真正可用的 Agent**。2026 年 8 月，深度求索开源了 **DeepSeek Harness（dsh）**——一个一切皆插件的 Agent 框架，给出了这个问题的答案：**Agent = Model + Harness**。模型是 Agent 的灵魂，而 Harness 给予 Agent 理解环境、使用工具、在真实场景中持续工作的能力。
-![](https://www.runoob.com/wp-content/uploads/2026/08/dsh-1-1.webp)
+![](/minimal-blog/assets/dsh-tut/dsh-1-1.webp)
 ## 什么是 DeepSeek Harness？
 **DeepSeek Harness（dsh）**是深度求索（DeepSeek AI）开发的**开源 Agent Harness（智能体框架）**，采用 MIT 许可证，以 TypeScript 编写，于 2026 年 8 月正式开源，目前处于开发者预览阶段（官方提示未来将有破坏兼容性的变更）。
 它不优化模型本身，而是优化模型运行的环境。核心哲学八个字：**一切皆插件（Everything is a Plugin）**。
@@ -29,12 +29,12 @@ DeepSeek Harness 正是这一共识的产品化落地：不追求更强的模型
 DeepSeek Harness 是驾驭工程理念的**完整产品化**：一个把约束、反馈、可观测、可替换全部落地的开源实现，让驾驭工程不再停留在方法论，而是开箱即用的基础设施。
 ## 核心架构：一切皆插件
 DeepSeek Harness 的架构可以用一张图说清：**Cordis 内核居中，所有能力以插件环绕，通过服务与事件协作。**
-![](https://www.runoob.com/wp-content/uploads/2026/08/cordis-arch-fixed.svg)
+![](/minimal-blog/assets/dsh-tut/cordis-arch-fixed.svg)
 这套架构落实到运行时的关键机制是 **Profile + 组合包（Bundle）**：运行中的 dsh 是一棵插件树，由启动时按序叠加的各层组合而成——先按 profile 列出的顺序应用每个组合包，然后是 profile 的 `cordis.patch.yml`、home 级 patch，最后是任意 `--patch` overlay。用一行命令即可查看机器上实际启动的完整配置树：
 `dsh --profile web --dump-config`  # 打印出的任何条目，都可以由你自己的 patch 替换
 ## 四种运行模式
 DeepSeek Harness 开箱即提供四种运行模式，覆盖从完整编码 Agent 到最小化基准测试的全谱系：
-![](https://www.runoob.com/wp-content/uploads/2026/08/dsh-7.webp)
+![](/minimal-blog/assets/dsh-tut/dsh-7.webp)
 | 模式 | 定位 | 能力构成 |
 | --- | --- | --- |
 | **标准模式** | 功能完整的编码 Agent | 文件编辑、Shell、文件与网页检索、Skills、计划、目标、子代理（subagent）与工作流 |

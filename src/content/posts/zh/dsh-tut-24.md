@@ -15,7 +15,7 @@ tags: [DeepSeek Harness, dsh, 教程, 转载]
 工具执行不是「调用一下函数」那么简单，而是一条有固定顺序的流水线。
 官方文档把顺序概括为：tools/pre-execute → 单调守卫 → tools/execute → tools/post-execute → finalizeContent → tools/result。
 其中前三个 waterfall 可以改写一次调用，而由定义自身控制的 finalizeContent 与 tools/result 在其后运行。
-![](https://www.runoob.com/wp-content/uploads/2026/08/24-tool-pipeline-fixed.svg)
+![](/minimal-blog/assets/dsh-tut/24-tool-pipeline-fixed.svg)
 先看两个容易混淆的概念：
 waterfall（瀑布式事件）是一种事件分发模式，监听器可以调用 `next()` 把决定权委托下去，也可以直接返回一个决策短路。
 单调守卫（monotonic guard）是一道只允许缩减、不允许撤销的最终防线。

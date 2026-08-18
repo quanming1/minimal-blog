@@ -38,7 +38,7 @@ git --version
 npx @deepseek-ai/dsh web
 ```
 命令会启动 Web UI，首次运行会自动初始化 `web` 配置模板，然后打印访问地址——**默认是 `http://127.0.0.1:3080`**。
-![](https://www.runoob.com/wp-content/uploads/2026/08/dsh-12.webp)
+![](/minimal-blog/assets/dsh-tut/dsh-12.webp)
 **验证是否成功：**
 1. 在浏览器打开终端打印的地址（默认 `http://127.0.0.1:3080`）；
 2. 看到 DeepSeek Harness 的 Web 界面即安装成功；

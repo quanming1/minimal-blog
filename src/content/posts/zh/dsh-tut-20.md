@@ -15,7 +15,7 @@ StreamChunk 是 Harness 与适配器之间的流式协议。
 一个内容块先用 block-start 开始，中间用 delta 增量传输，最后用 block-end 结束。
 文本与工具调用是两类不同的内容块，各自走一遍 start / delta / end。
 所有分片收尾时，先发 usage 报告 token 用量，再发 finish 声明结束原因。
-![](https://www.runoob.com/wp-content/uploads/2026/08/20-stream-chunk-sequence.svg)
+![](/minimal-blog/assets/dsh-tut/20-stream-chunk-sequence.svg)
 上图自上而下是一次完整的分片序列。
 先是一个文本块：block-start → text-delta × 2 → block-end。
 再是一个工具调用块：block-start → tool-call-delta → block-end。

@@ -40,7 +40,7 @@ cordis.yml 支持服务隔离：同一个服务可以有多个实例，不同插
 ```
 plugin-a 和 plugin-b 各自看到自己组内的 Bash 实例，互不影响。
 group-a 的 Bash 命令超时 5 秒，group-b 的超时 60 秒，两边互不知道对方的存在。
-![](https://www.runoob.com/wp-content/uploads/2026/08/15-isolation-scope.svg)
+![](/minimal-blog/assets/dsh-tut/15-isolation-scope.svg)
 ## 为什么需要隔离
 不同任务对同一能力的需求可能完全不同。
 比如快速交互的任务希望 Bash 快速超时，而长任务希望给足时间。

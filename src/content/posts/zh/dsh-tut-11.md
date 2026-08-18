@@ -110,7 +110,7 @@ export interface Config {
 配置变更会触发插件热替换（HMR）。
 修改 cordis.yml 中某个插件的 config 后，框架会卸载旧实例并加载新实例。
 由于注册都属于 effect 并会自动清理，替换后不会保留旧实例的注册。
-![](https://www.runoob.com/wp-content/uploads/2026/08/11-config-hmr.svg)
+![](/minimal-blog/assets/dsh-tut/11-config-hmr.svg)
 ## 小结与自测
 导出 Config 接口与同名 schema，默认值写进 schema，配置在加载时校验；所有可调参数都进配置。
 1. 为什么默认值写在 schema 而不是代码里？

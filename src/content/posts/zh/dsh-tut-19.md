@@ -14,7 +14,7 @@ LLM 适配器是一个继承 LlmAdapter 并实现 stream() 方法的类。
 它把 Harness 的提供方无关请求，转换成具体提供方的 API 调用。
 它再把响应转换回 Harness 的分片，也就是 StreamChunk。
 因此 agent-loop 消费的是统一接口，不关心背后是哪家 API。
-![](https://www.runoob.com/wp-content/uploads/2026/08/19-llm-adapter.svg)
+![](/minimal-blog/assets/dsh-tut/19-llm-adapter.svg)
 顶层是 agent-loop，它消费提供方无关的流式生成服务。
 中间是 ctx.llm 注册表，维护 LlmAdapter 的抽象契约。
 底层是各个适配器，分别对接不同的 API 格式。

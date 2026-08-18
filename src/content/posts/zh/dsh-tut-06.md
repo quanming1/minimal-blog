@@ -106,4 +106,4 @@ export default class MyService extends Service {
 当插件需要向其他插件提供服务时，用类形式。
 提示：类形式的核心是 super(ctx, '服务名')。
 服务与依赖的完整机制会在第 14 篇展开。
-![](https://www.runoob.com/wp-content/uploads/2026/08/06-plugin-structure.svg)
+![](/minimal-blog/assets/dsh-tut/06-plugin-structure.svg)

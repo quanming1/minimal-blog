@@ -131,7 +131,7 @@ minimal.py 背后的示例组合是一份刻意精简的配置，逐项看清它
 | 会话持久化 | DSH_SESSION_ROOT 下未压缩的 JSONL |
 该组合省略了 harness 身份、workspace 提示词文本、skill、一次性 Bash、任务工具、上下文压缩等插件。
 整体调用流程如下。
-![](https://www.runoob.com/wp-content/uploads/2026/08/05-sdk-flow.svg)
+![](/minimal-blog/assets/dsh-tut/05-sdk-flow.svg)
 ## danger-full-access 的边界
 这个示例组合使用 danger-full-access 权限预设，必须清楚它的边界。
 danger-full-access 只能在可丢弃的 checkout 或容器内运行。

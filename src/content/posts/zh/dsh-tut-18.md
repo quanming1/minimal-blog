@@ -119,7 +119,7 @@ export function apply(ctx: Context) {
 Consumer 是两者之间的桥梁，也负责把结果渲染成模型可见的文本。
 ## myCap 三角色结构与数据流
 把三个包拼在一起，数据从模型出发，流经 Consumer、Definition，落到 Provider。
-![](https://www.runoob.com/wp-content/uploads/2026/08/18-mycap-structure.svg)
+![](/minimal-blog/assets/dsh-tut/18-mycap-structure.svg)
 模型先调用 my_cap 工具，这一步只发生在 Consumer 层。
 Consumer 把参数包装成 MyCapRequest，交给 ctx.myCap.execute(request)。
 Definition 把调用委托给当前加载的 Provider 实现。

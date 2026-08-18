@@ -40,7 +40,7 @@ apply 执行时，inject 声明的服务已经全部就绪。
 如果某个服务还没准备好，插件不会执行。
 它的 Fiber 会停在 PENDING 状态，等服务出现。
 在生命周期里，PENDING 表示"已声明，但所需依赖未就绪"。
-![](https://www.runoob.com/wp-content/uploads/2026/08/09-inject-ready.svg)
+![](/minimal-blog/assets/dsh-tut/09-inject-ready.svg)
 如果服务一直不来，插件就一直等，不会出错，也不会执行 apply。
 ## 必需依赖与可选依赖
 inject 声明的是必需依赖：服务缺席时插件不加载。
