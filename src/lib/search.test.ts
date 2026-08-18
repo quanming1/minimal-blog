@@ -1,6 +1,6 @@
 import '../test/setup-dom' // jsdom：端到端 script 注入上下文测试需要（见 docs/security.md §2）
 import { describe, expect, test } from 'bun:test'
-import { buildSearchIndex, filterPosts, serializeIndexForHtml, type SearchEntry } from './search'
+import { buildSearchIndex, filterPosts, serializeIndexForHtml, stripMarkdown, type SearchEntry } from './search'
 
 const index: SearchEntry[] = buildSearchIndex([
   { id: 'zh/hello-mingzhi', title: '你好，明志', description: '博客开篇', tags: ['开场'], href: '/minimal-blog/posts/hello-mingzhi/', date: '2026-08-12' },
@@ -160,5 +160,93 @@ describe('serializeIndexForHtml（安全：script 注入防护）', () => {
     const back = JSON.parse(s) as SearchEntry[]
     expect(back[0].href).toBe('/minimal-blog/posts/a<b"c/')
     expect(back[0].id).toBe('zh/a<b"c')
+  })
+})
+
+describe('stripMarkdown（正文 → 纯文本）', () => {
+  test('标题/加粗/行内代码/高亮/上下标', () => {
+    const out = stripMarkdown('## 小节\n\n**重点** 和 `code` 与 ==高亮== H_{2}O E=mc^{2}')
+    expect(out).toContain('小节')
+    expect(out).toContain('重点')
+    expect(out).toContain('code')
+    expect(out).toContain('高亮')
+    expect(out).toContain('H2O')
+    expect(out).toContain('E=mc2')
+    expect(out).not.toContain('**')
+    expect(out).not.toContain('##')
+  })
+
+  test('链接/图片/HTML', () => {
+    const out = stripMarkdown('[文字](https://x) 和 ![alt](img.png) 与 <div>块</div>')
+    expect(out).toContain('文字')
+    expect(out).toContain('alt')
+    expect(out).toContain('块')
+    expect(out).not.toContain('(')
+    expect(out).not.toContain('<')
+  })
+
+  test('引用/callout/列表/定义列表', () => {
+    const out = stripMarkdown('> 引用内容\n> [!NOTE]\n> 提示内容\n- 列表项\n1. 数字项\n术语\n: 定义')
+    expect(out).toContain('引用内容')
+    expect(out).toContain('提示内容')
+    expect(out).toContain('列表项')
+    expect(out).toContain('数字项')
+    expect(out).toContain('定义')
+    expect(out).not.toContain('[!NOTE]')
+  })
+
+  test('代码块保留内容、去围栏', () => {
+    const out = stripMarkdown('```js\nconst x = 1\nconsole.log("hello")\n```')
+    expect(out).toContain('const x')
+    expect(out).toContain('hello')
+    expect(out).not.toContain('```')
+  })
+
+  test('分隔线/多余空行清理', () => {
+    const out = stripMarkdown('第一段\n\n\n\n---\n\n第二段')
+    expect(out).toContain('第一段')
+    expect(out).toContain('第二段')
+    expect(out).not.toContain('---')
+  })
+
+  test('不误伤：乘法/下划线变量保留（不处理单 * 单 _）', () => {
+    const out = stripMarkdown('a * b = c 与 foo_bar 变量')
+    expect(out).toContain('a * b')
+    expect(out).toContain('foo_bar')
+  })
+})
+
+describe('filterPosts 正文匹配', () => {
+  test('搜正文专属词（标题/摘要/标签/专栏均无）', () => {
+    const withBody = buildSearchIndex([
+      { id: 'zh/a', title: '标题甲', description: '摘要甲', tags: ['标签甲'], column: '专栏甲', href: '#', date: '2026-08-12', body: '这是正文，包含独一无二的词语 量子纠缠 现象' },
+      { id: 'zh/b', title: '标题乙', description: '摘要乙', tags: ['标签乙'], href: '#', date: '2026-08-12', body: '另一篇正文' },
+    ])
+    expect(filterPosts(withBody, '量子纠缠').map((e) => e.id)).toEqual(['zh/a'])
+    expect(filterPosts(withBody, '另一篇').map((e) => e.id)).toEqual(['zh/b'])
+  })
+
+  test('正文匹配大小写不敏感', () => {
+    const withBody = buildSearchIndex([
+      { id: 'zh/a', title: 'T', description: '', tags: [], href: '#', date: '2026-08-12', body: 'Hello World 正文' },
+    ])
+    expect(filterPosts(withBody, 'hello').map((e) => e.id)).toEqual(['zh/a'])
+  })
+
+  test('buildSearchIndex 对 body 做 strip（markdown 语法符号不命中，纯文本词命中）', () => {
+    const withMd = buildSearchIndex([
+      { id: 'zh/a', title: 'T', description: '', tags: [], href: '#', date: '2026-08-12', body: '这是 **加粗词** 与 [链接文字](url)' },
+    ])
+    expect(filterPosts(withMd, '加粗词').map((e) => e.id)).toEqual(['zh/a'])
+    expect(filterPosts(withMd, '链接文字').map((e) => e.id)).toEqual(['zh/a'])
+    expect(filterPosts(withMd, '**')).toEqual([]) // 语法符号被 strip 后不再命中
+  })
+
+  test('body 缺省不影响其他字段匹配', () => {
+    const noBody = buildSearchIndex([
+      { id: 'zh/a', title: '标题', description: '', tags: [], href: '#', date: '2026-08-12' },
+    ])
+    expect(filterPosts(noBody, '标题').map((e) => e.id)).toEqual(['zh/a'])
+    expect(filterPosts(noBody, '正文词')).toEqual([])
   })
 })

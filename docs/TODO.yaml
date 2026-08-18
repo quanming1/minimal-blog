@@ -83,6 +83,15 @@ stages:
           - src/lib/posts.ts getAdjacentPosts/getRelatedPosts
           - wc/mb-toast（复制提示）
         acceptance: 长文 TOC 高亮、进度条/回顶工作、相邻/相关正确
+      - id: B6
+        title: 站内搜索正文索引（修复：正文搜不到）
+        status: done
+        date: 2026-08-18
+        prd: docs/prd/PRD-B6-search-fulltext.md
+        modules:
+          - src/lib/search.ts（stripMarkdown / body 字段 / filterPosts 正文匹配）
+          - src/components/SearchDialog.astro（传 p.body）
+        acceptance: 搜索正文专属词（标题/摘要/标签/专栏均无）能命中；stripMarkdown 单测全绿
   - id: C
     name: 主题与视觉
     steps:

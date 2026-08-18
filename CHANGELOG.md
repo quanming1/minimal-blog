@@ -3,6 +3,14 @@
 > 版本变更记录。**约定：`src/content/posts/` 下的文章增删改（写作）不进入本文件**——那是内容维护，不是项目版本变更。
 > 仅记录工程层面（代码/结构/功能/构建/测试/部署）的变化。
 
+## [1.16.0] - 2026-08-18
+
+### 修复
+- **站内搜索正文搜不到（B6）**：搜索索引只收录 title/description/tags/column，正文（body）从未进索引，导致搜正文词一律搜不到。新增 `stripMarkdown`（markdown→纯文本），body 加入索引，`filterPosts` 增加正文匹配——正文里的任何词现在都能搜到
+
+### 验证
+- 单测 213 pass（新增 stripMarkdown 6 例 + filterPosts 正文匹配 4 例）、lint 0 errors、build 通过；线上搜索正文专属词命中
+
 ## [1.15.0] - 2026-08-18
 
 ### 新增

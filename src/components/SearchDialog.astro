@@ -28,6 +28,7 @@ const index = buildSearchIndex(
     column: p.data.column,
     href: postHref(base, lang, p.id),
     date: p.data.date,
+    body: p.body ?? undefined,
   })),
 )
 // 全量转义 <（覆盖 </script> 与 <!-- 两种注入向量），serializeIndexForHtml 单测覆盖（search.test.ts）
