@@ -3,6 +3,20 @@
 > 版本变更记录。**约定：`src/content/posts/` 下的文章增删改（写作）不进入本文件**——那是内容维护，不是项目版本变更。
 > 仅记录工程层面（代码/结构/功能/构建/测试/部署）的变化。
 
+## [1.13.0] - 2026-08-13
+
+### 新增
+- **mb CLI（F1）**：全局 `mb` 命令操作文章——CRUD（new/list/rm）+ 行号级编辑（lines/edit replace·insert·delete·append，1-based 闭区间）+ frontmatter 字段读写（meta get/set，date/title 自动补引号）+ publish 全流程（验证→commit→push→CI 等待→线上抽查）。源码 `scripts/mb/`（零依赖，Bun 内置 API），单测 21 个；Skill `.ftre/skills/blog-cli/SKILL.md`（其他 agent 的使用说明：命令面/工作流/并发规则）
+- **并发安全三层**：① 乐观并发——`mb lines` 返回内容 hash，replace/insert/delete 必须带 `--hash`，文件被他人改过则 exit 2 拒绝（防覆盖）；② 文件锁——写操作互斥（`.mb-lock`：PID+时间戳，TTL 5 分钟超时回收 + pidAlive 检测，EPERM 视为存活），原子写（tmp+rename）；③ publish 串行——全程持锁 + push 前 `pull --rebase` 非 ff 自动重试一次
+- 全局注册：package.json `bin` + `%APPDATA%\npm\mb.cmd` 包装（bun link 的 mb.exe 与 npm shim 装的 bun 不兼容，见 PRD-F1 变更记录）
+- TODO.yaml 新增 F 阶段（CLI 与自动化：F1 done + F2 草稿/定时发布 todo）
+
+### 变更
+- **下线 /en/ 英文站点**：删除 `src/pages/en/**`（7 路由）与 `posts/en/`（2 文章），Base 移除语言切换按钮、hreflang 恒 zh-CN + x-default；构建 27→14 页；`langOfId`/`switchHref`/i18n en 字典等纯函数保留（未来恢复多语言的基建）；AGENTS.md 写作规范同步（只发中文）
+
+### 验证
+- 193 tests 全绿（172 + mb 21）、lint 0 errors、build 14 页；CLI 实战：new→lines→edit→hash 冲突 exit 2→活锁 exit 3→meta→rm→publish 全链路；dist 无 en 目录
+
 ## [1.12.0] - 2026-08-13
 
 ### 新增

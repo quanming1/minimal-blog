@@ -1,0 +1,3 @@
+#!/usr/bin/env bun
+/** 全局 mb 命令 shim：bun link 创建的入口（package.json bin 指向本文件） */
+import '../scripts/mb/index'

@@ -4,10 +4,7 @@ import { z } from 'astro/zod'
 
 /**
  * 文章集合（Astro Content Layer：glob loader）。
- * 目录：src/content/posts/ 下按语言分子目录
- *   posts/zh/<slug>.md  → 中文（默认语言，URL 无前缀 /posts/<slug>/）
- *   posts/en/<slug>.md  → 英文（URL 前缀 /en/posts/<slug>/）
- * 同 slug 的中英两篇视为翻译关系（语言切换时互跳）。
+ * 目录：src/content/posts/zh/（en 站点已随 F1 下线，只发中文）
  * 条目 id = 相对 base 的路径（去扩展名），如 'zh/hello-mingzhi'。
  */
 const posts = defineCollection({

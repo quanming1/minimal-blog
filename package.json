@@ -14,7 +14,12 @@
     "astro": "astro",
     "lint": "astro check",
     "test": "bun test --parallel=1",
-    "test:coverage": "bun test --coverage --parallel=1"
+    "test:coverage": "bun test --coverage --parallel=1",
+    "mb": "bun run scripts/mb/index.ts",
+    "mb:link": "bun link"
+  },
+  "bin": {
+    "mb": "./bin/mb"
   },
   "dependencies": {
     "@fontsource/lato": "^5.3.0",

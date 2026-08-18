@@ -1,14 +1,13 @@
 # AGENTS.md — 本仓库的 AI Agent 维护指令
 
 > 给 AI Agent（ftre / Cursor / Claude Code 等）维护此仓库时的行为规范。
-> 目标：**明志博客** — Astro 7 静态站，Markdown 写作（中英双语），GitHub Pages 托管。
+> 目标：**明志博客** — Astro 7 静态站，Markdown 写作（中文，en 站点已下线——F1），GitHub Pages 托管。
 
 ## 仓库结构与职责
 
 | 路径 | 职责 | 谁改 |
 |---|---|---|
-| `src/content/posts/zh/*.md` | 中文文章 | 日常写作 |
-| `src/content/posts/en/*.md` | 英文文章（同 slug = 翻译对） | 日常写作 |
+| `src/content/posts/zh/*.md` | 中文文章（唯一语言，en 已下线） | 日常写作 |
 | `src/content.config.ts` | 文章集合 schema（title/date/author/description/tags；author 缺省按语言 hardcode：zh 蒋全明 / en Quanming Jiang） | 协议变更 |
 | `src/lib/*` | 纯函数（i18n 字典 / 日期/分组/slug/URL 构造 / seo：URL/JSON-LD/hreflang） | 功能改动 |
 | `src/layouts/Base.astro` | 全局布局（导航/语言切换/主题/页脚）+ SEO head（canonical/OG/JSON-LD/hreflang） | 布局改动 |
@@ -40,6 +39,7 @@
 ## 写作规范（日常任务）
 
 > **发布 / 更新文章前先读 `.ftre/skills/publish-post/SKILL.md`**（发布流程 Skill：frontmatter 规范 / 验证链 / 提交格式 / 部署验证全流程，与本节一致但更完整）。
+> **文章增删改一律走 `mb` CLI**（`.ftre/skills/blog-cli/SKILL.md`：CRUD / 行号级编辑 / hash 乐观并发 / 并发安全发布——多 agent 写同一仓库时 NEVER 绕过 CLI 直写 `src/content/posts/`）。
 
 ### 新增中文文章
 
@@ -54,7 +54,7 @@
    ---
    ```
 2. 标准 Markdown 正文（代码块自动高亮）
-3. 需要英文版 → 新建 `en/<同slug>.md`（不强制，缺翻译时语言切换自动回退首页）
+3. 英文站点已下线（F1）：只发中文，`src/pages/en/` 与 `posts/en/` 已删除；`langOfId`/`switchHref` 等 i18n 纯函数保留（未来恢复多语言的基建）
 
 ### 约束
 

@@ -10,7 +10,7 @@ import lato700Url from '@fontsource/lato/files/lato-latin-700-normal.woff2?url'
 import '../styles/global.css'
 import { ClientRouter } from 'astro:transitions'
 import { t } from '../lib/i18n'
-import { switchHref, type Lang } from '../lib/utils'
+import { type Lang } from '../lib/utils'
 import {
   absoluteUrl,
   alternateUrls,
@@ -59,7 +59,8 @@ const altLinks = alternateUrls({
   lang,
   base,
   path,
-  hasTranslation: Astro.props.hasTranslation ?? true,
+  // en 站点已下线（F1，CLI 时代只发中文）：恒 false，只输出 zh-CN + x-default
+  hasTranslation: false,
 })
 const jsonLd =
   ogType === 'article'
@@ -75,8 +76,7 @@ const jsonLd =
       : null
     : webSiteJsonLd(siteTitle, canonical, lang)
 
-/** 语言切换目标：默认切换当前路径，无翻译时切到目标语言首页 */
-const switchTarget = switchHref(base, lang, path, Astro.props.hasTranslation ?? true)
+/** 语言切换 UI 已随 en 站点下线移除（F1）；switchHref/langOfId 等纯函数保留（i18n 基建，未来恢复多语言可用） */
 
 // 导航：文章（首页）、专栏、关于
 const navLinks: { key: 'navPosts' | 'navColumns' | 'navAbout'; url: string }[] = [
@@ -188,9 +188,6 @@ const isAbout = path === '/about/'
                 </a>
               </li>
             ))}
-            <li class="lang-switch">
-              <a href={switchTarget} title={t(lang, 'switchLang')}>{t(lang, 'switchLang')}</a>
-            </li>
             <li>
               <button type="button" class="search-open" id="search-open" aria-label={t(lang, 'searchAria')}>
                 <span class="search-icon" aria-hidden="true">
