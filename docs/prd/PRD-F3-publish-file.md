@@ -69,3 +69,4 @@ mb publish-file <path> [--slug s] [--title t] [--tags a,b] [--column c] [--date 
 |---|---|---|
 | 2026-08-18 | 初始定稿 | — |
 | 2026-08-18 | 验收记录：单测 203 pass（新增 slugFromFilename/readFileAutoEncoding/buildFrontmatter 共 10 例）、lint 0 errors、build 23 页；实测 publish-file 发布 f3-import-md（UTF-8 带 frontmatter）与 f3-import-txt（GBK 无 frontmatter）均成功，commit msg 正确为 post(posts)（验证 publish msg 修复），线上秒级可见；测试文章已清理 | 实测证据 |
+| 2026-08-18 | 修复：连续 publish 时 gh-pages commit 偶发「unable to write new_index file」（Windows 文件句柄释放竞态，F3 实测暴露）——commit 失败时 `Bun.sleepSync(1000)` 重试一次 | 实测暴露 |
